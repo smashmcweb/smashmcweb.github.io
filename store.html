@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>MediaMC Store</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, #0f172a, #020617);
+      color: #fff;
+    }
+    header {
+      text-align: center;
+      padding: 60px 20px;
+      background: #0b1b33;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+    header h1 {
+      font-size: 3em;
+      color: #22d3ee;
+      margin-bottom: 10px;
+    }
+    .sections {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      padding: 40px 20px;
+    }
+    .section {
+      background: #020617cc;
+      border: 2px solid #22d3ee;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 600px;
+      padding: 15px 20px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .section:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 20px #22d3eeaa;
+    }
+    .section h2 {
+      color: #22d3ee;
+      margin: 0;
+      font-size: 1.5em;
+    }
+    .content {
+      margin-top: 10px;
+      color: #cbd5f5;
+      font-size: 1em;
+      line-height: 1.5em;
+    }
+    .link-home {
+      display: inline-block;
+      margin-top: 10px;
+      color: #22d3ee;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .link-home:hover {
+      text-decoration: underline;
+    }
+    footer {
+      text-align: center;
+      padding: 30px;
+      font-size: 0.9em;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🛒 MediaMC Store</h1>
+</header>
+
+<div class="sections">
+
+  <div class="section">
+    <h2>Sezione 1</h2>
+    <div class="content">
+      Qui puoi inserire tutti gli oggetti, pacchetti o servizi acquistabili sul server.
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Sezione 2</h2>
+    <div class="content">
+      Altra categoria dello store: potenziamenti, cosmetici, abbonamenti ecc.
+    </div>
+  </div>
+
+  <a class="link-home" href="index.html">← Torna alla Home</a>
+</div>
+
+<footer>
+  © 2026 MediaMC Network
+</footer>
+
+</body>
+</html>
