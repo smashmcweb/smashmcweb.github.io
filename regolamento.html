@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>MediaMC Regolamento</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, #0f172a, #020617);
+      color: #fff;
+    }
+
+    header {
+      text-align: center;
+      padding: 60px 20px;
+      background: #0b1b33;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+
+    header h1 {
+      font-size: 3em;
+      color: #22d3ee;
+      margin-bottom: 10px;
+    }
+
+    .sections {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      padding: 40px 20px;
+    }
+
+    .section {
+      background: #020617cc;
+      border: 2px solid #22d3ee;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 600px;
+      padding: 15px 20px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .section:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 20px #22d3eeaa;
+    }
+
+    .section h2 {
+      color: #22d3ee;
+      margin: 0;
+      font-size: 1.5em;
+    }
+
+    .content {
+      margin-top: 10px;
+      color: #cbd5f5;
+      font-size: 1em;
+      line-height: 1.5em;
+    }
+
+    .link-home {
+      display: inline-block;
+      margin-top: 10px;
+      color: #22d3ee;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+
+    .link-home:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      font-size: 0.9em;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>📜 Regolamento MediaMC</h1>
+  <p>Leggi attentamente le regole per divertirti sul server in sicurezza!</p>
+</header>
+
+<div class="sections">
+
+  <!-- Regola 1 -->
+  <div class="section">
+    <h2>1. Rispetto tra giocatori</h2>
+    <div class="content">
+      È vietato insultare, minacciare o molestare altri giocatori. La buona educazione è obbligatoria.
+    </div>
+  </div>
+
+  <!-- Regola 2 -->
+  <div class="section">
+    <h2>2. No cheating</h2>
+    <div class="content">
+      L’uso di hack, mod illegali o exploit è severamente proibito. Chiunque venga sorpreso sarà bannato.
+    </div>
+  </div>
+
+  <!-- Regola 3 -->
+  <div class="section">
+    <h2>3. Comportamento in chat</h2>
+    <div class="content">
+      Evita spam, pubblicità non autorizzata o linguaggio offensivo. Usa la chat in maniera civile.
+    </div>
+  </div>
+
+  <!-- Regola 4 -->
+  <div class="section">
+    <h2>4. Rispetto delle modalità</h2>
+    <div class="content">
+      Gioca correttamente nelle varie modalità (Duels, BedWars, Survival) senza disturbare o sabotare gli altri giocatori.
+    </div>
+  </div>
+
+  <a class="link-home" href="index.html">← Torna alla Home</a>
+
+</div>
+
+<footer>
+  © 2026 MediaMC Network
+</footer>
+
+<script>
+  // Funzione accordion per regole
+  const sections = document.querySelectorAll('.section');
+  sections.forEach(sec => {
+    sec.addEventListener('click', () => {
+      const content = sec.querySelector('.content');
+      if (content.style.display === 'block') {
+        content.style.display = 'none';
+      } else {
+        content.style.display = 'block';
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
