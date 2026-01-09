@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <title>MediaMC Network</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <style>
     body {
       margin: 0;
@@ -12,25 +11,21 @@
       background: linear-gradient(135deg, #0f172a, #020617);
       color: #fff;
     }
-
     header {
       text-align: center;
       padding: 60px 20px;
       background: #0b1b33;
       box-shadow: 0 4px 20px rgba(0,0,0,0.5);
     }
-
     header h1 {
       font-size: 3em;
       color: #22d3ee;
       margin-bottom: 10px;
     }
-
     header p {
       font-size: 1.2em;
       color: #a5f3fc;
     }
-
     .sections {
       display: flex;
       flex-direction: column;
@@ -38,7 +33,6 @@
       gap: 20px;
       padding: 40px 20px;
     }
-
     .section {
       background: #020617cc;
       border: 2px solid #22d3ee;
@@ -49,18 +43,15 @@
       transition: transform 0.2s, box-shadow 0.2s;
       padding: 15px 20px;
     }
-
     .section:hover {
       transform: scale(1.02);
       box-shadow: 0 0 20px #22d3eeaa;
     }
-
     .section h2 {
       color: #22d3ee;
       margin: 0;
       font-size: 1.5em;
     }
-
     .content {
       display: none;
       margin-top: 10px;
@@ -68,7 +59,6 @@
       font-size: 1em;
       line-height: 1.5em;
     }
-
     .ip {
       background: #0b1b33;
       padding: 8px;
@@ -78,12 +68,21 @@
       margin-top: 5px;
       display: inline-block;
     }
-
     footer {
       text-align: center;
       padding: 30px;
       font-size: 0.9em;
       color: #94a3b8;
+    }
+    .link-page {
+      display: inline-block;
+      margin-top: 10px;
+      color: #22d3ee;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .link-page:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
@@ -101,7 +100,7 @@
     <h2>Introduzione</h2>
     <div class="content">
       Benvenuto su MediaMC! Il nostro server è aperto a tutti, dai principianti agli esperti. 
-      Puoi divertirti in diverse modalità di gioco: Duels, BedWars e Survival. 
+      Puoi divertirti in diverse modalità: Duels, BedWars e Survival. 
       Ogni modalità offre un’esperienza unica, con sfide emozionanti e possibilità di giocare con amici.
     </div>
   </div>
@@ -124,6 +123,12 @@
     </div>
   </div>
 
+  <!-- Store -->
+  <div class="section">
+    <h2>Store</h2>
+    <a class="link-page" href="store.html">Vai allo Store →</a>
+  </div>
+
 </div>
 
 <footer>
@@ -133,9 +138,12 @@
 <script>
   function toggleContent(section) {
     const content = section.querySelector('.content');
-    content.style.display = content.style.display === 'block' ? 'none' : 'block';
+    if (content) {
+      content.style.display = content.style.display === 'block' ? 'none' : 'block';
+    }
   }
 </script>
 
 </body>
 </html>
+
