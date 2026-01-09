@@ -1,68 +1,158 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <title>MediaMC Network</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #0f172a, #020617);
-            color: white;
-            text-align: center;
-        }
-        header {
-            padding: 80px 20px;
-        }
-        h1 {
-            font-size: 3em;
-            color: #22d3ee;
-        }
-        p {
-            font-size: 1.2em;
-            color: #cbd5f5;
-        }
-        .card {
-            max-width: 500px;
-            margin: 40px auto;
-            background: #020617cc;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 0 30px #22d3ee55;
-        }
-        .ip {
-            background: #020617;
-            padding: 15px;
-            border-radius: 10px;
-            font-size: 1.2em;
-            margin-top: 20px;
-            border: 1px solid #22d3ee;
-        }
-        footer {
-            text-align: center;
-            padding: 30px;
-            font-size: 0.9em;
-            color: #94a3b8;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>MediaMC Network</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    /* ===== Corpo e font ===== */
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, #0f172a, #020617);
+      color: #fff;
+    }
+
+    h1, h2 {
+      margin: 0;
+    }
+
+    /* ===== Header ===== */
+    header {
+      text-align: center;
+      padding: 60px 20px;
+      background: #0b1b33;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+
+    header h1 {
+      font-size: 3em;
+      color: #22d3ee;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      font-size: 1.2em;
+      color: #a5f3fc;
+    }
+
+    /* ===== Sezioni principali ===== */
+    .sections {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      padding: 40px 20px;
+    }
+
+    .section {
+      background: #020617cc;
+      border: 2px solid #22d3ee;
+      border-radius: 16px;
+      padding: 30px;
+      width: 300px;
+      text-align: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+    }
+
+    .section:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 25px #22d3eeaa;
+    }
+
+    .section h2 {
+      color: #22d3ee;
+      margin-bottom: 15px;
+    }
+
+    .section p, .section .ip {
+      color: #cbd5f5;
+      font-size: 1em;
+      margin: 5px 0;
+    }
+
+    .ip {
+      background: #0b1b33;
+      padding: 10px;
+      border-radius: 10px;
+      font-weight: bold;
+      border: 1px solid #22d3ee;
+      margin-top: 10px;
+    }
+
+    /* ===== Footer ===== */
+    footer {
+      text-align: center;
+      padding: 30px;
+      font-size: 0.9em;
+      color: #94a3b8;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 1000px) {
+      .sections {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
 </head>
 <body>
 
 <header>
-    <h1>🎮 MediaMC</h1>
-    <p>Server Minecraft Italiano</p>
+  <h1>🎮 MediaMC</h1>
+  <p>Server Minecraft Italiano - Accessibile a tutti!</p>
 </header>
 
-<div class="card">
-    <h2>IP Server</h2>
-    <div class="ip">play.mediamc.it</div>
-    <p>Sito ufficiale in costruzione 🚧</p>
+<div class="sections">
+
+  <!-- Introduzione -->
+  <div class="section">
+    <h2>Introduzione</h2>
+    <p>MediaMC è un server accessibile a tutti. Diverse modalità di gioco: Duels, BedWars e Survival!</p>
+  </div>
+
+  <!-- Status -->
+  <div class="section">
+    <h2>Status</h2>
+    <p>Server attualmente:</p>
+    <div class="ip">mediamc.mcsh.io</div>
+    <p id="server-status">Controllo stato...</p>
+  </div>
+
+  <!-- Supporto -->
+  <div class="section">
+    <h2>Supporto</h2>
+    <p>Per richiedere supporto scrivete sul nostro forum!</p>
+    <p>Qui tutti possono dare consigli e aiutarsi a vicenda.</p>
+  </div>
+
+  <!-- Staff -->
+  <div class="section">
+    <h2>Staff</h2>
+    <p>Lista degli staff e ruoli in arrivo…</p>
+  </div>
+
 </div>
 
 <footer>
-    © 2026 MediaMC Network
+  © 2026 MediaMC Network
 </footer>
+
+<script>
+  // Esempio semplice di Status server (simulato)
+  const statusText = document.getElementById('server-status');
+  // Qui puoi collegare un controllo reale in futuro
+  const serverOnline = true; // Cambia a false per test offline
+
+  if(serverOnline) {
+    statusText.textContent = "🟢 Online!";
+  } else {
+    statusText.textContent = "🔴 Offline!";
+  }
+</script>
 
 </body>
 </html>
