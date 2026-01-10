@@ -2,229 +2,128 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<title>MediaMC Staff Panel</title>
+<title>Pannello Staff MediaMC</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body{
-  margin:0;font-family:'Segoe UI',Arial,sans-serif;
-  background: linear-gradient(135deg,#0ea5e9,#020617);
-  color:#fff;
-  overflow-x:hidden;
-}
-.side-glow{position:fixed;top:-50%;width:120px;height:200%;background:linear-gradient(180deg,transparent,rgba(56,189,248,0.4),transparent);filter:blur(45px);animation:floatGlow 10s linear infinite;pointer-events:none;z-index:-1}
-.side-glow.left{left:-50px}
-.side-glow.right{right:-50px;animation-delay:5s}
-@keyframes floatGlow{0%{transform:translateY(-20%)}100%{transform:translateY(20%)}}
-header{text-align:center;padding:50px 20px;background:rgba(2,6,23,0.9);box-shadow:0 10px 30px rgba(0,0,0,0.6)}
-header h1{color:#38bdf8;font-size:3em;margin:0}
-header p{color:#bae6fd;font-size:1.2em;margin:5px 0}
-
-section{max-width:900px;margin:20px auto;background:rgba(2,6,23,0.85);padding:20px;border-radius:12px;border:2px solid #38bdf8}
-button{padding:6px 12px;border:none;border-radius:6px;background:#38bdf8;color:#fff;cursor:pointer;margin:3px}
-input, select{padding:6px;border-radius:6px;border:none;margin:3px;width:90%}
-.productItem, .giftItem, .orderItem{background:rgba(2,6,23,0.8);padding:8px;border-radius:6px;margin:5px 0;display:flex;justify-content:space-between;align-items:center}
-.productItem div, .giftItem div, .orderItem div{flex:1}
-h2{color:#38bdf8;margin-top:0}
-.modal-bg{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:flex;justify-content:center;align-items:center;z-index:100;display:none}
-.modal{background:rgba(2,6,23,0.95);padding:30px;border-radius:12px;border:2px solid #38bdf8;text-align:center}
-.modal input, .modal select{width:80%;margin-bottom:10px}
-.modal button{margin-top:5px}
-#logoutBtn{background:#ef4444;color:#fff}
+body{margin:0;font-family:'Segoe UI',Arial;background:linear-gradient(135deg,#0ea5e9,#1e3a8a);color:#fff;}
+header{text-align:center;padding:40px 20px;background:rgba(2,6,23,0.85);}
+section{max-width:700px;margin:20px auto;background:rgba(30,64,175,0.85);padding:20px;border-radius:12px;border:2px solid #38bdf8;}
+input,button{padding:6px;border-radius:6px;border:none;}
+button{cursor:pointer;margin:5px;}
+.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);display:none;justify-content:center;align-items:center;}
+.modalContent{background:#020617;padding:20px;border-radius:10px;width:300px;text-align:center;}
 </style>
 </head>
 <body>
-<div class="side-glow left"></div>
-<div class="side-glow right"></div>
-
 <header>
-<h1>⚙️ Pannello Staff MediaMC</h1>
-<p>Gestione Gift Card, Ordini e Prodotti</p>
+<h1>⚙️ Pannello Staff</h1>
 </header>
 
 <section id="loginSection">
 <h2>Login Staff</h2>
-<input type="password" id="staffPass" placeholder="Password Staff">
-<button onclick="checkLogin()">Accedi</button>
+<input type="password" id="staffPass" placeholder="Inserisci Password">
+<button onclick="loginStaff()">Accedi</button>
 </section>
 
-<section id="staffPanel" style="display:none">
-
-<!-- CREAZIONE CATEGORIE -->
-<h2>Categorie Prodotti</h2>
-<input type="text" id="catName" placeholder="Nome Categoria">
-<button onclick="createCategory()">Crea Categoria</button>
-<div id="categoryList"></div>
-
-<hr>
-
-<!-- CREAZIONE PRODOTTI -->
-<h2>Prodotti</h2>
-<input type="text" id="prodName" placeholder="Titolo Prodotto">
-<select id="prodCat"></select>
-<input type="number" id="prodPrice" placeholder="Prezzo">
-<input type="text" id="prodDesc" placeholder="Descrizione">
-<input type="text" id="prodImg" placeholder="URL Immagine (facoltativa)">
-<button onclick="createProduct()">Crea Prodotto</button>
-<div id="productList"></div>
-
-<hr>
-
-<!-- GIFT CARD -->
-<h2>Gift Card</h2>
+<section id="panelSection" style="display:none">
+<h2>Gestione Gift Card</h2>
 <button onclick="openGiftModal()">Crea Gift Card</button>
 <div id="giftList"></div>
 
-<hr>
+<h2>Gestione Categorie</h2>
+<button onclick="openCatModal()">Crea Categoria</button>
+<button onclick="deleteCategory()">Elimina Categoria</button>
+<div id="catList"></div>
 
-<!-- ORDINI -->
-<h2>Lista Ordini</h2>
-<input type="text" id="searchID" placeholder="Cerca Ordine per ID">
+<h2>Gestione Prodotti</h2>
+<button onclick="openProdModal()">Crea Prodotto</button>
+<button onclick="deleteProduct()">Elimina Prodotto</button>
+<div id="prodList"></div>
+
+<h2>Ordini</h2>
+<input type="text" id="orderSearch" placeholder="Inserisci ID Ordine">
 <button onclick="searchOrder()">Cerca</button>
-<div id="ordersList"></div>
-
-<hr>
-<button id="logoutBtn" onclick="logout()">Logout</button>
+<div id="orderList"></div>
 </section>
 
-<!-- MODAL GIFT -->
-<div class="modal-bg" id="giftModal">
-  <div class="modal">
-    <h2>Crea Gift Card</h2>
-    <input type="text" id="giftName" placeholder="Nome Gift Card">
-    <input type="number" id="giftValue" placeholder="Valore (€)">
-    <button onclick="createGift()">Crea</button>
-    <button onclick="closeGiftModal()">Chiudi</button>
-  </div>
+<!-- Modal Gift -->
+<div class="modal" id="giftModal">
+<div class="modalContent">
+<h3>Crea Gift Card</h3>
+<input id="giftName" placeholder="Nome Gift">
+<input id="giftValue" placeholder="Valore €" type="number">
+<button onclick="createGift()">Crea</button>
+<button onclick="closeGiftModal()">Chiudi</button>
+</div>
+</div>
+
+<!-- Modal Categoria -->
+<div class="modal" id="catModal">
+<div class="modalContent">
+<h3>Crea Categoria</h3>
+<input id="catName" placeholder="Nome Categoria">
+<button onclick="createCategory()">Crea</button>
+<button onclick="closeCatModal()">Chiudi</button>
+</div>
+</div>
+
+<!-- Modal Prodotto -->
+<div class="modal" id="prodModal">
+<div class="modalContent">
+<h3>Crea Prodotto</h3>
+<input id="prodTitle" placeholder="Titolo">
+<input id="prodCat" placeholder="Categoria">
+<input id="prodPrice" placeholder="Prezzo" type="number">
+<input id="prodDesc" placeholder="Descrizione">
+<input id="prodImg" placeholder="Immagine URL o scrivi 'no'">
+<button onclick="createProduct()">Crea</button>
+<button onclick="closeProdModal()">Chiudi</button>
+</div>
 </div>
 
 <script>
-// LOGIN
-function checkLogin(){
+// STAFF LOGIN
+function loginStaff(){
   const pass=document.getElementById('staffPass').value;
   if(pass==='staff123'){
     document.getElementById('loginSection').style.display='none';
-    document.getElementById('staffPanel').style.display='block';
-    loadCategories();
-    loadProducts();
-    loadGifts();
-    loadOrders();
-  } else alert('Password errata');
+    document.getElementById('panelSection').style.display='block';
+    renderGifts(); renderCategories(); renderProducts(); renderOrders();
+  }else alert('Password errata');
 }
 
-function logout(){
-  document.getElementById('staffPanel').style.display='none';
-  document.getElementById('loginSection').style.display='block';
-  document.getElementById('staffPass').value='';
-}
-
-// CATEGORIE
-let categories=JSON.parse(localStorage.getItem('categories'))||['Duels','BedWars'];
-function createCategory(){
-  const name=document.getElementById('catName').value.trim();
-  if(!name) return alert('Inserisci nome categoria');
-  if(categories.includes(name)) return alert('Categoria già esistente');
-  categories.push(name);
-  localStorage.setItem('categories',JSON.stringify(categories));
-  document.getElementById('catName').value='';
-  loadCategories();
-  loadProducts(); // aggiorna select
-}
-function loadCategories(){
-  const div=document.getElementById('categoryList');
-  const sel=document.getElementById('prodCat');
-  div.innerHTML='';
-  sel.innerHTML='';
-  categories.forEach(c=>{
-    div.innerHTML+=`<div>${c}</div>`;
-    sel.innerHTML+=`<option value="${c}">${c}</option>`;
-  });
-}
-
-// PRODOTTI
-let products=JSON.parse(localStorage.getItem('products'))||[];
-function createProduct(){
-  const name=document.getElementById('prodName').value.trim();
-  const cat=document.getElementById('prodCat').value;
-  const price=parseFloat(document.getElementById('prodPrice').value);
-  const desc=document.getElementById('prodDesc').value.trim();
-  const img=document.getElementById('prodImg').value.trim();
-  if(!name||!cat||isNaN(price)) return alert('Compila tutti i campi corretti');
-  products.push({name,cat,price,desc,img});
-  localStorage.setItem('products',JSON.stringify(products));
-  document.getElementById('prodName').value='';
-  document.getElementById('prodPrice').value='';
-  document.getElementById('prodDesc').value='';
-  document.getElementById('prodImg').value='';
-  loadProducts();
-}
-function loadProducts(){
-  const div=document.getElementById('productList');
-  div.innerHTML='';
-  products.forEach((p,idx)=>{
-    div.innerHTML+=`<div class="productItem">
-      <div>
-        <strong>${p.name}</strong><br>
-        Cat: ${p.cat}<br>
-        Prezzo: €${p.price}<br>
-        ${p.img?`<img src="${p.img}" width="60">`:''}<br>
-        ${p.desc}
-      </div>
-      <button onclick="products.splice(${idx},1);localStorage.setItem('products',JSON.stringify(products));loadProducts()">X</button>
-    </div>`;
-  });
-}
-
-// GIFT CARD
+// Gift Cards
 let giftCards=JSON.parse(localStorage.getItem('giftCards'))||[];
-function openGiftModal(){document.getElementById('giftModal').style.display='flex'}
-function closeGiftModal(){document.getElementById('giftModal').style.display='none'}
+function openGiftModal(){document.getElementById('giftModal').style.display='flex';}
+function closeGiftModal(){document.getElementById('giftModal').style.display='none';}
 function createGift(){
-  const name=document.getElementById('giftName').value.trim();
-  const value=parseFloat(document.getElementById('giftValue').value);
-  if(!name||isNaN(value)) return alert('Compila tutti i campi corretti');
+  const name=document.getElementById('giftName').value;
+  const value=parseInt(document.getElementById('giftValue').value);
+  if(!name||!value) return alert('Compila tutti i campi');
   giftCards.push({code:name.toUpperCase(),value,used:false});
   localStorage.setItem('giftCards',JSON.stringify(giftCards));
-  document.getElementById('giftName').value='';
-  document.getElementById('giftValue').value='';
-  closeGiftModal();
-  loadGifts();
+  renderGifts(); closeGiftModal();
 }
-function loadGifts(){
-  const div=document.getElementById('giftList');
-  div.innerHTML='';
-  giftCards.forEach((g,idx)=>{
-    div.innerHTML+=`<div class="giftItem">
-      <div>${g.code} - €${g.value} ${g.used?'(Usata)':''}</div>
-      <button onclick="giftCards.splice(${idx},1);localStorage.setItem('giftCards',JSON.stringify(giftCards));loadGifts()">X</button>
-    </div>`;
-  });
+function renderGifts(){
+  const cont=document.getElementById('giftList'); cont.innerHTML='';
+  giftCards.forEach(g=>cont.innerHTML+=`<div>${g.code} - €${g.value} ${g.used?'(Usata)':''}</div>`);
 }
 
-// ORDINI
-let orders=JSON.parse(localStorage.getItem('orders'))||[];
-function loadOrders(){
-  const div=document.getElementById('ordersList');
-  div.innerHTML='';
-  orders.forEach((o,idx)=>{
-    div.innerHTML+=`<div class="orderItem">
-      <div>ID: ${o.id} - Nick: ${o.nick} - Totale: €${o.total}<br>Prodotti: ${o.cart.map(p=>p.name).join(', ')}</div>
-    </div>`;
-  });
+// Categorie
+let categories=JSON.parse(localStorage.getItem('categories'))||[];
+function openCatModal(){document.getElementById('catModal').style.display='flex';}
+function closeCatModal(){document.getElementById('catModal').style.display='none';}
+function createCategory(){
+  const name=document.getElementById('catName').value.trim();
+  if(!name) return;
+  categories.push({name}); localStorage.setItem('categories',JSON.stringify(categories));
+  renderCategories(); closeCatModal();
 }
-function searchOrder(){
-  const id=document.getElementById('searchID').value.trim();
-  if(!id) return loadOrders();
-  const div=document.getElementById('ordersList');
-  div.innerHTML='';
-  const found=orders.filter(o=>o.id===id);
-  if(found.length===0){div.innerHTML='Nessun ordine trovato'; return;}
-  found.forEach(o=>{
-    div.innerHTML+=`<div class="orderItem">
-      <div>ID: ${o.id} - Nick: ${o.nick} - Totale: €${o.total}<br>Prodotti: ${o.cart.map(p=>p.name).join(', ')}</div>
-    </div>`;
-  });
+function renderCategories(){
+  const cont=document.getElementById('catList'); cont.innerHTML='';
+  categories.forEach(c=>cont.innerHTML+=`<div>${c.name}</div>`);
 }
-</script>
-
-</body>
-</html>
+function deleteCategory(){
+  const name=prompt("Nome categoria da eliminare:");
+  if(!name) return;
+  categories=categories.filter(c=>c.name.toLowerCase()!==name
