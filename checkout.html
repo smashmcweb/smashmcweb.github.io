@@ -28,7 +28,7 @@ h2{color:#38bdf8;margin-top:0} p{margin:8px 0} strong{color:#facc15}
   <hr>
   <h2>Bonifico Bancario</h2>
   <p><strong>Intestatario:</strong> MediaMC Network</p>
-  <p><strong>IBAN:</strong> <span id="iban" style="color:#facc15">IT59E0200832974001869280392</span></p>
+  <p><strong>IBAN:</strong> <span style="color:#facc15">IT59E0200832974001869280392</span></p>
   <p><strong>Causale:</strong> <span id="oid2"></span></p>
   <p style="color:#a5f3fc;margin-top:15px">Effettua il bonifico e invia conferma allo staff.</p>
 </section>
@@ -39,17 +39,17 @@ h2{color:#38bdf8;margin-top:0} p{margin:8px 0} strong{color:#facc15}
 </section>
 
 <script>
-const data = JSON.parse(localStorage.getItem('checkoutData')) || {};
-document.getElementById('oid').textContent = data.id || '';
-document.getElementById('oid2').textContent = data.id || '';
-document.getElementById('nick').textContent = data.nick || '';
-document.getElementById('total').textContent = (data.total !== undefined) ? data.total : '0';
+const data=JSON.parse(localStorage.getItem('checkoutData'))||{};
+document.getElementById('oid').textContent=data.id||'';
+document.getElementById('oid2').textContent=data.id||'';
+document.getElementById('nick').textContent=data.nick||'';
+document.getElementById('total').textContent=(data.total!==undefined)?data.total:'0';
 
-const itemsDiv = document.getElementById('items');
-itemsDiv.innerHTML = '';
-if(data.cart && data.cart.length>0){
+const itemsDiv=document.getElementById('items');
+itemsDiv.innerHTML='';
+if(data.cart&&data.cart.length>0){
   data.cart.forEach(p=>{
-    const div = document.createElement('div');
+    const div=document.createElement('div');
     div.className='productItem';
     div.innerHTML=`<span>${p.name}</span><span>€${p.price}</span>`;
     itemsDiv.appendChild(div);
