@@ -5,79 +5,21 @@
 <title>MediaMC Store</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body {
-  margin: 0;
-  font-family: 'Segoe UI', Arial, sans-serif;
-  background: linear-gradient(135deg,#0ea5e9,#020617);
-  color: #fff;
-  overflow-x: hidden;
-}
-
-/* SIDE GLOW */
-.side-glow {
-  position: fixed;
-  top: -50%;
-  width: 120px;
-  height: 200%;
-  background: linear-gradient(180deg,transparent,rgba(56,189,248,0.4),transparent);
-  filter: blur(45px);
-  animation: floatGlow 10s linear infinite;
-  pointer-events: none;
-  z-index: -1;
-}
-.side-glow.left { left: -50px; }
-.side-glow.right { right: -50px; animation-delay:5s; }
-
-@keyframes floatGlow {
-  0% { transform: translateY(-20%); }
-  100% { transform: translateY(20%); }
-}
-
-/* HEADER */
-header {
-  text-align:center;
-  padding:60px 20px;
-  background: rgba(2,6,23,0.85);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-}
-header h1 { font-size: 3em; color:#38bdf8; margin:0; }
-header p { color:#bae6fd; font-size:1.2em; margin:5px 0 0 0; }
-
-/* CATEGORIE */
-.categories { display:flex; flex-wrap:wrap; justify-content:center; gap:15px; margin:30px 20px; }
-.category { background: rgba(2,6,23,0.8); border:2px solid #38bdf8; border-radius:12px; padding:12px 18px; cursor:pointer; transition:0.3s; }
-.category:hover { transform:scale(1.05); box-shadow:0 0 20px rgba(56,189,248,0.6); }
-
-/* PRODOTTI */
-.products { display:flex; flex-wrap:wrap; justify-content:center; gap:15px; margin:20px; }
-.product { background: rgba(2,6,23,0.7); border:2px solid #38bdf8; border-radius:12px; padding:10px; width:200px; text-align:center; }
-.product img { width:100%; border-radius:8px; margin-bottom:6px; }
-.product h3 { margin:6px 0; color:#38bdf8; font-size:1.1em; }
-.product p { font-size:0.9em; color:#e0f2fe; height:40px; overflow:hidden; }
-.product span { display:block; margin:5px 0; font-weight:bold; }
-.product button { background:#38bdf8; border:none; border-radius:6px; padding:6px 10px; color:#fff; cursor:pointer; }
-.product button:hover { background:#22c55e; }
-
-/* STAFF LOGIN */
-#staffLoginBtn { display:block; margin:40px auto; background:#facc15; color:#000; padding:10px 16px; border:none; border-radius:8px; cursor:pointer; }
-
-/* MODAL NICK */
-#nickModal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); display:flex; justify-content:center; align-items:center; z-index:100; }
-#nickModalContent { background: rgba(2,6,23,0.9); padding:30px; border-radius:12px; text-align:center; width:300px; }
-#nickModalContent input { width:90%; padding:8px; margin:10px 0; border-radius:6px; border:none; }
-#nickModalContent button { padding:8px 12px; border:none; border-radius:6px; background:#38bdf8; color:#fff; font-weight:bold; cursor:pointer; }
-
-/* ALERT AGGIUNTO CARRELLO */
-#addedAlert { position:fixed; top:20px; right:20px; background:#22c55e; color:#fff; padding:10px 16px; border-radius:8px; display:none; z-index:200; }
-
-/* PULSANTE CARRELLO */
-#cartBtn {
-  position:fixed; top:20px; right:20px;
-  background:#38bdf8; color:#fff; border:none; padding:10px 16px;
-  border-radius:8px; cursor:pointer; z-index:100;
-}
-#cartBtn:hover { background:#22c55e; }
-
+body{margin:0;font-family:'Segoe UI',Arial,sans-serif;background:linear-gradient(135deg,#0ea5e9,#020617);color:#fff;overflow-x:hidden;}
+.side-glow{position:fixed;top:-50%;width:120px;height:200%;background:linear-gradient(180deg,transparent,rgba(56,189,248,0.4),transparent);filter:blur(45px);animation:floatGlow 10s linear infinite;pointer-events:none;z-index:-1;}
+.side-glow.left{left:-50px;}
+.side-glow.right{right:-50px;animation-delay:5s;}
+@keyframes floatGlow{0%{transform:translateY(-20%);}100%{transform:translateY(20%);}}
+header{text-align:center;padding:70px 20px;background:rgba(2,6,23,0.85);box-shadow:0 10px 30px rgba(0,0,0,0.6);}
+header h1{font-size:3em;color:#38bdf8;}
+header p{color:#bae6fd;font-size:1.2em;}
+.categoryContainer{display:flex;flex-wrap:wrap;gap:15px;justify-content:center;padding:20px;}
+.categoryBox{background:rgba(2,6,23,0.8);border:2px solid #38bdf8;border-radius:12px;padding:15px;width:180px;text-align:center;cursor:pointer;transition:0.3s;}
+.categoryBox:hover{transform:scale(1.05);box-shadow:0 0 25px rgba(56,189,248,0.6);}
+.productsContainer{display:flex;flex-wrap:wrap;gap:15px;justify-content:center;margin-top:15px;}
+.productBox{background:rgba(2,6,23,0.8);border:2px solid #38bdf8;border-radius:10px;padding:10px;width:160px;text-align:center;transition:0.3s;}
+.productBox:hover{transform:scale(1.03);box-shadow:0 0 20px rgba(56,189,248,0.6);}
+button{background:#38bdf8;border:none;border-radius:6px;padding:5px 10px;color:#fff;font-weight:bold;cursor:pointer;margin-top:5px;}
 </style>
 </head>
 <body>
@@ -85,105 +27,74 @@ header p { color:#bae6fd; font-size:1.2em; margin:5px 0 0 0; }
 <div class="side-glow right"></div>
 
 <header>
-  <h1>🛒 MediaMC Store</h1>
-  <p>Seleziona la categoria e aggiungi i prodotti al carrello</p>
+<h1>🛒 MediaMC Store</h1>
+<p>Inserisci il tuo nick per iniziare</p>
 </header>
 
-<button id="cartBtn">🛒 Vai al Carrello</button>
+<div style="text-align:center;margin:20px;">
+<input type="text" id="nickInput" placeholder="Nick Minecraft" style="padding:8px;border-radius:6px;width:200px;">
+<button onclick="setNick()">Inizia</button>
+</div>
 
-<div class="categories" id="categories"></div>
-<div class="products" id="products"></div>
+<div class="categoryContainer" id="categoryContainer"></div>
+<div class="productsContainer" id="productsContainer"></div>
 
-<div id="addedAlert">Aggiunto al carrello con successo!</div>
-
-<button id="staffLoginBtn">⚙️ Pannello Staff</button>
-
-<!-- MODAL NICK -->
-<div id="nickModal">
-  <div id="nickModalContent">
-    <h3>Inserisci il tuo nick Minecraft</h3>
-    <input type="text" id="nickInput" placeholder="Nick">
-    <button onclick="setNick()">Entra nello Store</button>
-  </div>
+<div style="text-align:center;margin:20px;">
+<button onclick="window.location.href='cart.html'">🛒 Vai al Carrello</button>
 </div>
 
 <script>
-// --- MODAL NICK ---
+// Nick
 function setNick(){
   const nick=document.getElementById('nickInput').value.trim();
-  if(!nick){ alert('Inserisci il nick'); return; }
+  if(!nick){ alert('Inserisci un nick'); return; }
   localStorage.setItem('nick',nick);
-  document.getElementById('nickModal').style.display='none';
+  alert(`Nick impostato: ${nick}`);
 }
 
-// --- CATEGORIE/PRODOTTI DEFAULT ---
-let categories = JSON.parse(localStorage.getItem('categories')) || [
-  {name:'Duels', id:'duels'},
-  {name:'BedWars', id:'bedwars'}
+// Esempio categorie e prodotti
+let categories = [
+  {name:'Duels'},
+  {name:'BedWars'}
 ];
-let products = JSON.parse(localStorage.getItem('products')) || [
-  {title:'Kit Duellante', desc:'Ottimo per 1v1', price:5, category:'duels', img:''},
-  {title:'Kit Assalto', desc:'Per attaccare', price:10, category:'bedwars', img:''}
+let products=[
+  {title:'Kit Duels Base',category:'Duels',price:5,desc:'Kit base per Duels',img:''},
+  {title:'Kit BedWars Premium',category:'BedWars',price:10,desc:'Kit avanzato BedWars',img:''}
 ];
 
-// --- RENDER CATEGORIE ---
+// Render categorie
 function renderCategories(){
-  const catDiv=document.getElementById('categories');
-  catDiv.innerHTML='';
-  categories.forEach(c=>{
-    const el=document.createElement('div');
-    el.className='category';
-    el.textContent=c.name;
-    el.onclick=()=>renderProducts(c.id);
-    catDiv.appendChild(el);
+  const cont=document.getElementById('categoryContainer');
+  cont.innerHTML='';
+  categories.forEach(cat=>{
+    const div=document.createElement('div');
+    div.className='categoryBox';
+    div.textContent=cat.name;
+    div.onclick=()=>renderProducts(cat.name);
+    cont.appendChild(div);
   });
 }
 renderCategories();
 
-// --- RENDER PRODOTTI ---
-function renderProducts(catId){
-  const prodDiv=document.getElementById('products');
-  prodDiv.innerHTML='';
-  const filtered=products.filter(p=>p.category===catId);
-  filtered.forEach(p=>{
+// Render prodotti
+function renderProducts(catName){
+  const cont=document.getElementById('productsContainer');
+  cont.innerHTML='';
+  products.filter(p=>p.category===catName).forEach(p=>{
     const div=document.createElement('div');
-    div.className='product';
-    div.innerHTML=`
-      ${p.img?'<img src="'+p.img+'">':''}
-      <h3>${p.title}</h3>
-      <p>${p.desc}</p>
-      <span>€${p.price}</span>
-      <button onclick="addToCart('${p.title}',${p.price})">Aggiungi al carrello</button>
-    `;
-    prodDiv.appendChild(div);
+    div.className='productBox';
+    div.innerHTML=`<strong>${p.title}</strong><br>${p.desc}<br>€${p.price}<br><button onclick="addToCart('${p.title}',${p.price})">Aggiungi al Carrello</button>`;
+    cont.appendChild(div);
   });
 }
 
-// --- AGGIUNGI AL CARRELLO ---
+// Aggiungi al carrello
 function addToCart(title,price){
   let cart=JSON.parse(localStorage.getItem('cart'))||[];
   cart.push({name:title,price:price});
   localStorage.setItem('cart',JSON.stringify(cart));
-  const alertBox=document.getElementById('addedAlert');
-  alertBox.style.display='block';
-  setTimeout(()=>alertBox.style.display='none',1000);
+  alert('Aggiunto al carrello con successo!');
 }
-
-// --- PANNELLO STAFF ---
-document.getElementById('staffLoginBtn').onclick=function(){
-  const pw=prompt('Inserisci password staff:');
-  if(pw==='staff123'){
-    window.location.href='staff.html';
-  }else{
-    alert('Password errata!');
-  }
-}
-
-// --- PULSANTE CARRELLO ---
-document.getElementById('cartBtn').onclick=function(){
-  window.location.href='cart.html';
-}
-
 </script>
 </body>
 </html>
