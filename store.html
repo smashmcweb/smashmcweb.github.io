@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 body{
-  margin:0;font-family:'Segoe UI',Arial,sans-serif;
+  margin:0;font-family:'Segoe UI',Arial;
   background:linear-gradient(135deg,#0ea5e9,#020617);
   color:#fff;overflow-x:hidden;
 }
@@ -27,16 +27,18 @@ header h1{color:#38bdf8;margin:0}
 
 .container{max-width:1100px;margin:auto;padding:30px;display:none}
 .categories{display:flex;gap:15px;flex-wrap:wrap}
-.cat{cursor:pointer;padding:10px;border:2px solid #38bdf8;border-radius:10px;transition:.3s}
+.cat{cursor:pointer;padding:10px;border:2px solid #1e3a8a;background:rgba(2,6,23,.9);border-radius:10px;transition:.3s}
 .cat:hover{box-shadow:0 0 20px rgba(56,189,248,.6)}
 .products{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px;margin-top:20px;}
-.product{border:2px solid #38bdf8;border-radius:10px;padding:10px;cursor:pointer;transition:.2s;position:relative;}
+.product{border:2px solid #1e3a8a;background:rgba(2,6,23,.95);border-radius:10px;padding:10px;cursor:pointer;transition:.2s;position:relative;}
 .product:hover{box-shadow:0 0 20px rgba(56,189,248,.6);}
 .productDesc{display:none;margin-top:5px;color:#bae6fd;font-size:.9em;}
 button{
   background:#38bdf8;border:none;color:#fff;padding:6px 10px;border-radius:6px;cursor:pointer;margin-top:5px
 }
 #cartBtn{position:fixed;top:20px;right:20px;z-index:10}
+#staffLoginBtn{display:block;margin:40px auto 20px auto;background:#facc15;color:#000;padding:6px 10px;border:none;border-radius:6px;cursor:pointer;}
+
 </style>
 </head>
 <body>
@@ -64,6 +66,9 @@ button{
 
   <h2>Prodotti</h2>
   <div class="products" id="products"></div>
+
+  <!-- Tasto piccolo per il pannello staff in fondo -->
+  <button id="staffLoginBtn" onclick="location.href='staff.html'">⚙️ Pannello Staff</button>
 </div>
 
 <script>
