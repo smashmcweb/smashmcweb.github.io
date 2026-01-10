@@ -17,12 +17,19 @@ body{
 }
 .left{left:-50px}.right{right:-50px;animation-delay:5s}
 @keyframes float{0%{transform:translateY(-20%)}100%{transform:translateY(20%)}}
-header{text-align:center;padding:60px 20px;background:rgba(2,6,23,.85)}
-h1{color:#38bdf8;margin:0}
-#topBar{display:flex;justify-content:space-between;align-items:center;padding:10px 20px;background:rgba(2,6,23,.9);}
+
+header{
+  text-align:center;padding:20px;background:rgba(2,6,23,.85);
+}
+#headerTop{
+  display:flex;justify-content:space-between;align-items:center;
+  max-width:1100px;margin:auto;
+}
 #nickDisplay{font-weight:bold;}
 #logoutBtn{background:#ef4444;color:#fff;border:none;padding:4px 8px;border-radius:6px;cursor:pointer;}
-.container{max-width:1100px;margin:auto;padding:30px}
+#cartBtn{position:fixed;top:20px;right:20px;z-index:10;}
+
+.container{max-width:1100px;margin:auto;padding:20px}
 .box{
   background:rgba(2,6,23,.8);
   border:2px solid #38bdf8;
@@ -33,13 +40,28 @@ h1{color:#38bdf8;margin:0}
 }
 .box:hover{box-shadow:0 0 20px rgba(56,189,248,.6)}
 .categories{display:flex;gap:15px;flex-wrap:wrap}
-.cat{cursor:pointer;padding:8px;border:1px solid #38bdf8;border-radius:10px}
+.cat{cursor:pointer}
 .products{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
-.product{border:1px solid #38bdf8;border-radius:10px;padding:10px;cursor:pointer;position:relative;}
-.productDesc{display:none;margin-top:6px;color:#a5f3fc;}
-button{background:#38bdf8;border:none;color:#fff;padding:6px 10px;border-radius:6px;cursor:pointer;margin-top:6px;}
-#cartBtn{position:fixed;top:20px;right:20px;z-index:10}
-#staffLogin{margin-top:40px;text-align:center;font-size:.9em}
+.product{
+  border:1px solid #38bdf8;
+  border-radius:10px;
+  padding:10px;
+}
+.product button{margin-top:5px;}
+
+.modalBg{
+  display:flex;justify-content:center;align-items:center;
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  background:rgba(0,0,0,0.7);z-index:999;
+}
+.modalContent{
+  background:#020617;padding:20px;border-radius:12px;
+  border:2px solid #38bdf8;width:300px;text-align:center;
+}
+.modalContent input{
+  width:90%;padding:6px;border-radius:6px;border:none;margin-bottom:10px;
+}
+.modalContent button{padding:6px 10px;border-radius:6px;border:none;background:#38bdf8;color:#fff;cursor:pointer;}
 </style>
 </head>
 <body>
@@ -47,17 +69,15 @@ button{background:#38bdf8;border:none;color:#fff;padding:6px 10px;border-radius:
 <div class="side-glow left"></div>
 <div class="side-glow right"></div>
 
-<header id="loginHeader">
-<h1>🛒 MediaMC Store</h1>
-<p>Inserisci il tuo nick Minecraft per continuare</p>
-<input id="nickInput" placeholder="Nick Minecraft">
-<button onclick="enterStore()">Entra</button>
-</header>
-
-<div id="topBar" style="display:none;">
-<div id="nickDisplay"></div>
-<button id="logoutBtn" onclick="logout()">Logout</button>
+<header>
+<div id="headerTop">
+  <h1>🛒 MediaMC Store</h1>
+  <div id="headerRight" style="display:none">
+    <span id="nickDisplay"></span>
+    <button id="logoutBtn" onclick="logout()">Logout</button>
+  </div>
 </div>
+</header>
 
 <button id="cartBtn" onclick="location.href='cart.html'">🛒 Carrello</button>
 
@@ -66,46 +86,53 @@ button{background:#38bdf8;border:none;color:#fff;padding:6px 10px;border-radius:
     <h2>Categorie</h2>
     <div class="categories" id="cats"></div>
   </div>
-
   <div class="box">
     <h2>Prodotti</h2>
     <div class="products" id="products"></div>
   </div>
+</div>
 
-  <div id="staffLogin">
-    <button onclick="location.href='staff.html'">⚙️ Pannello Staff</button>
+<!-- MODAL NICK -->
+<div class="modalBg" id="nickModal">
+  <div class="modalContent">
+    <h2>Inserisci il tuo Nick</h2>
+    <input id="nickInput" placeholder="Nick Minecraft">
+    <button onclick="enterStore()">Entra</button>
   </div>
 </div>
 
 <script>
-let nickGlobal = '';
+let nick = sessionStorage.getItem('nick');
 
 function enterStore(){
-  const n=document.getElementById('nickInput').value.trim();
-  if(!n){alert("Inserisci il nick Minecraft");return;}
-  sessionStorage.setItem('nick',n);
-  nickGlobal = n;
-  document.getElementById('loginHeader').style.display='none';
-  document.getElementById('topBar').style.display='flex';
-  document.getElementById('nickDisplay').textContent = `Player: ${n}`;
+  const n = document.getElementById('nickInput').value.trim();
+  if(!n){ alert("Inserisci il nick Minecraft"); return; }
+  sessionStorage.setItem('nick', n);
+  nick = n;
+  document.getElementById('nickModal').style.display='none';
+  showStore();
+}
+
+function showStore(){
   document.getElementById('store').style.display='block';
-  loadStore();
+  document.getElementById('headerRight').style.display='flex';
+  document.getElementById('nickDisplay').textContent = nick;
+  load();
 }
 
 function logout(){
   sessionStorage.removeItem('nick');
-  nickGlobal='';
   location.reload();
 }
 
-function loadStore(){
+function load(){
   const cats=JSON.parse(localStorage.getItem('categories'))||['Duels','Bedwars'];
   const prods=JSON.parse(localStorage.getItem('products'))||[];
   const cdiv=document.getElementById('cats');
   cdiv.innerHTML='';
   cats.forEach(c=>{
     const d=document.createElement('div');
-    d.className='cat';
+    d.className='box cat';
     d.textContent=c;
     d.onclick=()=>showProducts(c);
     cdiv.appendChild(d);
@@ -117,30 +144,29 @@ function showProducts(cat){
   const pdiv=document.getElementById('products');
   const prods=JSON.parse(localStorage.getItem('products'))||[];
   pdiv.innerHTML='';
-  prods.filter(p=>p.category===cat).forEach((p,idx)=>{
-    const div=document.createElement('div');
-    div.className='product';
-    div.innerHTML=`<b>${p.name}</b> - €${p.price}<br>
-    <button onclick='addToCart(${idx}, "${cat}")'>Aggiungi al carrello</button>
-    <div class="productDesc">${p.desc||''}</div>`;
-    div.onclick = () => {
-      const desc = div.querySelector('.productDesc');
+  prods.filter(p=>p.category===cat).forEach(p=>{
+    const prodDiv = document.createElement('div');
+    prodDiv.className='product';
+    prodDiv.innerHTML=`<b>${p.name} - €${p.price}</b><br>
+      <button onclick='addToCart(${JSON.stringify(p)})'>Aggiungi</button>
+      <div style="display:none;" class="desc">${p.desc||''}</div>`;
+    prodDiv.onclick=()=> {
+      const desc = prodDiv.querySelector('.desc');
       desc.style.display = desc.style.display==='block'?'none':'block';
     };
-    pdiv.appendChild(div);
+    pdiv.appendChild(prodDiv);
   });
 }
 
-function addToCart(idx,cat){
-  const prods=JSON.parse(localStorage.getItem('products'))||[];
-  const p = prods.find(pr=>pr.category===cat && prods.indexOf(pr)===idx);
-  const nick = sessionStorage.getItem('nick');
-  if(!nick) return alert('Inserisci il nick prima!');
-  let cart=JSON.parse(localStorage.getItem('cart_'+nick))||[];
+function addToCart(p){
+  let cart = JSON.parse(localStorage.getItem('cart_'+nick))||[];
   cart.push(p);
   localStorage.setItem('cart_'+nick,JSON.stringify(cart));
   alert("Aggiunto al carrello");
 }
+
+// Se già loggato, salta il modal
+if(nick){ document.getElementById('nickModal').style.display='none'; showStore(); }
 </script>
 
 </body>
