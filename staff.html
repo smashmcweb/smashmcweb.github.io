@@ -98,4 +98,41 @@ function createGift(){
   localStorage.setItem('giftCards',JSON.stringify(giftCards));
   closeGiftModal(); renderGiftCards();
 }
-function removeGift
+function removeGift(idx){ let giftCards=JSON.parse(localStorage.getItem('giftCards'))||[]; giftCards.splice(idx,1); localStorage.setItem('giftCards',JSON.stringify(giftCards)); renderGiftCards(); }
+
+// PRODOTTI
+function openProductModal(){ document.getElementById('productModal').style.display='flex'; }
+function closeProductModal(){ document.getElementById('productModal').style.display='none'; }
+function renderProducts(){
+  const list=document.getElementById('catProdList');
+  let prods=JSON.parse(localStorage.getItem('products'))||[];
+  list.innerHTML='';
+  prods.forEach((p,idx)=>{ list.innerHTML+=`<div>${p.title} [${p.category}] €${p.price} <button onclick="removeProd(${idx})">X</button></div>`});
+}
+function createProduct(){
+  let t=document.getElementById('prodTitle').value.trim();
+  let c=document.getElementById('prodCat').value.trim();
+  let p=parseInt(document.getElementById('prodPrice').value);
+  let d=document.getElementById('prodDesc').value.trim();
+  let i=document.getElementById('prodImage').value.trim();
+  if(!t||!c||isNaN(p)||!d) return alert('Dati mancanti');
+  let prods=JSON.parse(localStorage.getItem('products'))||[];
+  prods.push({title:t,category:c,price:p,desc:d,image:i});
+  localStorage.setItem('products',JSON.stringify(prods));
+  closeProductModal(); renderProducts();
+}
+function removeProd(idx){ let prods=JSON.parse(localStorage.getItem('products'))||[]; prods.splice(idx,1); localStorage.setItem('products',JSON.stringify(prods)); renderProducts(); }
+
+// ORDINI
+function renderOrders(){
+  const list=document.getElementById('ordersList');
+  let orders=JSON.parse(localStorage.getItem('orders'))||[];
+  list.innerHTML='';
+  orders.forEach(o=>{
+    list.innerHTML+=`<div>ID:${o.id} - Nick:${o.nick} - Totale:€${o.total} - Prodotti:${o.cart.map(p=>p.title).join(', ')}</div>`;
+  });
+}
+</script>
+
+</body>
+</html>
