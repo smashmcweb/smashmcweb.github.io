@@ -5,125 +5,48 @@
 <title>MediaMC Staff Panel</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body{margin:0;font-family:'Segoe UI',Arial;background:linear-gradient(135deg,#0ea5e9,#020617);color:#fff;overflow-x:hidden}
-header{text-align:center;padding:40px 20px;background:rgba(2,6,23,0.85)}
-section{max-width:700px;margin:30px auto;background:rgba(2,6,23,0.8);padding:20px;border-radius:12px;border:2px solid #38bdf8}
-input,button{padding:6px;border-radius:6px;border:none;margin:4px 0;}
-button{cursor:pointer;font-weight:bold;}
-.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:none;justify-content:center;align-items:center;z-index:1000;}
-.modal-content{background:rgba(2,6,23,0.9);padding:20px;border-radius:12px;border:2px solid #38bdf8;width:300px;text-align:center;}
+body{margin:0;font-family:'Segoe UI',Arial,sans-serif;background:linear-gradient(135deg,#0ea5e9,#1e3a8a);color:#fff;}
+header{text-align:center;padding:30px;background:rgba(2,6,23,0.85);}
+section{max-width:900px;margin:20px auto;padding:20px;background:rgba(2,6,23,0.85);border-radius:12px;border:2px solid #38bdf8;}
+button{padding:6px 12px;border:none;border-radius:6px;margin:5px 0;cursor:pointer;}
+input, select{padding:6px;border-radius:6px;border:none;margin-bottom:10px;width:90%;}
+#loginSection{max-width:400px;margin:40px auto;}
 </style>
 </head>
 <body>
-
 <header>
-<h1>⚙️ MediaMC Staff Panel</h1>
+<h1>⚙️ Staff Panel MediaMC</h1>
 </header>
 
+<!-- Login -->
 <section id="loginSection">
-<h2>Inserisci Password Staff</h2>
+<h2>Inserisci password staff</h2>
 <input type="password" id="staffPass" placeholder="Password">
-<button onclick="staffLogin()">Accedi</button>
+<button onclick="login()">Accedi</button>
 <p id="loginMsg"></p>
 </section>
 
-<section id="staffPanel" style="display:none;">
-<h2>Gestione GiftCard</h2>
-<button onclick="openGiftModal()">Crea Gift Card</button>
-<div id="giftList"></div>
-
-<h2>Gestione Categorie/Prodotti</h2>
-<button onclick="openProductModal()">Crea Prodotto</button>
-<div id="catProdList"></div>
-
+<!-- Gestione Staff -->
+<section id="staffContent" style="display:none;">
+<h2>Gestione Gift Card</h2>
+<!-- Qui aggiungeremo modal per creare gift card e lista gift -->
+<h2>Gestione Categorie e Prodotti</h2>
+<!-- Qui modal per aggiungere categorie e prodotti -->
 <h2>Ordini</h2>
 <div id="ordersList"></div>
 </section>
 
-<!-- MODAL -->
-<div class="modal" id="giftModal">
-  <div class="modal-content">
-    <h3>Crea Gift Card</h3>
-    <input id="giftName" placeholder="Nome Gift Card"><br>
-    <input id="giftValue" type="number" placeholder="Valore"><br>
-    <button onclick="createGift()">Crea</button>
-    <button onclick="closeGiftModal()">Chiudi</button>
-  </div>
-</div>
-
-<div class="modal" id="productModal">
-  <div class="modal-content">
-    <h3>Crea Prodotto</h3>
-    <input id="prodTitle" placeholder="Titolo"><br>
-    <input id="prodCat" placeholder="Categoria"><br>
-    <input id="prodPrice" type="number" placeholder="Prezzo"><br>
-    <input id="prodDesc" placeholder="Descrizione"><br>
-    <input id="prodImage" placeholder="URL Immagine (no se niente)"><br>
-    <button onclick="createProduct()">Crea</button>
-    <button onclick="closeProductModal()">Chiudi</button>
-  </div>
-</div>
-
 <script>
-const staffPassword='staff123';
-
-function staffLogin(){
-  const msg=document.getElementById('loginMsg');
-  const pass=document.getElementById('staffPass').value;
-  if(localStorage.getItem('staffLogged')==='true' || pass===staffPassword){
-    localStorage.setItem('staffLogged','true');
+function login(){
+  const p=document.getElementById('staffPass').value;
+  if(p==='staff123'){
     document.getElementById('loginSection').style.display='none';
-    document.getElementById('staffPanel').style.display='block';
-    renderGiftCards();
-    renderProducts();
+    document.getElementById('staffContent').style.display='block';
     renderOrders();
-  } else msg.textContent='Password errata';
+  } else { document.getElementById('loginMsg').textContent='Password errata'; }
 }
 
-// GIFT CARD
-function openGiftModal(){ document.getElementById('giftModal').style.display='flex'; }
-function closeGiftModal(){ document.getElementById('giftModal').style.display='none'; }
-function renderGiftCards(){
-  const list=document.getElementById('giftList');
-  let giftCards=JSON.parse(localStorage.getItem('giftCards'))||[];
-  list.innerHTML='';
-  giftCards.forEach((g,idx)=>{ list.innerHTML+=`<div>${g.code} - €${g.value} ${g.used?'(Usata)':''} <button onclick="removeGift(${idx})">X</button></div>`});
-}
-function createGift(){
-  let code=document.getElementById('giftName').value.trim().toUpperCase();
-  let val=parseInt(document.getElementById('giftValue').value);
-  if(!code || isNaN(val)) return alert('Dati invalidi');
-  let giftCards=JSON.parse(localStorage.getItem('giftCards'))||[];
-  giftCards.push({code, value:val, used:false});
-  localStorage.setItem('giftCards',JSON.stringify(giftCards));
-  closeGiftModal(); renderGiftCards();
-}
-function removeGift(idx){ let giftCards=JSON.parse(localStorage.getItem('giftCards'))||[]; giftCards.splice(idx,1); localStorage.setItem('giftCards',JSON.stringify(giftCards)); renderGiftCards(); }
-
-// PRODOTTI
-function openProductModal(){ document.getElementById('productModal').style.display='flex'; }
-function closeProductModal(){ document.getElementById('productModal').style.display='none'; }
-function renderProducts(){
-  const list=document.getElementById('catProdList');
-  let prods=JSON.parse(localStorage.getItem('products'))||[];
-  list.innerHTML='';
-  prods.forEach((p,idx)=>{ list.innerHTML+=`<div>${p.title} [${p.category}] €${p.price} <button onclick="removeProd(${idx})">X</button></div>`});
-}
-function createProduct(){
-  let t=document.getElementById('prodTitle').value.trim();
-  let c=document.getElementById('prodCat').value.trim();
-  let p=parseInt(document.getElementById('prodPrice').value);
-  let d=document.getElementById('prodDesc').value.trim();
-  let i=document.getElementById('prodImage').value.trim();
-  if(!t||!c||isNaN(p)||!d) return alert('Dati mancanti');
-  let prods=JSON.parse(localStorage.getItem('products'))||[];
-  prods.push({title:t,category:c,price:p,desc:d,image:i});
-  localStorage.setItem('products',JSON.stringify(prods));
-  closeProductModal(); renderProducts();
-}
-function removeProd(idx){ let prods=JSON.parse(localStorage.getItem('products'))||[]; prods.splice(idx,1); localStorage.setItem('products',JSON.stringify(prods)); renderProducts(); }
-
-// ORDINI
+// Ordini
 function renderOrders(){
   const list=document.getElementById('ordersList');
   let orders=JSON.parse(localStorage.getItem('orders'))||[];
@@ -133,6 +56,5 @@ function renderOrders(){
   });
 }
 </script>
-
 </body>
 </html>
