@@ -4,65 +4,275 @@
 <meta charset="UTF-8">
 <title>MediaMC Store</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <style>
-/* STILE IDENTICO A INDEX */
 body {
   margin: 0;
   font-family: 'Segoe UI', Arial, sans-serif;
-  background: linear-gradient(135deg, #0ea5e9, #020617);
+  background: linear-gradient(135deg, #0ea5e9, #1e3a8a);
   color: #fff;
   overflow-x: hidden;
 }
-.side-glow { position: fixed; top:-50%; width:120px; height:200%;
-background: linear-gradient(180deg,transparent,rgba(56,189,248,.4),transparent);
-filter: blur(45px); animation: floatGlow 10s linear infinite; z-index:-1; }
-.left{left:-50px;} .right{right:-50px; animation-delay:5s;}
-@keyframes floatGlow{0%{transform:translateY(-20%);}100%{transform:translateY(20%);} }
 
-header{padding:70px 20px;text-align:center;background:rgba(2,6,23,.85);}
-h1{color:#38bdf8;}
-.section{
-  background:rgba(2,6,23,.8);
-  border:2px solid #38bdf8;
-  border-radius:14px;
-  padding:20px;
-  margin:20px auto;
-  max-width:650px;
+/* GLOW LATERALI */
+.side-glow {
+  position: fixed;
+  top: -50%;
+  width: 120px;
+  height: 200%;
+  background: linear-gradient(180deg, transparent, rgba(56,189,248,0.4), transparent);
+  filter: blur(45px);
+  animation: floatGlow 10s linear infinite;
+  pointer-events: none;
+  z-index: -1;
 }
-a{color:#38bdf8;font-weight:bold;text-decoration:none;}
-footer{text-align:center;padding:30px;color:#94a3b8;}
+.side-glow.left { left: -50px; }
+.side-glow.right { right: -50px; animation-delay: 5s; }
+
+@keyframes floatGlow {
+  0% { transform: translateY(-20%); }
+  100% { transform: translateY(20%); }
+}
+
+/* HEADER */
+header {
+  text-align: center;
+  padding: 70px 20px;
+  background: rgba(2,6,23,0.85);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+}
+header h1 { font-size: 3em; color: #38bdf8; }
+header p { color: #bae6fd; font-size: 1.2em; }
+
+/* LOGIN */
+#loginSection {
+  text-align: center;
+  margin: 30px auto;
+}
+#loginSection input {
+  padding: 8px 12px;
+  font-size: 1em;
+  border-radius: 6px;
+  border: 1px solid #38bdf8;
+  margin-right: 10px;
+}
+#loginSection button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  background: #38bdf8;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* SEZIONE STORE */
+.store-section {
+  max-width: 700px;
+  margin: 20px auto;
+  background: rgba(2,6,23,0.85);
+  border: 2px solid #38bdf8;
+  border-radius: 14px;
+  padding: 20px;
+}
+.store-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #38bdf8;
+  padding: 10px 0;
+}
+.store-item:last-child { border-bottom: none; }
+.store-item button {
+  background: #38bdf8;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 6px 12px;
+}
+
+/* CARRELLO */
+#cartSection {
+  max-width: 700px;
+  margin: 30px auto;
+  background: rgba(2,6,23,0.85);
+  border: 2px solid #38bdf8;
+  border-radius: 14px;
+  padding: 20px;
+}
+#cartItems div {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+}
+#checkoutBtn {
+  margin-top: 10px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  background: #22c55e;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* ORDINE GENERATO */
+#orderResult {
+  text-align: center;
+  margin-top: 15px;
+  background: rgba(56,189,248,0.2);
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+/* STAFF SECTION */
+#staffSection {
+  max-width: 700px;
+  margin: 40px auto;
+  background: rgba(2,6,23,0.9);
+  border: 2px solid #facc15;
+  border-radius: 14px;
+  padding: 20px;
+}
+#staffSection h2 { color: #facc15; margin-top:0; }
+#staffOrders div {
+  border-bottom: 1px solid #facc15;
+  padding: 6px 0;
+}
+#staffSection input {
+  padding: 6px;
+  border-radius: 6px;
+  border: 1px solid #facc15;
+  margin-right: 6px;
+}
+#staffSection button {
+  padding: 6px 10px;
+  background: #facc15;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
 </style>
 </head>
-
 <body>
+
 <div class="side-glow left"></div>
 <div class="side-glow right"></div>
 
 <header>
 <h1>🛒 MediaMC Store</h1>
-<p>Supporta il server e ottieni vantaggi esclusivi</p>
+<p>Acquista oggetti, cosmetici e abbonamenti Premium</p>
 </header>
 
-<div class="section">
-<h2>Oggetti & Kit</h2>
-Accesso a kit speciali e potenziamenti unici.
+<!-- LOGIN -->
+<div id="loginSection">
+<input type="text" id="nickInput" placeholder="Inserisci il tuo Nick Minecraft">
+<button onclick="login()">Entra nello Store</button>
 </div>
 
-<div class="section">
-<h2>Cosmetici</h2>
-Skin, particelle ed effetti esclusivi.
+<!-- STORE ITEMS -->
+<div id="storeSection" class="store-section" style="display:none;">
+<h2>Prodotti Disponibili</h2>
+<div class="store-item">
+  <span>Kit Starter</span>
+  <button onclick="addToCart('Kit Starter', 5)">Aggiungi (€5)</button>
+</div>
+<div class="store-item">
+  <span>Skin Esclusiva</span>
+  <button onclick="addToCart('Skin Esclusiva', 3)">Aggiungi (€3)</button>
+</div>
+<div class="store-item">
+  <span>Abbonamento Premium</span>
+  <button onclick="addToCart('Premium', 10)">Aggiungi (€10)</button>
+</div>
 </div>
 
-<div class="section">
-<h2>Premium</h2>
-Priorità, vantaggi e accessi speciali.
+<!-- CARRELLO -->
+<div id="cartSection" style="display:none;">
+<h2>Carrello</h2>
+<div id="cartItems"></div>
+<button id="checkoutBtn" onclick="checkout()">Procedi Ordine</button>
+<div id="orderResult"></div>
 </div>
 
-<div class="section">
-<a href="index.html">← Torna alla Home</a>
+<!-- STAFF SECTION -->
+<div id="staffSection" style="display:none;">
+<h2>Sezione Staff (Password richiesta)</h2>
+<input type="password" id="staffPass" placeholder="Password Staff">
+<button onclick="loginStaff()">Accedi</button>
+<div id="staffOrders"></div>
 </div>
 
-<footer>© 2026 MediaMC Network</footer>
+<script>
+let nick = '';
+let cart = [];
+let orders = JSON.parse(localStorage.getItem('orders')) || [];
+
+// LOGIN UTENTE
+function login() {
+  const input = document.getElementById('nickInput');
+  if(input.value.trim()==='') { alert('Inserisci il tuo nick!'); return; }
+  nick = input.value.trim();
+  document.getElementById('loginSection').style.display='none';
+  document.getElementById('storeSection').style.display='block';
+  document.getElementById('cartSection').style.display='block';
+  alert(`Benvenuto ${nick}! Puoi iniziare a fare acquisti.`);
+}
+
+// AGGIUNGI AL CARRELLO
+function addToCart(name, price) {
+  cart.push({name, price});
+  renderCart();
+}
+
+// MOSTRA CARRELLO
+function renderCart() {
+  const cartDiv = document.getElementById('cartItems');
+  cartDiv.innerHTML='';
+  cart.forEach((item,i)=>{
+    const div=document.createElement('div');
+    div.innerHTML=`${item.name} - €${item.price} <button onclick="removeFromCart(${i})">Rimuovi</button>`;
+    cartDiv.appendChild(div);
+  });
+}
+
+// RIMUOVI DAL CARRELLO
+function removeFromCart(i){
+  cart.splice(i,1);
+  renderCart();
+}
+
+// PROCEDI ORDINE
+function checkout(){
+  if(cart.length===0){ alert('Il carrello è vuoto!'); return; }
+  const orderId = 'MM-'+Math.floor(Math.random()*100000);
+  const total = cart.reduce((sum,i)=>sum+i.price,0);
+  const order = {id:orderId, nick, items:[...cart], total};
+  orders.push(order);
+  localStorage.setItem('orders', JSON.stringify(orders));
+  cart=[];
+  renderCart();
+  document.getElementById('orderResult').innerHTML=`
+  Ordine creato!<br>ID: <b>${orderId}</b><br>
+  Totale: €${total}<br>
+  Apri un ticket nel nostro Discord e uno staff ti aiuterà a completare il pagamento.
+  `;
+}
+
+// LOGIN STAFF
+function loginStaff(){
+  const pass = document.getElementById('staffPass').value;
+  if(pass!=='staff123'){ alert('Password errata'); return; }
+  const staffDiv = document.getElementById('staffOrders');
+  staffDiv.innerHTML='';
+  orders.forEach(o=>{
+    const div=document.createElement('div');
+    div.innerHTML=`Nick: ${o.nick} | ID: ${o.id} | Prodotti: ${o.items.map(i=>i.name).join(', ')} | Totale: €${o.total}`;
+    staffDiv.appendChild(div);
+  });
+  alert('Accesso Staff consentito!');
+}
+</script>
 </body>
 </html>
