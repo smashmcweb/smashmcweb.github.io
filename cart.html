@@ -29,6 +29,7 @@ input{padding:6px;border-radius:6px;border:none;width:90%;margin-bottom:10px}
   <button onclick="applyGift()">Applica</button>
   <p id="giftMsg"></p>
   <button class="green" onclick="checkout()">Procedi Ordine</button>
+  <button onclick="clearCart()" style="background:#ef4444;color:#fff">🗑️ Svuota Carrello</button>
   <hr>
   <button style="background:#facc15;color:#000" onclick="toggleStaff()">⚙️ Apri Pannello Staff</button>
   <div id="staffPanel">
@@ -44,8 +45,6 @@ input{padding:6px;border-radius:6px;border:none;width:90%;margin-bottom:10px}
 <script>
 let cart=JSON.parse(localStorage.getItem('cart'))||[];
 let giftValue=0;
-let giftCards={}; // Puoi aggiungere gift card qui
-let giftCodeUsed='';
 
 function render(){
   const cartList=document.getElementById('cartList');
@@ -62,11 +61,13 @@ render();
 
 function applyGift(){
   const code=document.getElementById('giftInput').value.trim().toUpperCase();
+  // esempio gift card
+  const giftCards={"GIFT30":{value:30,used:false}};
   const giftMsg=document.getElementById('giftMsg');
   if(!giftCards[code]) return giftMsg.textContent='Gift card non valida';
   if(giftCards[code].used) return giftMsg.textContent='Gift card già usata';
   giftValue=giftCards[code].value;
-  giftCodeUsed=code;
+  giftCards[code].used=true;
   giftMsg.textContent=`Gift card applicata: -€${giftValue}`;
   render();
 }
@@ -75,22 +76,29 @@ function checkout(){
   if(cart.length===0) return alert('Carrello vuoto');
   const tot=cart.reduce((s,p)=>s+p.price,0)-giftValue;
   const id='MM-'+Math.floor(Math.random()*100000);
-  const nick = localStorage.getItem('nick') || 'Sconosciuto';
+  const nick=localStorage.getItem('nick')||'Sconosciuto';
   localStorage.setItem('checkoutData',JSON.stringify({id,cart,total:tot,nick}));
   window.location.href='checkout.html';
 }
 
+function clearCart(){
+  cart=[];
+  localStorage.removeItem('cart');
+  render();
+  alert('Carrello svuotato');
+}
+
 function toggleStaff(){
   const el=document.getElementById('staffPanel');
-  el.style.display = (el.style.display==='block')?'none':'block';
+  el.style.display=(el.style.display==='block')?'none':'block';
 }
 
 function checkStaff(){
-  const pass = document.getElementById('staffPass').value;
+  const pass=document.getElementById('staffPass').value;
   if(pass==='staff123'){
     document.getElementById('staffContent').style.display='block';
     alert('Accesso consentito');
-  } else {
+  }else{
     alert('Password errata');
   }
 }
