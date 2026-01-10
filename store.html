@@ -74,10 +74,10 @@ button{
   position:fixed;
   top:60px;
   left:20px;
-  width:300px;
+  width:320px;
   max-height:80%;
   overflow:auto;
-  background:#1e40af88;
+  background:rgba(30,64,175,0.85);
   border:2px solid #38bdf8;
   border-radius:12px;
   padding:15px;
@@ -140,6 +140,10 @@ input{padding:7px;border-radius:6px;border:none;width:90%;margin-bottom:10px}
   <button onclick="applyGift()">Applica</button>
   <p id="giftMsg"></p>
   <button class="green" onclick="checkout()">Procedi Ordine</button>
+  <hr>
+  <button style="background:#facc15;color:#000;padding:8px 15px;border:none;border-radius:6px;font-weight:bold;cursor:pointer;margin-top:10px;" onclick="openStaff()">
+    ⚙️ Apri Pannello Staff
+  </button>
 </div>
 
 <!-- STORE SEZIONI -->
@@ -148,19 +152,23 @@ input{padding:7px;border-radius:6px;border:none;width:90%;margin-bottom:10px}
   <div class="category" onclick="toggleCategory('bedwars')">🛏️ BedWars</div>
   <div class="products" id="bedwars">
     <div class="product">
-      <div><img src="https://via.placeholder.com/60"><span>Cosmetici BedWars</span></div>
+      <div><img src="https://i.imgur.com/BedWarsIcon.png"><span>Cosmetici BedWars</span></div>
       <button onclick="add('Cosmetici BedWars',3)">€3</button>
     </div>
     <div class="product">
-      <div><img src="https://via.placeholder.com/60"><span>Kit BedWars</span></div>
+      <div><img src="https://i.imgur.com/BedWarsKit.png"><span>Kit BedWars</span></div>
       <button onclick="add('Kit BedWars',5)">€5</button>
+    </div>
+    <div class="product">
+      <div><img src="https://i.imgur.com/BedWarsPack.png"><span>Pacchetto VIP BedWars</span></div>
+      <button onclick="add('Pacchetto VIP BedWars',8)">€8</button>
     </div>
   </div>
 
   <div class="category" onclick="toggleCategory('duels')">⚔️ Duels</div>
   <div class="products" id="duels">
     <div class="product">
-      <div><img src="https://via.placeholder.com/60"><span>Kit Duels</span></div>
+      <div><img src="https://i.imgur.com/DuelsKit.png"><span>Kit Duels</span></div>
       <button onclick="add('Kit Duels',5)">€5</button>
     </div>
   </div>
@@ -168,36 +176,11 @@ input{padding:7px;border-radius:6px;border:none;width:90%;margin-bottom:10px}
   <div class="category" onclick="toggleCategory('survival')">🌍 Survival</div>
   <div class="products" id="survival">
     <div class="product">
-      <div><img src="https://via.placeholder.com/60"><span>Premium Survival</span></div>
+      <div><img src="https://i.imgur.com/SurvivalPremium.png"><span>Premium Survival</span></div>
       <button onclick="add('Premium Survival',10)">€10</button>
     </div>
   </div>
 
-</section>
-
-<!-- PAGAMENTO -->
-<section id="payment">
-<h2>Pagamento – Bonifico Bancario</h2>
-<p><b>ID Ordine:</b> <span id="oid"></span></p>
-<p><b>Importo:</b> €<span id="payTotal"></span></p>
-<hr>
-<p><b>Intestatario:</b> MediaMC Network</p>
-<p><b>IBAN:</b> <span style="color:#facc15">INSERIREMO DOMANI</span></p>
-<p><b>Causale:</b> <span id="oid2"></span></p>
-<p style="color:#a5f3fc;margin-top:15px">
-Il pagamento verrà verificato manualmente.
-</p>
-</section>
-
-<!-- SEZIONE STAFF -->
-<section style="max-width:720px;margin:40px auto;text-align:center;">
-  <h3 style="color:#facc15">⚙️ Sezione Staff</h3>
-  <p>Solo per lo staff autorizzato</p>
-  <a href="staff.html" target="_blank">
-    <button style="background:#facc15;color:#000;padding:10px 20px;border:none;border-radius:6px;font-weight:bold;cursor:pointer;">
-      Apri Pannello Staff
-    </button>
-  </a>
 </section>
 
 <script>
@@ -275,8 +258,7 @@ function applyGift(){
 // CHECKOUT
 function checkout(){
   if(cart.length===0) return alert('Carrello vuoto');
-  let tot=cart.reduce((s,i)=>s+i.price,0);
-  tot=Math.max(0,tot-giftValue);
+  const tot=cart.reduce((s,i)=>s+i.price,0)-giftValue;
   const id='MM-'+Math.floor(Math.random()*100000);
   orders.push({id,nick,items:cart,total:tot});
   localStorage.setItem('orders',JSON.stringify(orders));
@@ -284,10 +266,14 @@ function checkout(){
     giftCards[giftCodeUsed].used=true;
     localStorage.setItem('giftCards',JSON.stringify(giftCards));
   }
-  document.getElementById("oid").textContent=id;
-  document.getElementById("oid2").textContent=id;
-  document.getElementById("payTotal").textContent=tot;
-  document.getElementById("payment").style.display='block';
+  // Apri nuova pagina checkout
+  localStorage.setItem('checkoutData',JSON.stringify({id,nick,cart,total:tot}));
+  window.location.href='checkout.html';
+}
+
+// STAFF
+function openStaff(){
+  window.open('staff.html','_blank');
 }
 </script>
 
