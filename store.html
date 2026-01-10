@@ -4,119 +4,129 @@
 <meta charset="UTF-8">
 <title>MediaMC Store</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <style>
 body{
-  margin:0;
-  font-family:'Segoe UI',Arial;
+  margin:0;font-family:'Segoe UI',Arial;
   background:linear-gradient(135deg,#0ea5e9,#020617);
-  color:#fff;
+  color:#fff;overflow-x:hidden
 }
-header{text-align:center;padding:40px;background:rgba(2,6,23,.85)}
+.side-glow{
+  position:fixed;top:-50%;width:120px;height:200%;
+  background:linear-gradient(180deg,transparent,rgba(56,189,248,.4),transparent);
+  filter:blur(45px);animation:float 10s linear infinite;z-index:-1
+}
+.left{left:-50px}.right{right:-50px;animation-delay:5s}
+@keyframes float{0%{transform:translateY(-20%)}100%{transform:translateY(20%)}}
+
+header{text-align:center;padding:60px 20px;background:rgba(2,6,23,.85)}
 h1{color:#38bdf8}
-button{background:#38bdf8;border:none;border-radius:6px;padding:6px 12px;color:#fff;cursor:pointer}
-.section{max-width:900px;margin:30px auto;background:rgba(2,6,23,.8);border:2px solid #38bdf8;border-radius:12px;padding:15px}
-.category{cursor:pointer;margin:10px 0;padding:10px;border:1px solid #38bdf8;border-radius:8px}
-.products{display:none;margin-top:10px}
-.product{display:flex;justify-content:space-between;background:rgba(30,64,175,.6);margin:5px 0;padding:8px;border-radius:6px}
-footer{text-align:center;padding:30px;color:#94a3b8}
-.small{font-size:13px;margin-top:10px}
+
+.container{max-width:1100px;margin:auto;padding:30px}
+.box{
+  background:rgba(2,6,23,.8);
+  border:2px solid #38bdf8;
+  border-radius:14px;
+  padding:15px;
+  margin:15px 0;
+  transition:.3s
+}
+.box:hover{box-shadow:0 0 20px rgba(56,189,248,.6)}
+
+.categories{display:flex;gap:15px;flex-wrap:wrap}
+.cat{cursor:pointer}
+
+.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
+.product{
+  border:1px solid #38bdf8;
+  border-radius:10px;
+  padding:10px
+}
+button{
+  background:#38bdf8;border:none;color:#fff;
+  padding:6px 10px;border-radius:6px;cursor:pointer
+}
+
+#cartBtn{position:fixed;top:20px;right:20px;z-index:10}
+#staffLogin{margin-top:40px;text-align:center;font-size:.9em}
 </style>
 </head>
-
 <body>
 
+<div class="side-glow left"></div>
+<div class="side-glow right"></div>
+
 <header>
-  <h1>🛒 MediaMC Store</h1>
-  <button onclick="openNick()">Entra nello store</button>
-  <button onclick="location.href='cart.html'">Vai al Carrello</button>
+<h1>🛒 MediaMC Store</h1>
+<p>Inserisci il tuo nick Minecraft per continuare</p>
+<input id="nickInput" placeholder="Nick Minecraft">
+<button onclick="enterStore()">Entra</button>
 </header>
 
-<div class="section" id="store"></div>
+<button id="cartBtn" onclick="location.href='cart.html'">🛒 Carrello</button>
 
-<footer>
-  <button onclick="openStaff()">Pannello Staff</button>
-</footer>
-
-<!-- MODAL NICK -->
-<div id="nickModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7)">
-  <div style="background:#020617;padding:20px;border-radius:10px;max-width:300px;margin:15% auto">
-    <h3>Inserisci nick Minecraft</h3>
-    <input id="nickInput" style="width:100%;padding:6px">
-    <button onclick="saveNick()">Entra</button>
+<div class="container" id="store" style="display:none">
+  <div class="box">
+    <h2>Categorie</h2>
+    <div class="categories" id="cats"></div>
   </div>
-</div>
 
-<!-- STAFF LOGIN -->
-<div id="staffModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7)">
-  <div style="background:#020617;padding:20px;border-radius:10px;max-width:300px;margin:15% auto">
-    <h3>Login Staff</h3>
-    <input id="staffPass" type="password" placeholder="Password" style="width:100%;padding:6px">
-    <button onclick="staffLogin()">Accedi</button>
+  <div class="box">
+    <h2>Prodotti</h2>
+    <div class="products" id="products"></div>
+  </div>
+
+  <div id="staffLogin">
+    <button onclick="location.href='staff.html'">⚙️ Pannello Staff</button>
   </div>
 </div>
 
 <script>
-let categories = JSON.parse(localStorage.getItem('categories')) || [
-  {name:'Duels'},
-  {name:'Bedwars'}
-];
-let products = JSON.parse(localStorage.getItem('products')) || [];
-
-function openNick(){
-  document.getElementById('nickModal').style.display='block';
-}
-function saveNick(){
+function enterStore(){
   const n=document.getElementById('nickInput').value.trim();
-  if(!n) return alert('Inserisci nick');
-  localStorage.setItem('nick',n);
-  document.getElementById('nickModal').style.display='none';
-  render();
-}
-function openStaff(){
-  document.getElementById('staffModal').style.display='block';
-}
-function staffLogin(){
-  if(document.getElementById('staffPass').value==='staff123'){
-    location.href='staff.html';
-  }else alert('Password errata');
+  if(!n){alert("Inserisci il nick Minecraft");return;}
+  sessionStorage.clear();
+  sessionStorage.setItem('nick',n);
+  document.querySelector('header').style.display='none';
+  document.getElementById('store').style.display='block';
+  load();
 }
 
-function render(){
-  const store=document.getElementById('store');
-  store.innerHTML='';
-  categories.forEach(cat=>{
-    const c=document.createElement('div');
-    c.className='category';
-    c.innerHTML=`<strong>${cat.name}</strong>`;
-    const p=document.createElement('div');
-    p.className='products';
+function load(){
+  const cats=JSON.parse(localStorage.getItem('categories'))||['Duels','Bedwars'];
+  const prods=JSON.parse(localStorage.getItem('products'))||[];
+  const cdiv=document.getElementById('cats');
+  cdiv.innerHTML='';
+  cats.forEach(c=>{
+    const d=document.createElement('div');
+    d.className='box cat';
+    d.textContent=c;
+    d.onclick=()=>show(c);
+    cdiv.appendChild(d);
+  });
+  show(cats[0]);
+}
 
-    products.filter(x=>x.category===cat.name).forEach(pr=>{
-      p.innerHTML+=`
-      <div class="product">
-        <span>${pr.title} - €${pr.price}</span>
-        <button onclick="addToCart('${pr.title}',${pr.price})">+</button>
-      </div>`;
-    });
-
-    c.onclick=()=>p.style.display=p.style.display==='block'?'none':'block';
-    store.appendChild(c);
-    store.appendChild(p);
+function show(cat){
+  const pdiv=document.getElementById('products');
+  const prods=JSON.parse(localStorage.getItem('products'))||[];
+  pdiv.innerHTML='';
+  prods.filter(p=>p.cat===cat).forEach(p=>{
+    pdiv.innerHTML+=`
+    <div class="product">
+      <b>${p.name}</b><br>
+      €${p.price}<br>
+      <button onclick='add(${JSON.stringify(p)})'>Aggiungi</button>
+    </div>`;
   });
 }
 
-function addToCart(title,price){
-  const nick=localStorage.getItem('nick');
-  if(!nick) return alert('Inserisci il nick');
-  const key='cart_'+nick;
-  const cart=JSON.parse(localStorage.getItem(key))||[];
-  cart.push({name:title,price});
-  localStorage.setItem(key,JSON.stringify(cart));
-  alert('Aggiunto');
+function add(p){
+  const nick=sessionStorage.getItem('nick');
+  let cart=JSON.parse(localStorage.getItem('cart_'+nick))||[];
+  cart.push(p);
+  localStorage.setItem('cart_'+nick,JSON.stringify(cart));
+  alert("Aggiunto al carrello");
 }
-
-render();
 </script>
 </body>
 </html>
