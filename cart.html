@@ -6,8 +6,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 body{margin:0;font-family:'Segoe UI',Arial;background:linear-gradient(135deg,#0ea5e9,#1e3a8a);color:#fff}
-header{text-align:center;padding:40px;background:rgba(2,6,23,.9)}
-section{max-width:700px;margin:30px auto;background:rgba(30,64,175,.85);padding:20px;border-radius:12px;border:2px solid #38bdf8}
+header{text-align:center;padding:40px 20px;background:rgba(2,6,23,.9)}
+section{max-width:500px;margin:30px auto;background:rgba(30,64,175,0.85);padding:20px;border-radius:12px;border:2px solid #38bdf8}
 button{background:#38bdf8;border:none;border-radius:6px;padding:6px 12px;color:#fff;font-weight:bold;cursor:pointer;margin:5px 0}
 button.green{background:#22c55e}
 input{padding:6px;border-radius:6px;border:none;width:90%;margin-bottom:10px}
@@ -37,26 +37,25 @@ input{padding:6px;border-radius:6px;border:none;width:90%;margin-bottom:10px}
 </section>
 
 <script>
-let cart=JSON.parse(localStorage.getItem('cart'))||[];
-let giftValue=0;
-let giftCards=JSON.parse(localStorage.getItem('giftCards'))||[];
+let cart = JSON.parse(localStorage.getItem('cart')) || [];
+let giftValue = 0;
+let giftCards = JSON.parse(localStorage.getItem('giftCards')) || [];
 
+// Render carrello
 function render(){
   const cartList=document.getElementById('cartList');
   let tot=0;
   cartList.innerHTML='';
   cart.forEach((p,idx)=>{
     tot+=p.price;
-    const div=document.createElement('div');
-    div.className='productItem';
-    div.innerHTML=`<span>${p.name}</span><span>€${p.price}</span> <button onclick="cart.splice(${idx},1);render();">X</button>`;
-    cartList.appendChild(div);
+    cartList.innerHTML+=`<div class="productItem"><span>${p.name}</span><span>€${p.price}</span> <button onclick="cart.splice(${idx},1);render();">X</button></div>`;
   });
   tot=Math.max(0,tot-giftValue);
   document.getElementById('total').textContent=tot;
 }
 render();
 
+// Gift card
 function applyGift(){
   const code=document.getElementById('giftInput').value.trim().toUpperCase();
   const gc=giftCards.find(g=>g.code===code);
@@ -70,15 +69,24 @@ function applyGift(){
   render();
 }
 
+// Checkout
 function checkout(){
   if(cart.length===0) return alert('Carrello vuoto');
   const tot=cart.reduce((s,p)=>s+p.price,0)-giftValue;
   const id='MM-'+Math.floor(Math.random()*100000);
   const nick=localStorage.getItem('nick')||'Sconosciuto';
-  localStorage.setItem('checkoutData',JSON.stringify({id,cart,total:tot,nick}));
+
+  // SALVA ORDINE NELL'ARRAY ORDINI
+  let orders = JSON.parse(localStorage.getItem('orders')) || [];
+  orders.push({id, nick, total: tot, cart: cart, date: new Date().toLocaleString()});
+  localStorage.setItem('orders', JSON.stringify(orders));
+
+  // Salva dati per checkout
+  localStorage.setItem('checkoutData', JSON.stringify({id, cart, total: tot, nick}));
   window.location.href='checkout.html';
 }
 
+// Svuota
 function clearCart(){
   cart=[];
   localStorage.removeItem('cart');
