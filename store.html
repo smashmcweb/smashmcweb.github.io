@@ -15,6 +15,8 @@ header{padding:20px;background:rgba(2,6,23,.85);display:flex;justify-content:spa
 .categories{display:flex;gap:15px;flex-wrap:wrap}
 .products{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
 .product{border:1px solid #38bdf8;border-radius:10px;padding:10px;position:relative}
+.product img{max-width:100%;border-radius:6px;margin-bottom:5px}
+.desc{display:none;color:#a5f3fc;margin-top:5px}
 button{background:#38bdf8;border:none;color:#fff;padding:6px 10px;border-radius:6px;cursor:pointer;margin-top:5px}
 #cartBtn{position:fixed;top:20px;right:20px;z-index:10}
 .modalBg{display:flex;justify-content:center;align-items:center;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:999}
@@ -59,7 +61,7 @@ function enterStore(){
   const n = document.getElementById('nickInput').value.trim();
   if(!n){ alert('Inserisci il nick'); return; }
   nick = n;
-  sessionStorage.setItem('nick', nick); // rimane fino a chiusura browser
+  sessionStorage.setItem('nick', nick);
   initStore();
 }
 function logout(){
@@ -72,15 +74,12 @@ function initStore(){
   document.getElementById('logoutBtn').style.display='inline';
   loadStore();
 }
-
-// Se nick già presente in sessionStorage non chiedere modal
 if(nick){ initStore(); } else { document.getElementById('nickModal').style.display='flex'; }
 
 // --- Store ---
 function loadStore(){
   const cats = JSON.parse(localStorage.getItem('categories')) || ['Duels','Bedwars'];
-  const prods = JSON.parse(localStorage.getItem('products')) || [];
-  
+  const pdiv = document.getElementById('products');
   const catsDiv = document.getElementById('cats');
   catsDiv.innerHTML='';
   cats.forEach(c=>{
@@ -100,9 +99,21 @@ function showProducts(cat){
   prods.filter(p=>p.category===cat).forEach(p=>{
     const div = document.createElement('div');
     div.className='product';
-    div.innerHTML=`<b>${p.name}</b> - €${p.price}<br><button onclick='addCart(${JSON.stringify(p)})'>Aggiungi</button>`;
+    let imgHTML = p.img ? `<img src="${p.img}">` : '';
+    div.innerHTML=`
+      <b>${p.name}</b> - €${p.price}<br>
+      ${imgHTML}
+      <button onclick='addCart(${JSON.stringify(p)})'>Aggiungi</button>
+      <button onclick="toggleDesc(this)">Mostra Descrizione</button>
+      <div class="desc">${p.desc||'Nessuna descrizione'}</div>
+    `;
     pdiv.appendChild(div);
   });
+}
+
+function toggleDesc(btn){
+  const desc = btn.parentElement.querySelector('.desc');
+  if(desc) desc.style.display = desc.style.display==='block'?'none':'block';
 }
 
 // --- Carrello ---
