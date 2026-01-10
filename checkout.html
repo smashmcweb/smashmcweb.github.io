@@ -3,29 +3,34 @@
 <head>
 <meta charset="UTF-8">
 <title>Checkout</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body{font-family:Segoe UI;background:linear-gradient(135deg,#0ea5e9,#020617);color:#fff}
-section{max-width:600px;margin:40px auto;background:rgba(2,6,23,.8);padding:20px;border-radius:12px}
+body{margin:0;font-family:'Segoe UI';background:linear-gradient(135deg,#0ea5e9,#020617);color:#fff}
+section{max-width:600px;margin:40px auto;background:rgba(2,6,23,.8);border:2px solid #38bdf8;border-radius:14px;padding:20px}
 </style>
 </head>
 <body>
 
 <section>
-<h2>Checkout</h2>
-<div id="info"></div>
-
-<p><strong>Intestatario:</strong> MediaMC Network</p>
-<p><strong>IBAN:</strong> IT59E0200832974001869280392</p>
-<p><strong>Causale:</strong> <span id="oid"></span></p>
-
-<p>Apri ticket Discord per conferma pagamento</p>
+<h2>💳 Checkout</h2>
+<p><b>Nick:</b> <span id="n"></span></p>
+<p><b>ID:</b> <span id="i"></span></p>
+<p><b>Totale:</b> €<span id="t"></span></p>
+<hr>
+<p><b>Intestatario:</b> MediaMC Network</p>
+<p><b>IBAN:</b> IT59E0200832974001869280392</p>
+<p><b>Causale:</b> ID Ordine</p>
+<p>Dopo il pagamento apri un ticket su Discord.</p>
 </section>
 
 <script>
-const o=JSON.parse(localStorage.getItem('checkout'));
-document.getElementById('oid').textContent=o.id;
-document.getElementById('info').innerHTML=
-`Ordine ${o.id}<br>Nick: ${o.nick}<br>Totale €${o.total}`;
+const d=JSON.parse(localStorage.getItem('checkout'));
+if(!d||d.cart.length===0){alert("Carrello vuoto");location.href='store.html'}
+document.getElementById('n').textContent=d.nick;
+document.getElementById('i').textContent=d.id;
+document.getElementById('t').textContent=d.total;
+let ord=JSON.parse(localStorage.getItem('orders'))||[];
+ord.push(d);localStorage.setItem('orders',JSON.stringify(ord));
 </script>
 </body>
 </html>
