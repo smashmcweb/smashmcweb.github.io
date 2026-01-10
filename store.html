@@ -7,16 +7,19 @@
 <style>
 body{margin:0;font-family:'Segoe UI',Arial,sans-serif;background:linear-gradient(135deg,#0ea5e9,#1e3a8a);color:#fff}
 header{text-align:center;padding:40px;background:rgba(2,6,23,.9)}
-.products{max-width:1000px;margin:40px auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px}
+#categoryMenu{display:flex;justify-content:center;gap:15px;margin:20px 0;flex-wrap:wrap}
+.categoryBtn{background:#38bdf8;border:none;padding:10px 15px;border-radius:6px;color:#fff;font-weight:bold;cursor:pointer;transition:0.2s}
+.categoryBtn:hover{background:#22c55e}
+.products{max-width:1000px;margin:20px auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px}
 .card{background:rgba(30,64,175,.85);border:2px solid #38bdf8;border-radius:12px;padding:15px;display:flex;flex-direction:column;justify-content:space-between}
 .card img{width:100%;border-radius:8px;margin-bottom:10px}
 button{background:#22c55e;border:none;padding:8px 12px;border-radius:6px;color:#fff;font-weight:bold;cursor:pointer;margin-top:5px}
 footer{text-align:center;margin:40px;color:#a5f3fc}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.8);display:flex;align-items:center;justify-content:center}
-.modalBox{background:#020617;padding:20px;border-radius:12px;border:2px solid #38bdf8;text-align:center}
-input{padding:8px;border-radius:6px;border:none;width:90%;margin-bottom:10px}
+.modalBox{background:#020617;padding:20px;border-radius:12px;border:2px solid #38bdf8;text-align:center;width:300px}
 .hidden{display:none}
-.categoryTitle{grid-column:1/-1;color:#facc15;font-size:1.5em;margin-top:20px;text-align:left}
+#staffLoginSection{max-width:500px;margin:30px auto;background:rgba(30,64,175,0.85);padding:20px;border-radius:12px;border:2px solid #38bdf8;text-align:center}
+input{padding:8px;border-radius:6px;border:none;width:90%;margin-bottom:10px}
 </style>
 </head>
 <body>
@@ -35,14 +38,24 @@ input{padding:8px;border-radius:6px;border:none;width:90%;margin-bottom:10px}
 <p>Benvenuto <span id="nickLabel"></span></p>
 </header>
 
+<div id="categoryMenu"></div>
 <div class="products" id="productList"></div>
 
+<!-- Staff login in fondo -->
+<div id="staffLoginSection">
+<h2>⚙️ Login Staff</h2>
+<input type="password" id="staffPass" placeholder="Inserisci password">
+<br>
+<button onclick="staffLogin()">Accedi</button>
+<p id="staffMsg"></p>
+</div>
+
 <footer>
-  <button onclick="location.href='cart.html'">🛒 Vai al Carrello</button><br><br>
-  <button onclick="location.href='staff.html'">⚙️ Apri Pannello Staff</button>
+  <button onclick="location.href='cart.html'">🛒 Vai al Carrello</button>
 </footer>
 
 <script>
+// Modal nick
 const nickModal=document.getElementById('nickModal');
 const savedNick=localStorage.getItem('nick');
 if(savedNick){
@@ -57,34 +70,44 @@ function saveNick(){
   location.reload();
 }
 
-// prodotti e categorie
-let categories=JSON.parse(localStorage.getItem('categories'))||['BedWars','Duels','Survival'];
-let products=JSON.parse(localStorage.getItem('products'))||[
-  {name:'Kit Base BedWars',category:'BedWars',price:5,desc:'Kit iniziale per BedWars',img:'https://i.imgur.com/9Y1kQJD.png'},
-  {name:'Kit Duels Base',category:'Duels',price:3,desc:'Kit iniziale per Duels',img:'https://i.imgur.com/f0Zt5Kn.png'},
-  {name:'Kit Survival Base',category:'Survival',price:2,desc:'Kit iniziale per Survival',img:'https://i.imgur.com/0d5OQ7S.png'}
-];
+// Dati
+let categories=JSON.parse(localStorage.getItem('categories'))||[];
+let products=JSON.parse(localStorage.getItem('products'))||[];
 
-function renderStore(){
-  const list=document.getElementById('productList');
-  list.innerHTML='';
+const categoryMenu=document.getElementById('categoryMenu');
+const productList=document.getElementById('productList');
+
+function renderCategories(){
+  categoryMenu.innerHTML='';
+  const allBtn=document.createElement('button');
+  allBtn.textContent='Tutte';
+  allBtn.className='categoryBtn';
+  allBtn.onclick=()=>renderProducts();
+  categoryMenu.appendChild(allBtn);
+
   categories.forEach(cat=>{
-    // titolo categoria
-    const t=document.createElement('div');
-    t.className='categoryTitle';
-    t.textContent=cat;
-    list.appendChild(t);
-    // prodotti
-    products.filter(p=>p.category===cat).forEach(p=>{
-      const card=document.createElement('div');
-      card.className='card';
-      card.innerHTML=`<img src="${p.img}" alt="${p.name}"><h3>${p.name}</h3><p>${p.desc}</p><p>€${p.price}</p>`;
-      const btn=document.createElement('button');
-      btn.textContent='Aggiungi al Carrello';
-      btn.onclick=()=>addToCart(p);
-      card.appendChild(btn);
-      list.appendChild(card);
-    });
+    const btn=document.createElement('button');
+    btn.textContent=cat;
+    btn.className='categoryBtn';
+    btn.onclick=()=>renderProducts(cat);
+    categoryMenu.appendChild(btn);
+  });
+}
+renderCategories();
+
+function renderProducts(catFilter){
+  productList.innerHTML='';
+  let filtered=products;
+  if(catFilter) filtered=products.filter(p=>p.category===catFilter);
+  filtered.forEach(p=>{
+    const card=document.createElement('div');
+    card.className='card';
+    card.innerHTML=`<img src="${p.img}" alt="${p.name}"><h3>${p.name}</h3><p>${p.desc}</p><p>€${p.price}</p>`;
+    const btn=document.createElement('button');
+    btn.textContent='Aggiungi al Carrello';
+    btn.onclick=()=>addToCart(p);
+    card.appendChild(btn);
+    productList.appendChild(card);
   });
 }
 
@@ -95,7 +118,25 @@ function addToCart(p){
   alert(`✅ ${p.name} aggiunto al carrello!`);
 }
 
+function renderStore(){
+  categories=JSON.parse(localStorage.getItem('categories'))||[];
+  products=JSON.parse(localStorage.getItem('products'))||[];
+  renderCategories();
+  renderProducts();
+}
+
 renderStore();
+
+// STAFF login
+function staffLogin(){
+  const pass=document.getElementById('staffPass').value;
+  const msg=document.getElementById('staffMsg');
+  if(pass==='staff123'){
+    window.location.href='staff.html';
+  } else {
+    msg.textContent='Password errata';
+  }
+}
 </script>
 
 </body>
