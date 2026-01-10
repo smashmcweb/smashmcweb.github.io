@@ -106,6 +106,8 @@ header p { color: #bae6fd; font-size: 1.2em; }
 /* STAFF SECTION */
 #staffSection {
   border-color:#facc15;
+  display:block;
+  margin-bottom:40px;
 }
 #staffSection h2 { color: #facc15; margin-top:0; }
 #staffSection input { padding:6px; border-radius:6px; border:1px solid #facc15; margin-right:6px; }
@@ -158,8 +160,9 @@ header p { color: #bae6fd; font-size: 1.2em; }
 </div>
 
 <!-- STAFF SECTION -->
-<div id="staffSection" style="display:none;">
-<h2>Sezione Staff (Password richiesta)</h2>
+<div id="staffSection">
+<h2>Sezione Staff</h2>
+<p>Inserisci la password per vedere gli ordini:</p>
 <input type="password" id="staffPass" placeholder="Password Staff">
 <button onclick="loginStaff()">Accedi</button>
 <div id="staffOrders"></div>
@@ -233,7 +236,6 @@ function loginStaff(){
     staffDiv.appendChild(div);
   });
   alert('Accesso Staff consentito!');
-  document.getElementById('staffSection').style.display='block';
 }
 </script>
 </body>
