@@ -5,178 +5,74 @@
 <title>MediaMC Carrello</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body {
-  margin: 0;
-  font-family: 'Segoe UI', Arial, sans-serif;
-  background: linear-gradient(135deg,#0ea5e9,#020617);
-  color: #fff;
-  overflow-x: hidden;
-}
-
-/* GLOW LATERALI */
-.side-glow {
-  position: fixed;
-  top: -50%;
-  width: 120px;
-  height: 200%;
-  background: linear-gradient(180deg, transparent, rgba(56,189,248,0.4), transparent);
-  filter: blur(45px);
-  animation: floatGlow 10s linear infinite;
-  pointer-events: none;
-  z-index: -1;
-}
-.side-glow.left { left: -50px; }
-.side-glow.right { right: -50px; animation-delay: 5s; }
-
-@keyframes floatGlow {
-  0% { transform: translateY(-20%); }
-  100% { transform: translateY(20%); }
-}
-
-/* HEADER */
-header {
-  text-align: center;
-  padding: 50px 20px;
-  background: rgba(2,6,23,0.85);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-}
-header h1 { font-size: 2.5em; color: #38bdf8; margin: 0; }
-header p { color: #bae6fd; margin: 5px 0 0; }
-
-/* SECTION */
-section {
-  max-width: 600px;
-  margin: 30px auto;
-  background: rgba(2,6,23,0.8);
-  padding: 20px;
-  border-radius: 12px;
-  border: 2px solid #38bdf8;
-}
-
-.productItem {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: rgba(0,10,30,0.7);
-  padding: 10px;
-  margin: 5px 0;
-  border-radius: 6px;
-}
-
-button {
-  padding: 5px 10px;
-  border: none;
-  border-radius: 6px;
-  margin-left: 5px;
-  cursor: pointer;
-}
-button.delete { background:#ef4444;color:#fff; }
-button.green { background:#22c55e;color:#fff; }
-button.storeBtn { background:#38bdf8;color:#fff;margin-top:10px; width:100%; }
-
-/* INPUT */
-input { padding:6px; border-radius:6px; border:none; width:80%; margin-bottom:5px; }
-
+body{margin:0;font-family:'Segoe UI',Arial;background:linear-gradient(135deg,#0ea5e9,#020617);color:#fff}
+header{text-align:center;padding:40px 20px;background:rgba(2,6,23,.9)}
+header h1{color:#38bdf8;margin:0}
+#nickBar{background:rgba(2,6,23,.9);padding:10px 20px;text-align:right;border-bottom:2px solid #38bdf8;margin-bottom:10px}
+section{max-width:500px;margin:30px auto;background:rgba(2,6,23,.85);padding:20px;border-radius:12px;border:2px solid #38bdf8}
+button{padding:6px 12px;border-radius:6px;border:none;cursor:pointer;margin:5px}
+button.green{background:#22c55e;color:#fff}
+button.red{background:#ef4444;color:#fff}
+.productItem{display:flex;justify-content:space-between;background:rgba(2,6,23,.8);padding:8px;border-radius:6px;margin:5px 0;align-items:center}
 </style>
 </head>
 <body>
-<div class="side-glow left"></div>
-<div class="side-glow right"></div>
+
+<div id="nickBar"></div>
 
 <header>
-  <h1>🛒 Carrello MediaMC</h1>
-  <p>Controlla i tuoi prodotti prima di procedere</p>
+<h1>🛒 Carrello MediaMC</h1>
 </header>
 
 <section>
   <h2>Prodotti</h2>
   <div id="cartList"></div>
   <h3>Totale: €<span id="total">0</span></h3>
-
-  <h3>GiftCard</h3>
-  <input id="giftInput" placeholder="Inserisci Gift Card">
-  <button onclick="applyGift()">Applica</button>
-  <p id="giftMsg"></p>
-
-  <button class="green" id="checkoutBtn" onclick="checkout()">Procedi Ordine</button>
-  <button onclick="clearCart()">🗑️ Svuota Carrello</button>
-  <button class="storeBtn" onclick="window.location.href='store.html'">← Torna allo Store</button>
+  <button class="green" onclick="checkout()">Procedi Ordine</button>
+  <button class="red" onclick="clearCart()">Svuota Carrello</button>
+  <button onclick="window.history.back()">← Continua Acquisti</button>
 </section>
 
 <script>
-let cart = JSON.parse(localStorage.getItem('cart'))||[];
-let giftValue = 0;
-let giftCards = JSON.parse(localStorage.getItem('giftCards'))||[];
+const nick=sessionStorage.getItem('nick');
+if(!nick){ alert("Inserisci il nick nello store!"); window.location='store.html'; }
+document.getElementById('nickBar').textContent=`Loggato come: ${nick}`;
+
+let cart=JSON.parse(localStorage.getItem('cart_'+nick))||[];
 
 function render(){
-  const cartList=document.getElementById('cartList');
-  let total=0;
-  cartList.innerHTML='';
-  if(cart.length===0){
-    cartList.textContent='Carrello vuoto';
-    document.getElementById('checkoutBtn').disabled=true;
-  } else {
-    document.getElementById('checkoutBtn').disabled=false;
-    cart.forEach((p,idx)=>{
-      total+=p.price;
-      const div=document.createElement('div');
-      div.className='productItem';
-      div.innerHTML=`<span>${p.name} - €${p.price}</span><button class="delete" onclick="removeItem(${idx})">X</button>`;
-      cartList.appendChild(div);
-    });
-  }
-  total = Math.max(0, total - giftValue);
-  document.getElementById('total').textContent = total;
-}
-render();
-
-function removeItem(idx){
-  if(confirm('Rimuovere questo prodotto dal carrello?')){
-    cart.splice(idx,1);
-    localStorage.setItem('cart',JSON.stringify(cart));
-    render();
-  }
+  const cartDiv=document.getElementById('cartList');
+  cartDiv.innerHTML='';
+  let tot=0;
+  if(cart.length===0){cartDiv.textContent='Carrello vuoto';document.getElementById('total').textContent='0'; return;}
+  cart.forEach((p,i)=>{
+    tot+=p.price;
+    const div=document.createElement('div');
+    div.className='productItem';
+    div.innerHTML=`<span>${p.name} - €${p.price}</span><button onclick="remove(${i})">X</button>`;
+    cartDiv.appendChild(div);
+  });
+  document.getElementById('total').textContent=tot;
 }
 
-// Gift Card
-function applyGift(){
-  const code = document.getElementById('giftInput').value.trim().toUpperCase();
-  const gc = giftCards.find(g=>g.code===code);
-  const msg = document.getElementById('giftMsg');
-  if(!gc){ msg.textContent='Gift card non valida'; return; }
-  if(gc.used){ msg.textContent='Gift card già utilizzata'; return; }
-  giftValue = gc.value;
-  gc.used = true;
-  localStorage.setItem('giftCards',JSON.stringify(giftCards));
-  msg.textContent=`Gift card applicata: -€${giftValue}`;
-  render();
-}
+function remove(idx){ cart.splice(idx,1); localStorage.setItem('cart_'+nick,JSON.stringify(cart)); render(); }
 
-// Checkout
+function clearCart(){ if(!confirm('Svuotare il carrello?')) return; cart=[]; localStorage.setItem('cart_'+nick,JSON.stringify(cart)); render(); }
+
 function checkout(){
-  if(cart.length===0) return alert('Carrello vuoto!');
-  const nick = prompt('Inserisci il tuo Nick Minecraft:','')?.trim();
-  if(!nick) return alert('Nick obbligatorio!');
-  const tot = cart.reduce((s,p)=>s+p.price,0)-giftValue;
-  const id = 'MM-'+Math.floor(Math.random()*100000);
-  const checkoutData = {id, cart, total: tot, nick};
-  // Salva in lista globale ordini
-  let checkoutDataList = JSON.parse(localStorage.getItem('checkoutDataList'))||[];
-  checkoutDataList.push(checkoutData);
-  localStorage.setItem('checkoutDataList',JSON.stringify(checkoutDataList));
-  localStorage.setItem('checkoutData',JSON.stringify(checkoutData));
-  alert('Ordine creato! ID: '+id);
-  window.location.href='checkout.html';
+  if(cart.length===0){ alert('Carrello vuoto!'); return; }
+  const tot=cart.reduce((s,p)=>s+p.price,0);
+  const id='MM-'+Math.floor(Math.random()*100000);
+  const checkoutData={id,nick,cart,total:tot};
+  let allOrders=JSON.parse(localStorage.getItem('checkoutDataList'))||[];
+  allOrders.push(checkoutData);
+  localStorage.setItem('checkoutDataList',JSON.stringify(allOrders));
+  localStorage.removeItem('cart_'+nick);
+  alert(`Ordine creato! ID: ${id}\nVai a Checkout per dettagli pagamento.`);
+  window.location='checkout.html';
 }
 
-// Svuota carrello
-function clearCart(){
-  if(confirm('Vuoi svuotare il carrello?')){
-    cart=[];
-    localStorage.removeItem('cart');
-    render();
-  }
-}
+render();
 </script>
 
 </body>
