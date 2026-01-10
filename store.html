@@ -71,16 +71,18 @@ input{padding:7px;border-radius:6px;border:none;width:90%;margin-bottom:10px}
 <script>
 let nick='';
 function loginUser(){
-  nick = document.getElementById("nickInput").value.trim();
+  nick=document.getElementById("nickInput").value.trim();
   if(!nick) return alert('Inserisci il nick');
-  localStorage.setItem('nick', nick); // <-- salva nick
+  localStorage.setItem('nick',nick);
+  localStorage.removeItem('cart'); // Carrello pulito
+  localStorage.removeItem('checkoutData'); // Reset checkout
   document.getElementById("login").style.display='none';
   document.getElementById("store").style.display='block';
 }
 
 function toggleCategory(id){
   const el=document.getElementById(id);
-  el.style.display = (el.style.display==='block')?'none':'block';
+  el.style.display=(el.style.display==='block')?'none':'block';
 }
 
 function add(name,price){
