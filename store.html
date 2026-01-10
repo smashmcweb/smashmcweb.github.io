@@ -5,90 +5,30 @@
 <title>MediaMC Store</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body{
-  margin:0;font-family:'Segoe UI',Arial;
-  background:linear-gradient(135deg,#0ea5e9,#020617);
-  color:#fff;overflow-x:hidden;
-}
-.side-glow{
-  position:fixed;top:-50%;width:120px;height:200%;
-  background:linear-gradient(180deg,transparent,rgba(56,189,248,.4),transparent);
-  filter:blur(45px);animation:float 10s linear infinite;z-index:-1
-}
-.left{left:-50px}.right{right:-50px;animation-delay:5s}
-@keyframes float{0%{transform:translateY(-20%)}100%{transform:translateY(20%)}}
-
-header{text-align:center;padding:40px 20px;background:rgba(2,6,23,.85);position:relative;}
-h1{color:#38bdf8;margin:0}
-
-#playerInfo{
-  position:absolute;top:15px;left:15px;
-  background:rgba(2,6,23,0.8);padding:6px 10px;
-  border-radius:8px;font-weight:bold;display:none;
-}
-
-.container{max-width:1100px;margin:auto;padding:30px}
-.box{
-  background:rgba(2,6,23,.8);
-  border:2px solid #38bdf8;
-  border-radius:14px;
-  padding:15px;
-  margin:15px 0;
-  transition:.3s
-}
+body{margin:0;font-family:'Segoe UI',Arial;background:linear-gradient(135deg,#0ea5e9,#020617);color:#fff;overflow-x:hidden}
+header{padding:20px;background:rgba(2,6,23,.85);display:flex;justify-content:space-between;align-items:center}
+#nickDisplay{font-weight:bold}
+#logoutBtn{background:#ef4444;color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;margin-left:10px}
+.container{max-width:1100px;margin:20px auto;padding:20px}
+.box{background:rgba(2,6,23,.8);border:2px solid #38bdf8;border-radius:12px;padding:15px;margin:15px 0;transition:.3s;cursor:pointer}
 .box:hover{box-shadow:0 0 20px rgba(56,189,248,.6)}
-
 .categories{display:flex;gap:15px;flex-wrap:wrap}
-.cat{cursor:pointer}
-
 .products{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
-.product{
-  border:1px solid #38bdf8;
-  border-radius:10px;
-  padding:10px;
-}
-.product-desc{margin-top:5px;font-size:0.9em;color:#bae6fd;}
-
-button{
-  background:#38bdf8;border:none;color:#fff;
-  padding:6px 10px;border-radius:6px;cursor:pointer;margin-top:5px
-}
-
+.product{border:1px solid #38bdf8;border-radius:10px;padding:10px;position:relative}
+button{background:#38bdf8;border:none;color:#fff;padding:6px 10px;border-radius:6px;cursor:pointer;margin-top:5px}
 #cartBtn{position:fixed;top:20px;right:20px;z-index:10}
-#staffLogin{margin-top:40px;text-align:center;font-size:.9em}
-
-/* MODAL NICK */
-.modalBg{
-  display:flex;justify-content:center;align-items:center;
-  position:fixed;top:0;left:0;width:100%;height:100%;
-  background: rgba(0,0,0,0.7); z-index:999;
-}
-.modalContent{
-  background:rgba(2,6,23,.95);padding:40px;
-  border-radius:12px;border:2px solid #38bdf8;text-align:center;
-}
-.modalContent input{
-  padding:12px;width:80%;font-size:1.2em;border-radius:8px;border:none;margin-top:15px;
-}
-.modalContent button{
-  padding:10px 20px;margin-top:15px;font-size:1.1em;
-  cursor:pointer;border-radius:8px;border:none;background:#38bdf8;color:#fff;
-}
+.modalBg{display:flex;justify-content:center;align-items:center;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:999}
+.modalContent{background:#020617;padding:30px;border-radius:12px;border:2px solid #38bdf8;width:90%;max-width:400px;text-align:center}
 </style>
 </head>
 <body>
 
-<div class="side-glow left"></div>
-<div class="side-glow right"></div>
-
 <header>
-<h1>🛒 MediaMC Store</h1>
-<div id="playerInfo"></div>
+<div id="nickDisplay"></div>
+<button id="logoutBtn" onclick="logout()" style="display:none">Logout</button>
 </header>
 
-<button id="cartBtn" onclick="location.href='cart.html'">🛒 Carrello</button>
-
-<div class="container" id="store" style="display:none">
+<div class="container">
   <div class="box">
     <h2>Categorie</h2>
     <div class="categories" id="cats"></div>
@@ -98,79 +38,76 @@ button{
     <h2>Prodotti</h2>
     <div class="products" id="products"></div>
   </div>
-
-  <div id="staffLogin">
-    <button onclick="location.href='staff.html'">⚙️ Pannello Staff</button>
-  </div>
 </div>
 
-<!-- MODAL NICK -->
+<button id="cartBtn" onclick="location.href='cart.html'">🛒 Carrello</button>
+
+<!-- MODAL PER NICK -->
 <div class="modalBg" id="nickModal">
   <div class="modalContent">
-    <h2>Benvenuto su MediaMC</h2>
-    <p>Inserisci il tuo Nick Minecraft per continuare</p>
-    <input id="nickInput" placeholder="Nick Minecraft">
-    <br>
+    <h2>Inserisci il tuo Nick</h2>
+    <input type="text" id="nickInput" placeholder="Nick Minecraft">
+    <br><br>
     <button onclick="enterStore()">Entra</button>
   </div>
 </div>
 
 <script>
+// --- Gestione nick ---
+let nick = sessionStorage.getItem('nick') || '';
 function enterStore(){
-  const n=document.getElementById('nickInput').value.trim();
-  if(!n){alert("Inserisci il nick Minecraft");return;}
-  sessionStorage.setItem('nick',n);
+  const n = document.getElementById('nickInput').value.trim();
+  if(!n){ alert('Inserisci il nick'); return; }
+  nick = n;
+  sessionStorage.setItem('nick', nick);
   document.getElementById('nickModal').style.display='none';
-
-  const pi=document.getElementById('playerInfo');
-  pi.style.display='block';
-  pi.innerHTML=`${n} <button onclick="logout()">Logout</button>`;
-
-  document.getElementById('store').style.display='block';
-  load();
+  document.getElementById('nickDisplay').textContent = `Player: ${nick}`;
+  document.getElementById('logoutBtn').style.display='inline';
+  loadStore();
 }
-
 function logout(){
-  sessionStorage.clear();
+  sessionStorage.removeItem('nick');
   location.reload();
 }
+if(nick){ enterStore(); } else { document.getElementById('nickModal').style.display='flex'; }
 
-function load(){
-  const cats=JSON.parse(localStorage.getItem('categories'))||['Duels','Bedwars'];
-  const prods=JSON.parse(localStorage.getItem('products'))||[];
-  const cdiv=document.getElementById('cats');
-  cdiv.innerHTML='';
+// --- Store ---
+function loadStore(){
+  const cats = JSON.parse(localStorage.getItem('categories')) || ['Duels','Bedwars'];
+  const prods = JSON.parse(localStorage.getItem('products')) || [];
+  
+  const catsDiv = document.getElementById('cats');
+  catsDiv.innerHTML='';
   cats.forEach(c=>{
-    const d=document.createElement('div');
-    d.className='box cat';
-    d.textContent=c;
-    d.onclick=()=>show(c);
-    cdiv.appendChild(d);
+    const div = document.createElement('div');
+    div.className='box';
+    div.textContent=c;
+    div.onclick=()=>showProducts(c);
+    catsDiv.appendChild(div);
   });
-  show(cats[0]);
+  showProducts(cats[0]);
 }
 
-function show(cat){
-  const pdiv=document.getElementById('products');
-  const prods=JSON.parse(localStorage.getItem('products'))||[];
+function showProducts(cat){
+  const prods = JSON.parse(localStorage.getItem('products')) || [];
+  const pdiv = document.getElementById('products');
   pdiv.innerHTML='';
-  prods.filter(p=>p.category===cat).forEach((p,idx)=>{
-    const prodDiv=document.createElement('div');
-    prodDiv.className='product';
-    prodDiv.innerHTML=`<b>${p.name} (€${p.price})</b>
-      <div class="product-desc">${p.desc||''}</div>
-      <button onclick='add(${JSON.stringify(p)})'>Aggiungi</button>`;
-    pdiv.appendChild(prodDiv);
+  prods.filter(p=>p.category===cat).forEach(p=>{
+    const div = document.createElement('div');
+    div.className='product';
+    div.innerHTML=`<b>${p.name}</b> - €${p.price}<br><button onclick='addCart(${JSON.stringify(p)})'>Aggiungi</button>`;
+    pdiv.appendChild(div);
   });
 }
 
-function add(p){
-  const nick=sessionStorage.getItem('nick');
-  let cart=JSON.parse(localStorage.getItem('cart_'+nick))||[];
+// --- Carrello ---
+function addCart(p){
+  let cart = JSON.parse(localStorage.getItem('cart_'+nick)) || [];
   cart.push(p);
-  localStorage.setItem('cart_'+nick,JSON.stringify(cart));
-  alert("Aggiunto al carrello");
+  localStorage.setItem('cart_'+nick, JSON.stringify(cart));
+  alert('Aggiunto al carrello!');
 }
 </script>
+
 </body>
 </html>
