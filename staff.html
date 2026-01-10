@@ -5,14 +5,81 @@
 <title>MediaMC Staff Panel</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body{margin:0;font-family:'Segoe UI',Arial,sans-serif;background:linear-gradient(135deg,#0ea5e9,#1e3a8a);color:#fff}
-header{text-align:center;padding:40px 20px;background:rgba(2,6,23,.9)}
-section{max-width:800px;margin:30px auto;background:rgba(30,64,175,0.85);padding:20px;border-radius:12px;border:2px solid #38bdf8}
-input{padding:7px;border-radius:6px;border:none;width:90%;margin-bottom:10px}
-button{background:#38bdf8;border:none;border-radius:6px;padding:6px 12px;color:#fff;font-weight:bold;cursor:pointer;margin:5px 0}
-#content{display:none;margin-top:15px;padding:10px;border-radius:8px}
-.orderItem, .giftItem{background:rgba(2,6,23,.8);padding:8px;border-radius:6px;margin:5px 0;display:flex;justify-content:space-between}
-h3{margin-top:20px;color:#38bdf8}
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(135deg,#0ea5e9,#1e3a8a);
+  color: #fff;
+}
+header {
+  text-align:center;
+  padding:50px 20px;
+  background: rgba(2,6,23,0.9);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+}
+section {
+  max-width:900px;
+  margin:30px auto;
+  background: rgba(30,64,175,0.9);
+  padding:25px;
+  border-radius:15px;
+  border:2px solid #38bdf8;
+  box-shadow: 0 0 20px #38bdf8aa;
+}
+input {
+  padding:8px;
+  border-radius:8px;
+  border:none;
+  width:95%;
+  margin-bottom:10px;
+}
+button {
+  background:#38bdf8;
+  border:none;
+  border-radius:8px;
+  padding:8px 15px;
+  color:#fff;
+  font-weight:bold;
+  cursor:pointer;
+  margin:5px 0;
+  transition: 0.2s;
+}
+button:hover {
+  transform: scale(1.05);
+}
+#content {display:none;margin-top:15px;padding:10px;border-radius:10px;}
+.orderItem, .giftItem {
+  background: rgba(2,6,23,0.85);
+  padding:10px;
+  border-radius:8px;
+  margin:8px 0;
+  display:flex;
+  justify-content: space-between;
+  align-items:center;
+}
+h3 {margin-top:25px;color:#38bdf8}
+
+/* MODAL */
+.modal{
+  display:none;
+  position:fixed;
+  z-index:1000;
+  left:0; top:0;
+  width:100%; height:100%;
+  overflow:auto;
+  background: rgba(0,0,0,0.6);
+}
+.modal-content{
+  background:#1e40af;
+  margin:10% auto;
+  padding:20px;
+  border-radius:15px;
+  width:90%; max-width:400px;
+  position:relative;
+  box-shadow:0 0 25px #38bdf8aa;
+}
+.modal-content input{width:95%; margin-bottom:10px; padding:7px; border-radius:6px; border:none;}
+.close{position:absolute; top:10px; right:15px; color:#fff; font-size:22px; font-weight:bold; cursor:pointer;}
 </style>
 </head>
 <body>
@@ -29,43 +96,62 @@ h3{margin-top:20px;color:#38bdf8}
 </section>
 
 <section id="content">
+  <!-- ORDINI -->
   <h3>Ricerca Ordine per ID</h3>
   <input id="searchId" placeholder="Inserisci ID ordine">
   <button onclick="searchOrder()">Cerca</button>
   <div id="orderResult"></div>
 
+  <!-- CREA GIFT CARD -->
   <h3>Crea Gift Card</h3>
-  <input type="number" id="giftValue" placeholder="Valore €">
-  <button onclick="createGiftCard()">Crea Gift Card</button>
+  <button onclick="openModal()">Crea Nuova Gift Card</button>
 
+  <!-- LISTA GIFTCARD -->
   <h3>Gift Card Attive</h3>
   <div id="giftList"></div>
 </section>
 
+<!-- MODAL -->
+<div id="giftModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h3>Crea Gift Card</h3>
+    <input type="text" id="giftName" placeholder="Nome Gift Card">
+    <input type="number" id="giftValueModal" placeholder="Valore €">
+    <button onclick="createGiftCardModal()">Crea</button>
+  </div>
+</div>
+
 <script>
 let giftCards=JSON.parse(localStorage.getItem('giftCards'))||[];
 
-// STAFF LOGIN
+// LOGIN
 function checkStaff(){
   const pass=document.getElementById('staffPass').value;
   if(pass==='staff123'){
-    // Nascondi login
     document.getElementById('loginSection').style.display='none';
-    // Mostra contenuto
     document.getElementById('content').style.display='block';
     alert('Accesso consentito');
     renderGiftCards();
   } else alert('Password errata');
 }
 
-// CREAZIONE GIFT CARD
-function createGiftCard(){
-  const val=parseInt(document.getElementById('giftValue').value);
+// MODAL
+function openModal(){document.getElementById('giftModal').style.display='block'}
+function closeModal(){document.getElementById('giftModal').style.display='none'}
+
+// CREA GIFT CARD DAL MODAL
+function createGiftCardModal(){
+  const val=parseInt(document.getElementById('giftValueModal').value);
+  const name=document.getElementById('giftName').value.trim();
   if(!val || val<=0) return alert('Inserisci un valore valido');
   const code='GIFT'+Math.floor(Math.random()*100000);
-  giftCards.push({code,value:val,used:false});
+  giftCards.push({code,value:val,name:name,used:false});
   localStorage.setItem('giftCards',JSON.stringify(giftCards));
   renderGiftCards();
+  closeModal();
+  document.getElementById('giftName').value='';
+  document.getElementById('giftValueModal').value='';
   alert(`Gift Card ${code} creata!`);
 }
 
@@ -75,8 +161,9 @@ function renderGiftCards(){
   list.innerHTML='';
   if(giftCards.length===0) return list.textContent='Nessuna gift card';
   giftCards.forEach((g,idx)=>{
-    list.innerHTML+=`<div class="giftItem">${g.code} - €${g.value} - ${g.used?'Usata':'Attiva'} 
-      <button onclick="deleteGift(${idx})" style="margin-left:10px;background:#ef4444;color:#fff">Elimina</button>
+    list.innerHTML+=`<div class="giftItem">
+      <div>${g.code} - ${g.name?g.name+' - ':''}€${g.value} - ${g.used?'Usata':'Attiva'}</div>
+      <button onclick="deleteGift(${idx})" style="background:#ef4444;color:#fff;padding:5px 10px;border-radius:6px">Elimina</button>
     </div>`;
   });
 }
@@ -88,17 +175,19 @@ function deleteGift(idx){
   renderGiftCards();
 }
 
-// RICERCA ORDINE PER ID
+// ORDINI
 function searchOrder(){
   const id=document.getElementById('searchId').value.trim();
   const data=JSON.parse(localStorage.getItem('checkoutData'));
   const resDiv=document.getElementById('orderResult');
   if(!data || data.id!==id){ resDiv.textContent='Ordine non trovato'; return; }
-  resDiv.innerHTML=`<div class="orderItem"><span>ID: ${data.id} | Nick: ${data.nick}</span><span>Totale: €${data.total}</span></div>`;
+  resDiv.innerHTML=`<div class="orderItem">
+    <div>ID: ${data.id} | Nick: ${data.nick} | Totale: €${data.total}</div>
+  </div>`;
   data.cart.forEach(p=>{
     resDiv.innerHTML+=`<div class="orderItem" style="margin-left:20px">${p.name} - €${p.price}</div>`;
   });
-  resDiv.innerHTML+=`<button style="margin-top:5px;background:#ef4444;color:#fff" onclick="removeOrder()">Rimuovi ordine</button>`;
+  resDiv.innerHTML+=`<button style="margin-top:5px;background:#ef4444;color:#fff;padding:5px 10px;border-radius:6px" onclick="removeOrder()">Rimuovi ordine</button>`;
 }
 
 // RIMUOVI ORDINE
@@ -106,6 +195,12 @@ function removeOrder(){
   localStorage.removeItem('checkoutData');
   document.getElementById('orderResult').innerHTML='Ordine rimosso';
   alert('Ordine eliminato');
+}
+
+// Chiudi modal cliccando fuori
+window.onclick=function(event){
+  const modal=document.getElementById('giftModal');
+  if(event.target===modal) closeModal();
 }
 </script>
 
