@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>MediaMC – Pannello Staff</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family:'Segoe UI',Arial;
+  background:linear-gradient(135deg,#020617,#0f172a);
+  color:#fff;
+}
+header{
+  text-align:center;
+  padding:40px;
+  background:#020617;
+  border-bottom:3px solid #facc15;
+}
+section{
+  max-width:800px;
+  margin:30px auto;
+  background:#020617dd;
+  border:2px solid #facc15;
+  border-radius:14px;
+  padding:20px;
+}
+h2{color:#facc15;margin-top:0}
+input,button{
+  padding:8px;
+  border-radius:6px;
+  border:none;
+  margin:5px 0;
+}
+button{
+  background:#facc15;
+  color:#000;
+  font-weight:bold;
+  cursor:pointer;
+}
+.card{
+  border-bottom:1px solid #facc15;
+  padding:10px 0;
+}
+.hidden{display:none}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🛠️ MediaMC – Staff Panel</h1>
+  <p>Gestione Store & Gift Card</p>
+</header>
+
+<!-- LOGIN STAFF -->
+<section id="login">
+  <h2>Accesso Staff</h2>
+  <input type="password" id="staffPass" placeholder="Password Staff">
+  <button onclick="login()">Accedi</button>
+</section>
+
+<!-- PANNELLO -->
+<section id="panel" class="hidden">
+
+  <!-- ORDINI -->
+  <h2>📦 Ordini</h2>
+  <input id="searchOrder" placeholder="Cerca ID Ordine">
+  <button onclick="searchOrder()">Cerca</button>
+  <div id="ordersList"></div>
+
+  <hr>
+
+  <!-- CREA GIFT CARD -->
+  <h2>🎁 Crea Gift Card</h2>
+  <input id="giftCode" placeholder="Codice (es. MEDIAMC30)">
+  <input id="giftValue" type="number" placeholder="Valore €">
+  <button onclick="createGift()">Crea Gift Card</button>
+  <p id="giftMsg"></p>
+
+  <hr>
+
+  <!-- LISTA GIFT CARD -->
+  <h2>📋 Gift Card Create</h2>
+  <div id="giftList"></div>
+
+</section>
+
+<script>
+const STAFF_PASSWORD = "staff123";
+
+let orders = JSON.parse(localStorage.getItem("orders")) || [];
+let giftCards = JSON.parse(localStorage.getItem("giftCards")) || {};
+
+function login(){
+  if(staffPass.value !== STAFF_PASSWORD){
+    alert("Password errata");
+    return;
+  }
+  login.style.display="none";
+  panel.classList.remove("hidden");
+  renderGifts();
+}
+
+function searchOrder(){
+  ordersList.innerHTML="";
+  const id = searchOrder.value.trim();
+  const o = orders.find(x=>x.id===id);
+
+  if(!o){
+    ordersList.innerHTML="<p>Ordine non trovato</p>";
+    return;
+  }
+
+  ordersList.innerHTML=`
+    <div class="card">
+      <b>Nick:</b> ${o.nick}<br>
+      <b>ID:</b> ${o.id}<br>
+      <b>Prodotti:</b> ${o.items.map(i=>i.n||i.name).join(", ")}<br>
+      <b>Totale:</b> €${o.total}
+    </div>
+  `;
+}
+
+function createGift(){
+  const code = giftCode.value.trim().toUpperCase();
+  const value = Number(giftValue.value);
+
+  if(!code || value<=0){
+    giftMsg.textContent="Dati non validi";
+    return;
+  }
+
+  giftCards[code]={value:value,used:false};
+  localStorage.setItem("giftCards",JSON.stringify(giftCards));
+
+  giftMsg.textContent=`Gift Card ${code} creata (€${value})`;
+  giftCode.value="";
+  giftValue.value="";
+  renderGifts();
+}
+
+function renderGifts(){
+  giftList.innerHTML="";
+  Object.keys(giftCards).forEach(code=>{
+    giftList.innerHTML+=`
+      <div class="card">
+        ${code} – €${giftCards[code].value} – 
+        ${giftCards[code].used ? "❌ Usata" : "✅ Disponibile"}
+      </div>
+    `;
+  });
+}
+</script>
+
+</body>
+</html>
