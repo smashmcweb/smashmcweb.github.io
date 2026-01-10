@@ -5,32 +5,33 @@
 <title>MediaMC Checkout</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body{margin:0;font-family:'Segoe UI',Arial,sans-serif;background:linear-gradient(135deg,#0ea5e9,#1e3a8a);color:#fff}
-header{text-align:center;padding:40px 20px;background:rgba(2,6,23,.9)}
-h1{color:#38bdf8;margin:0}
-section{max-width:700px;margin:40px auto;background:rgba(30,64,175,0.85);padding:20px;border-radius:12px;border:2px solid #38bdf8}
-.productItem{background:rgba(2,6,23,.8);padding:10px;border-radius:6px;margin:5px 0;display:flex;justify-content:space-between}
+body{margin:0;font-family:'Segoe UI',Arial,sans-serif;background:linear-gradient(135deg,#0ea5e9,#020617);color:#fff}
+header{text-align:center;padding:40px 20px;background:rgba(2,6,23,0.9);}
+header h1{color:#38bdf8;margin:0;}
+section{max-width:700px;margin:40px auto;background:rgba(30,64,175,0.85);padding:20px;border-radius:12px;border:2px solid #38bdf8;}
+.productItem{background:rgba(2,6,23,0.8);padding:10px;border-radius:6px;margin:5px 0;display:flex;justify-content:space-between}
 </style>
 </head>
 <body>
 
 <header>
 <h1>💳 Checkout MediaMC</h1>
-<p>Completa il tuo ordine</p>
+<p>Riepilogo ordine</p>
 </header>
 
-<section id="checkoutSection">
-  <h2>Riepilogo Ordine</h2>
+<section>
+  <h2>Dettagli Ordine</h2>
   <p><strong>ID Ordine:</strong> <span id="oid"></span></p>
   <p><strong>Nick:</strong> <span id="nick"></span></p>
   <p><strong>Totale:</strong> €<span id="total">0</span></p>
+</section>
 
-  <hr>
+<section>
   <h2>Bonifico Bancario</h2>
   <p><strong>Intestatario:</strong> MediaMC Network</p>
-  <p><strong>IBAN:</strong> <span style="color:#facc15">IT59E0200832974001869280392</span></p>
+  <p><strong>IBAN:</strong> IT59E0200832974001869280392</p>
   <p><strong>Causale:</strong> <span id="oid2"></span></p>
-  <p style="color:#a5f3fc;margin-top:15px">Effettua il bonifico e invia conferma allo staff aprendo un ticket sul nostro Discord.</p>
+  <p style="color:#a5f3fc;margin-top:15px">Effettua il bonifico e invia conferma allo staff.</p>
 </section>
 
 <section>
@@ -39,45 +40,28 @@ section{max-width:700px;margin:40px auto;background:rgba(30,64,175,0.85);padding
 </section>
 
 <script>
-const nick = sessionStorage.getItem('nick');
-if(!nick) {
-  alert('Inserisci il nick prima di procedere!');
-  window.location.href='store.html';
+const urlParams = new URLSearchParams(window.location.search);
+const orderId = urlParams.get('id');
+const orders = JSON.parse(localStorage.getItem('checkoutDataList'))||[];
+const order = orders.find(o=>o.id===orderId) || {};
+
+document.getElementById('oid').textContent = order.id || '';
+document.getElementById('oid2').textContent = order.id || '';
+document.getElementById('nick').textContent = order.nick || '';
+document.getElementById('total').textContent = order.total || 0;
+
+const itemsDiv = document.getElementById('items');
+itemsDiv.innerHTML='';
+if(order.cart && order.cart.length>0){
+  order.cart.forEach(p=>{
+    const div=document.createElement('div');
+    div.className='productItem';
+    div.innerHTML=`<span>${p.name}</span><span>€${p.price}</span>`;
+    itemsDiv.appendChild(div);
+  });
+}else{
+  itemsDiv.textContent='Nessun prodotto trovato';
 }
-
-const cart = JSON.parse(localStorage.getItem('cart_'+nick))||[];
-if(cart.length===0){
-  alert('Carrello vuoto!');
-  window.location.href='cart.html';
-}
-
-// Genera ID ordine
-const orderId = 'MM-'+Math.floor(Math.random()*1000000);
-document.getElementById('oid').textContent = orderId;
-document.getElementById('oid2').textContent = orderId;
-document.getElementById('nick').textContent = nick;
-
-// Calcola totale
-let total = 0;
-cart.forEach(p=>total+=p.price);
-document.getElementById('total').textContent = total;
-
-// Mostra prodotti
-const itemsDiv=document.getElementById('items');
-cart.forEach(p=>{
-  const div=document.createElement('div');
-  div.className='productItem';
-  div.innerHTML=`<span>${p.name}</span><span>€${p.price}</span>`;
-  itemsDiv.appendChild(div);
-});
-
-// Salva ordine nello storico per lo staff
-let orders = JSON.parse(localStorage.getItem('checkoutDataList'))||[];
-orders.push({id:orderId,nick:nick,cart:cart,total:total});
-localStorage.setItem('checkoutDataList',JSON.stringify(orders));
-
-// Svuota carrello dopo checkout
-localStorage.removeItem('cart_'+nick);
 </script>
 
 </body>
