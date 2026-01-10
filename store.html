@@ -5,136 +5,97 @@
 <title>MediaMC Store</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body{margin:0;font-family:'Segoe UI',Arial,sans-serif;background:linear-gradient(135deg,#0ea5e9,#1e3a8a);color:#fff;}
-header{text-align:center;padding:50px 20px;background:rgba(2,6,23,0.9);box-shadow:0 4px 15px rgba(0,0,0,0.4);}
-h1{color:#fff;}
-.container{display:flex;gap:20px;max-width:1200px;margin:30px auto;}
-.shop{flex:3;display:flex;flex-wrap:wrap;gap:20px;}
-.productCard{background:rgba(2,6,23,0.85);padding:15px;border-radius:12px;width:calc(33% - 20px);box-shadow:0 0 15px #38bdf8aa;transition:.2s;}
-.productCard:hover{transform:scale(1.02);}
-.productCard img{width:100%;border-radius:8px;cursor:pointer;object-fit:cover;height:150px;}
-button{background:#38bdf8;border:none;border-radius:8px;padding:6px 10px;color:#fff;font-weight:bold;cursor:pointer;margin-top:5px;transition:.2s;}
-button:hover{transform:scale(1.05);}
-.cart{flex:1;background:rgba(2,6,23,0.9);padding:15px;border-radius:12px;position:sticky;top:20px;max-height:600px;overflow-y:auto;}
-.cart h3{text-align:center;color:#38bdf8;}
-.cartItem{display:flex;justify-content:space-between;margin-bottom:10px;background:rgba(30,64,175,0.8);padding:8px;border-radius:6px;}
-#total{margin-top:10px;font-weight:bold;text-align:right;color:#fff;}
-#notification{position:fixed;top:20px;right:20px;background:#22c55e;padding:10px 15px;border-radius:8px;display:none;z-index:1000;}
-/* MODAL IMMAGINE */
-.modal{display:none;position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;overflow:auto;background:rgba(0,0,0,0.7);}
-.modal-content{background:#1e40af;margin:10% auto;padding:20px;border-radius:15px;width:90%;max-width:500px;position:relative;}
-.close{position:absolute;top:10px;right:15px;color:#fff;font-size:22px;font-weight:bold;cursor:pointer;}
-.modal-content img{width:100%;border-radius:8px;}
+body{margin:0;font-family:'Segoe UI',Arial,sans-serif;background:linear-gradient(135deg,#0ea5e9,#1e3a8a);color:#fff}
+header{text-align:center;padding:40px;background:rgba(2,6,23,.9)}
+.products{max-width:1000px;margin:40px auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px}
+.card{background:rgba(30,64,175,.85);border:2px solid #38bdf8;border-radius:12px;padding:15px;display:flex;flex-direction:column;justify-content:space-between}
+.card img{width:100%;border-radius:8px;margin-bottom:10px}
+button{background:#22c55e;border:none;padding:8px 12px;border-radius:6px;color:#fff;font-weight:bold;cursor:pointer;margin-top:5px}
+footer{text-align:center;margin:40px;color:#a5f3fc}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.8);display:flex;align-items:center;justify-content:center}
+.modalBox{background:#020617;padding:20px;border-radius:12px;border:2px solid #38bdf8;text-align:center}
+input{padding:8px;border-radius:6px;border:none;width:90%;margin-bottom:10px}
+.hidden{display:none}
+.categoryTitle{grid-column:1/-1;color:#facc15;font-size:1.5em;margin-top:20px;text-align:left}
 </style>
 </head>
 <body>
 
+<div id="nickModal" class="modal">
+  <div class="modalBox">
+    <h2>🎮 Inserisci il tuo Nick Minecraft</h2>
+    <input id="nickInput" placeholder="Es: Pasquitos">
+    <br><br>
+    <button onclick="saveNick()">Entra nello Store</button>
+  </div>
+</div>
+
 <header>
 <h1>🛒 MediaMC Store</h1>
-<p>Acquista kit e prodotti per il tuo server!</p>
+<p>Benvenuto <span id="nickLabel"></span></p>
 </header>
 
-<div class="container">
-  <div class="shop" id="shop"></div>
-  <div class="cart">
-    <h3>Carrello</h3>
-    <div id="cartItems"></div>
-    <div id="total">Totale: €0</div>
-  </div>
-</div>
+<div class="products" id="productList"></div>
 
-<div id="notification">Aggiunto al carrello con successo.</div>
-
-<!-- MODAL IMMAGINE -->
-<div id="imageModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeImageModal()">&times;</span>
-    <img id="largeImage" src="">
-  </div>
-</div>
+<footer>
+  <button onclick="location.href='cart.html'">🛒 Vai al Carrello</button><br><br>
+  <button onclick="location.href='staff.html'">⚙️ Apri Pannello Staff</button>
+</footer>
 
 <script>
-// Carrello
-let cart=[];
+const nickModal=document.getElementById('nickModal');
+const savedNick=localStorage.getItem('nick');
+if(savedNick){
+  nickModal.classList.add('hidden');
+  document.getElementById('nickLabel').textContent=savedNick;
+}
 
-// Prodotti predefiniti (come prima)
-let defaultProducts=[
-  {category:"BedWars",title:"Kit Starter BedWars",price:5,desc:"Kit base per iniziare BedWars",img:"https://i.imgur.com/qjBfPUE.png"},
-  {category:"BedWars",title:"Kit Avanzato BedWars",price:15,desc:"Kit avanzato con oggetti speciali",img:"https://i.imgur.com/JuCUPc2.png"},
-  {category:"Survival",title:"Kit Survival Base",price:3,desc:"Kit iniziale Survival",img:"https://i.imgur.com/XSjZ9CO.png"},
-  {category:"Duels",title:"Kit Duels Elite",price:10,desc:"Kit completo per Duels",img:"https://i.imgur.com/XkzqGq3.png"}
+function saveNick(){
+  const n=document.getElementById('nickInput').value.trim();
+  if(!n) return alert('Inserisci un nick');
+  localStorage.setItem('nick',n);
+  location.reload();
+}
+
+// prodotti e categorie
+let categories=JSON.parse(localStorage.getItem('categories'))||['BedWars','Duels','Survival'];
+let products=JSON.parse(localStorage.getItem('products'))||[
+  {name:'Kit Base BedWars',category:'BedWars',price:5,desc:'Kit iniziale per BedWars',img:'https://i.imgur.com/9Y1kQJD.png'},
+  {name:'Kit Duels Base',category:'Duels',price:3,desc:'Kit iniziale per Duels',img:'https://i.imgur.com/f0Zt5Kn.png'},
+  {name:'Kit Survival Base',category:'Survival',price:2,desc:'Kit iniziale per Survival',img:'https://i.imgur.com/0d5OQ7S.png'}
 ];
 
-// Prodotti dallo staff
-let staffProducts=JSON.parse(localStorage.getItem('products'))||[];
-
-// Unisci prodotti
-let products=[...defaultProducts,...staffProducts];
-
-// Render prodotti
-function renderShop(){
-  const shop=document.getElementById('shop');
-  shop.innerHTML='';
-  if(products.length===0) return shop.textContent='Nessun prodotto disponibile';
-  products.forEach((p,idx)=>{
-    const div=document.createElement('div');
-    div.className='productCard';
-    div.innerHTML=`
-      <img src="${p.img}" onclick="openImageModal('${p.img}')">
-      <h4>${p.title}</h4>
-      <p>${p.desc}</p>
-      <p>Categoria: ${p.category}</p>
-      <p>€${p.price}</p>
-      <button onclick="addToCart(${idx})">Aggiungi al carrello</button>
-    `;
-    shop.appendChild(div);
+function renderStore(){
+  const list=document.getElementById('productList');
+  list.innerHTML='';
+  categories.forEach(cat=>{
+    // titolo categoria
+    const t=document.createElement('div');
+    t.className='categoryTitle';
+    t.textContent=cat;
+    list.appendChild(t);
+    // prodotti
+    products.filter(p=>p.category===cat).forEach(p=>{
+      const card=document.createElement('div');
+      card.className='card';
+      card.innerHTML=`<img src="${p.img}" alt="${p.name}"><h3>${p.name}</h3><p>${p.desc}</p><p>€${p.price}</p>`;
+      const btn=document.createElement('button');
+      btn.textContent='Aggiungi al Carrello';
+      btn.onclick=()=>addToCart(p);
+      card.appendChild(btn);
+      list.appendChild(card);
+    });
   });
 }
 
-// Carrello
-function addToCart(idx){
-  cart.push(products[idx]);
-  renderCart();
-  showNotification();
-}
-function renderCart(){
-  const cartDiv=document.getElementById('cartItems');
-  const totalDiv=document.getElementById('total');
-  cartDiv.innerHTML='';
-  let total=0;
-  cart.forEach((p,i)=>{
-    total+=p.price;
-    const div=document.createElement('div');
-    div.className='cartItem';
-    div.innerHTML=`<div>${p.title} (€${p.price})</div>
-                   <button onclick="removeFromCart(${i})">X</button>`;
-    cartDiv.appendChild(div);
-  });
-  totalDiv.textContent='Totale: €'+total;
-}
-function removeFromCart(i){
-  cart.splice(i,1);
-  renderCart();
+function addToCart(p){
+  let cart=JSON.parse(localStorage.getItem('cart'))||[];
+  cart.push(p);
+  localStorage.setItem('cart',JSON.stringify(cart));
+  alert(`✅ ${p.name} aggiunto al carrello!`);
 }
 
-// Notifica
-function showNotification(){
-  const n=document.getElementById('notification');
-  n.style.display='block';
-  setTimeout(()=>{n.style.display='none'},1500);
-}
-
-// Modal immagine
-function openImageModal(src){
-  document.getElementById('largeImage').src=src;
-  document.getElementById('imageModal').style.display='block';
-}
-function closeImageModal(){
-  document.getElementById('imageModal').style.display='none';
-}
-
-// INIT
-renderShop();
+renderStore();
 </script>
 
 </body>
