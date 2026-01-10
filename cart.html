@@ -7,20 +7,20 @@
 <style>
 body{margin:0;font-family:'Segoe UI',Arial;background:linear-gradient(135deg,#0ea5e9,#020617);color:#fff}
 header{text-align:center;padding:40px 20px;background:rgba(2,6,23,.9)}
-header #nickDisplay{font-weight:bold}
-section{max-width:500px;margin:30px auto;background:rgba(2,6,23,.85);padding:20px;border-radius:12px;border:2px solid #38bdf8}
-.productItem{display:flex;justify-content:space-between;background:rgba(2,6,23,.8);padding:8px;border-radius:6px;margin:5px 0}
+section{max-width:600px;margin:30px auto;background:rgba(2,6,23,.85);padding:20px;border-radius:12px;border:2px solid #38bdf8}
 button{background:#38bdf8;border:none;border-radius:6px;padding:6px 12px;color:#fff;font-weight:bold;cursor:pointer;margin:5px 0}
 button.green{background:#22c55e}
+button.red{background:#ef4444}
 input{padding:6px;border-radius:6px;border:none;width:90%;margin-bottom:10px}
+.productItem{display:flex;justify-content:space-between;background:rgba(2,6,23,.8);padding:8px;border-radius:6px;margin:5px 0;align-items:center;}
+#nickDisplay{font-weight:bold;margin-bottom:10px;}
 </style>
 </head>
 <body>
 
 <header>
 <h1>🛒 Carrello MediaMC</h1>
-<p>Loggato come: <span id="nickDisplay"></span></p>
-<button onclick="backStore()">← Torna allo Store</button>
+<div id="nickDisplay"></div>
 </header>
 
 <section>
@@ -34,38 +34,52 @@ input{padding:6px;border-radius:6px;border:none;width:90%;margin-bottom:10px}
 <p id="giftMsg"></p>
 
 <button class="green" onclick="checkout()">Procedi Ordine</button>
-<button onclick="clearCart()" style="background:#ef4444;color:#fff">🗑️ Svuota Carrello</button>
+<button class="red" onclick="clearCart()">🗑️ Svuota Carrello</button>
+
+<hr>
+<!-- Staff rimane intatto -->
+<button style="background:#facc15;color:#000;display:block;margin:auto;" onclick="location.href='staff.html'">⚙️ Apri Pannello Staff</button>
 </section>
 
 <script>
-const nick=sessionStorage.getItem('nick');
-if(!nick){alert('Devi inserire il nick');location.href='store.html';}
-document.getElementById('nickDisplay').textContent=nick;
+let nick=sessionStorage.getItem('nick');
+if(!nick){
+  nick=prompt('Inserisci il tuo nick Minecraft per il carrello:');
+  if(!nick) { alert('Nick obbligatorio'); throw 'Nick non inserito'; }
+  sessionStorage.setItem('nick',nick);
+}
+document.getElementById('nickDisplay').textContent='Nick: '+nick;
 
+// Carrello
 let cart=JSON.parse(localStorage.getItem('cart_'+nick))||[];
 let giftValue=0;
 let giftCards=JSON.parse(localStorage.getItem('giftCards'))||[];
 
+// Render carrello
 function render(){
   const cartList=document.getElementById('cartList');
   cartList.innerHTML='';
   let tot=0;
   cart.forEach((p,idx)=>{
     tot+=p.price;
-    const div=document.createElement('div');
-    div.className='productItem';
-    div.innerHTML=`<span>${p.name} - €${p.price}</span>
-      <div>
-        <button onclick="removeItem(${idx})">X</button>
-      </div>`;
-    cartList.appendChild(div);
+    cartList.innerHTML+=`
+    <div class="productItem">
+      <span><b>${p.name}</b> - €${p.price}</span>
+      <button onclick="removeItem(${idx})">X</button>
+    </div>`;
   });
   tot=Math.max(0,tot-giftValue);
   document.getElementById('total').textContent=tot;
 }
+render();
 
-function removeItem(idx){ cart.splice(idx,1); localStorage.setItem('cart_'+nick,JSON.stringify(cart)); render(); }
+function removeItem(idx){
+  cart.splice(idx,1);
+  localStorage.setItem('cart_'+nick,JSON.stringify(cart));
+  render();
+}
 
+// Gift card
 function applyGift(){
   const code=document.getElementById('giftInput').value.trim().toUpperCase();
   const gc=giftCards.find(g=>g.code===code);
@@ -79,22 +93,27 @@ function applyGift(){
   render();
 }
 
+// Checkout
 function checkout(){
   if(cart.length===0){ alert('Carrello vuoto'); return; }
   const tot=cart.reduce((s,p)=>s+p.price,0)-giftValue;
   const id='MM-'+Math.floor(Math.random()*100000);
+  localStorage.setItem('checkoutDataList',JSON.stringify([
+    ...(JSON.parse(localStorage.getItem('checkoutDataList'))||[]),
+    {id,cart,nick,total:tot}
+  ]));
   localStorage.setItem('checkoutData',JSON.stringify({id,cart,total:tot,nick}));
-  let allOrders=JSON.parse(localStorage.getItem('checkoutDataList'))||[];
-  allOrders.push({id,cart,total:tot,nick});
-  localStorage.setItem('checkoutDataList',JSON.stringify(allOrders));
   window.location.href='checkout.html';
 }
 
-function clearCart(){ cart=[]; localStorage.setItem('cart_'+nick,JSON.stringify(cart)); render(); alert('Carrello svuotato'); }
-
-function backStore(){ location.href='store.html'; }
-
-render();
+// Svuota carrello
+function clearCart(){
+  if(!confirm('Vuoi svuotare il carrello?')) return;
+  cart=[];
+  localStorage.setItem('cart_'+nick,JSON.stringify(cart));
+  render();
+  alert('Carrello svuotato');
+}
 </script>
 </body>
 </html>
