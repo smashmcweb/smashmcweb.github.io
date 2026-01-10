@@ -4,186 +4,211 @@
 <meta charset="UTF-8">
 <title>MediaMC Store</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
-body {
-  margin: 0;
-  font-family: 'Segoe UI', Arial, sans-serif;
-  background: linear-gradient(135deg, #0ea5e9, #1e3a8a);
-  color: #fff;
+body{
+  margin:0;
+  font-family:'Segoe UI',Arial;
+  background:linear-gradient(135deg,#0ea5e9,#1e3a8a);
+  color:#fff;
 }
-
-header {
-  text-align: center;
-  padding: 60px 20px;
-  background: rgba(2,6,23,0.85);
+header{
+  text-align:center;
+  padding:60px 20px;
+  background:rgba(2,6,23,.9);
 }
-
-.store-section, #cartSection, #staffSection, #paymentSection {
-  max-width: 700px;
-  margin: 20px auto;
-  background: rgba(2,6,23,0.9);
-  border: 2px solid #38bdf8;
-  border-radius: 14px;
-  padding: 20px;
+section{
+  max-width:720px;
+  margin:25px auto;
+  background:rgba(2,6,23,.92);
+  border:2px solid #38bdf8;
+  border-radius:14px;
+  padding:20px;
 }
-
-.store-item, #cartItems div, #staffOrders div {
-  display: flex;
-  justify-content: space-between;
-  padding: 8px 0;
-  border-bottom: 1px solid #38bdf8;
+h2{color:#38bdf8}
+.item{
+  display:flex;
+  justify-content:space-between;
+  padding:10px 0;
+  border-bottom:1px solid #38bdf8;
 }
-
-button {
-  background: #38bdf8;
-  border: none;
-  border-radius: 6px;
-  color: #fff;
-  cursor: pointer;
-  padding: 6px 12px;
-  font-weight: bold;
+button{
+  background:#38bdf8;
+  border:none;
+  border-radius:6px;
+  padding:7px 14px;
+  color:#fff;
+  font-weight:bold;
+  cursor:pointer;
 }
-
-#checkoutBtn { background: #22c55e; }
-
-#paymentSection {
-  border-color: #22c55e;
-  display: none;
+.green{background:#22c55e}
+.yellow{background:#facc15;color:#000}
+input{
+  padding:7px;
+  border-radius:6px;
+  border:none;
+  width:100%;
+  margin-bottom:10px;
 }
-
-#staffSection {
-  border-color: #facc15;
-  display: none;
-}
-
-#openStaffBtn {
-  display: block;
-  margin: 30px auto;
-  background: #facc15;
-  color: #000;
-}
+#payment,#staff{display:none}
 </style>
 </head>
+
 <body>
 
 <header>
   <h1>🛒 MediaMC Store</h1>
-  <p>Acquista contenuti Premium per MediaMC</p>
+  <p>Store ufficiale MediaMC</p>
 </header>
 
 <!-- LOGIN -->
-<div id="loginPopup" style="position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;">
+<div id="login" style="position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;justify-content:center;align-items:center;">
   <div style="background:#020617;padding:25px;border-radius:12px;text-align:center;">
-    <h2>Inserisci il tuo Nick Minecraft</h2>
-    <input id="nickInput" placeholder="Nick Minecraft">
-    <br><br>
-    <button onclick="login()">Entra</button>
+    <h2>Nick Minecraft</h2>
+    <input id="nick">
+    <button onclick="loginUser()">Entra</button>
   </div>
 </div>
 
 <!-- STORE -->
-<div id="storeSection" class="store-section" style="display:none;">
+<section id="store" style="display:none">
 <h2>Prodotti</h2>
 
-<div class="store-item">
+<div class="item">
   <span>Kit Duels</span>
-  <button onclick="addToCart('Kit Duels',5)">Aggiungi €5</button>
+  <button onclick="add('Kit Duels',5)">€5</button>
 </div>
-
-<div class="store-item">
-  <span>Skin BedWars</span>
-  <button onclick="addToCart('Skin BedWars',3)">Aggiungi €3</button>
+<div class="item">
+  <span>Cosmetici BedWars</span>
+  <button onclick="add('Cosmetici BedWars',3)">€3</button>
 </div>
-
-<div class="store-item">
+<div class="item">
   <span>Premium Survival</span>
-  <button onclick="addToCart('Premium Survival',10)">Aggiungi €10</button>
+  <button onclick="add('Premium Survival',10)">€10</button>
 </div>
-</div>
+</section>
 
 <!-- CARRELLO -->
-<div id="cartSection" style="display:none;">
+<section id="cart" style="display:none">
 <h2>Carrello</h2>
-<div id="cartItems"></div>
-<button id="checkoutBtn" onclick="checkout()">Procedi Ordine</button>
-</div>
+<div id="cartList"></div>
+
+<input id="giftInput" placeholder="Inserisci Gift Card">
+<button onclick="applyGift()">Applica Gift Card</button>
+<p id="giftMsg"></p>
+
+<p><b>Totale:</b> €<span id="total">0</span></p>
+
+<button class="green" onclick="checkout()">Procedi Ordine</button>
+</section>
 
 <!-- PAGAMENTO -->
-<div id="paymentSection">
-<h2>Pagamento tramite Bonifico Bancario</h2>
-<p><b>ID Ordine:</b> <span id="payOrderId"></span></p>
+<section id="payment">
+<h2>Pagamento – Bonifico</h2>
+<p><b>ID Ordine:</b> <span id="oid"></span></p>
 <p><b>Importo:</b> €<span id="payTotal"></span></p>
-
-<hr>
-
-<p><b>Intestatario:</b> MediaMC Network</p>
-<p><b>IBAN:</b> <span style="color:#facc15;">INSERIREMO DOMANI</span></p>
-<p><b>Causale:</b> <span id="payCausal"></span></p>
-
-<p style="margin-top:15px;color:#a5f3fc;">
-Dopo aver effettuato il bonifico, lo staff verificherà il pagamento e l’ordine verrà completato.
-</p>
-</div>
+<p><b>IBAN:</b> <span style="color:#facc15">INSERIREMO DOMANI</span></p>
+<p><b>Causale:</b> <span id="oid2"></span></p>
+</section>
 
 <!-- STAFF -->
-<button id="openStaffBtn" onclick="document.getElementById('staffSection').style.display='block'">
-Apri Sezione Staff
-</button>
+<button class="yellow" onclick="staff.style.display='block'">Apri Sezione Staff</button>
 
-<div id="staffSection">
-<h2>Sezione Staff</h2>
-<input type="password" id="staffPass" placeholder="Password Staff">
-<button onclick="loginStaff()">Accedi</button>
-<div id="staffOrders" style="margin-top:15px;"></div>
+<section id="staff">
+<h2>Staff</h2>
+
+<div id="staffLogin">
+  <input type="password" id="staffPass" placeholder="Password Staff">
+  <button onclick="loginStaff()">Accedi</button>
 </div>
+
+<div id="staffSearch" style="display:none">
+  <input id="searchId" placeholder="ID Ordine">
+  <button onclick="searchOrder()">Cerca</button>
+  <div id="staffResult"></div>
+</div>
+</section>
 
 <script>
 let nick='';
 let cart=[];
+let giftValue=0;
+let giftUsedCode='';
 let orders=JSON.parse(localStorage.getItem('orders'))||[];
 
-function login(){
-  nick=document.getElementById('nickInput').value.trim();
-  if(!nick) return alert('Inserisci il nick');
-  loginPopup.style.display='none';
-  storeSection.style.display='block';
-  cartSection.style.display='block';
+/* GIFT CARD (UNA SOLA VOLTA) */
+const giftCards={
+  "MEDIAMC30":30,
+  "MEDIAMC10":10
+};
+
+function loginUser(){
+  nick=nick.value.trim();
+  if(!nick) return alert('Inserisci nick');
+  login.style.display='none';
+  store.style.display='block';
+  cart.style.display='block';
 }
 
-function addToCart(name,price){
-  cart.push({name,price});
-  renderCart();
+function add(n,p){
+  cart.push({n,p});
+  render();
 }
 
-function renderCart(){
-  cartItems.innerHTML='';
+function render(){
+  cartList.innerHTML='';
+  let tot=0;
   cart.forEach((i,idx)=>{
-    cartItems.innerHTML+=`${i.name} €${i.price} <button onclick="cart.splice(${idx},1);renderCart()">X</button><br>`;
+    tot+=i.p;
+    cartList.innerHTML+=`${i.n} €${i.p}
+    <button onclick="cart.splice(${idx},1);render()">X</button><br>`;
   });
+  tot=Math.max(0,tot-giftValue);
+  total.textContent=tot;
+}
+
+function applyGift(){
+  const code=giftInput.value.trim().toUpperCase();
+  if(!giftCards[code]) return giftMsg.textContent='Gift card non valida';
+  if(localStorage.getItem('used_'+code)) return giftMsg.textContent='Gift card già usata';
+
+  giftValue=giftCards[code];
+  giftUsedCode=code;
+  giftMsg.textContent=`Gift card applicata: -€${giftValue}`;
+  render();
 }
 
 function checkout(){
   if(cart.length===0) return alert('Carrello vuoto');
+
+  let tot=cart.reduce((s,i)=>s+i.p,0);
+  tot=Math.max(0,tot-giftValue);
+
   const id='MM-'+Math.floor(Math.random()*100000);
-  const total=cart.reduce((s,i)=>s+i.price,0);
-  orders.push({id,nick,items:cart,total});
+
+  orders.push({id,nick,items:cart,total:tot});
   localStorage.setItem('orders',JSON.stringify(orders));
 
-  payOrderId.textContent=id;
-  payTotal.textContent=total;
-  payCausal.textContent=id;
+  if(giftUsedCode) localStorage.setItem('used_'+giftUsedCode,true);
 
-  paymentSection.style.display='block';
-  cart=[];
-  renderCart();
+  oid.textContent=id;
+  oid2.textContent=id;
+  payTotal.textContent=tot;
+  payment.style.display='block';
 }
 
 function loginStaff(){
   if(staffPass.value!=='staff123') return alert('Password errata');
-  staffOrders.innerHTML='';
-  orders.forEach(o=>{
-    staffOrders.innerHTML+=`<div>${o.nick} | ${o.id} | €${o.total}</div>`;
-  });
+  staffLogin.style.display='none';
+  staffSearch.style.display='block';
+}
+
+function searchOrder(){
+  const id=searchId.value.trim();
+  const o=orders.find(x=>x.id===id);
+  staffResult.innerHTML=o
+    ? `Nick: ${o.nick}<br>ID: ${o.id}<br>Totale: €${o.total}`
+    : 'Ordine non trovato';
 }
 </script>
 
