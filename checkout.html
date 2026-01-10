@@ -5,11 +5,13 @@
 <title>MediaMC Checkout</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body{margin:0;font-family:'Segoe UI',Arial,sans-serif;background:linear-gradient(135deg,#0ea5e9,#1e3a8a);color:#fff}
-header{text-align:center;padding:40px 20px;background:rgba(2,6,23,.9)}
+body{margin:0;font-family:'Segoe UI',Arial;background:linear-gradient(135deg,#0ea5e9,#020617);color:#fff;overflow-x:hidden}
+header{text-align:center;padding:40px 20px;background:rgba(2,6,23,0.85)}
 section{max-width:700px;margin:40px auto;background:rgba(30,64,175,0.85);padding:20px;border-radius:12px;border:2px solid #38bdf8}
-h2{color:#38bdf8;margin-top:0} p{margin:8px 0} strong{color:#facc15}
-.productItem{background:rgba(2,6,23,.8);padding:10px;border-radius:6px;margin:5px 0;display:flex;justify-content:space-between}
+h2{color:#38bdf8;margin-top:0}
+p{margin:8px 0}
+strong{color:#facc15}
+.productItem{background:rgba(2,6,23,0.8);padding:10px;border-radius:6px;margin:5px 0;display:flex;justify-content:space-between}
 </style>
 </head>
 <body>
@@ -30,7 +32,7 @@ h2{color:#38bdf8;margin-top:0} p{margin:8px 0} strong{color:#facc15}
   <p><strong>Intestatario:</strong> MediaMC Network</p>
   <p><strong>IBAN:</strong> <span style="color:#facc15">IT59E0200832974001869280392</span></p>
   <p><strong>Causale:</strong> <span id="oid2"></span></p>
-  <p style="color:#a5f3fc;margin-top:15px">Effettua il bonifico e invia conferma allo staff.</p>
+  <p style="color:#a5f3fc;margin-top:15px">Apri un ticket nel nostro Discord per confermare il pagamento e ricevere i prodotti.</p>
 </section>
 
 <section>
@@ -51,7 +53,7 @@ if(data.cart&&data.cart.length>0){
   data.cart.forEach(p=>{
     const div=document.createElement('div');
     div.className='productItem';
-    div.innerHTML=`<span>${p.name}</span><span>€${p.price}</span>`;
+    div.innerHTML=`<span>${p.title}</span><span>€${p.price}</span>`;
     itemsDiv.appendChild(div);
   });
 }else{
