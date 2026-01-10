@@ -29,6 +29,7 @@ h2{color:#38bdf8}
 .item{
   display:flex;
   justify-content:space-between;
+  align-items:center;
   padding:10px 0;
   border-bottom:1px solid #38bdf8;
 }
@@ -42,7 +43,6 @@ button{
   cursor:pointer;
 }
 .green{background:#22c55e}
-.yellow{background:#facc15;color:#000}
 input{
   padding:7px;
   border-radius:6px;
@@ -50,7 +50,7 @@ input{
   width:100%;
   margin-bottom:10px;
 }
-#payment,#staff{display:none}
+#payment{display:none}
 </style>
 </head>
 
@@ -65,7 +65,7 @@ input{
 <div id="login" style="position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;justify-content:center;align-items:center;">
   <div style="background:#020617;padding:25px;border-radius:12px;text-align:center;">
     <h2>Nick Minecraft</h2>
-    <input id="nick">
+    <input id="nickInput" placeholder="Inserisci il tuo nick">
     <button onclick="loginUser()">Entra</button>
   </div>
 </div>
@@ -75,15 +75,17 @@ input{
 <h2>Prodotti</h2>
 
 <div class="item">
-  <span>Kit Duels</span>
+  <span>⚔️ Kit Duels</span>
   <button onclick="add('Kit Duels',5)">€5</button>
 </div>
+
 <div class="item">
-  <span>Cosmetici BedWars</span>
+  <span>🛏️ Cosmetici BedWars</span>
   <button onclick="add('Cosmetici BedWars',3)">€3</button>
 </div>
+
 <div class="item">
-  <span>Premium Survival</span>
+  <span>🌍 Premium Survival</span>
   <button onclick="add('Premium Survival',10)">€10</button>
 </div>
 </section>
@@ -93,8 +95,9 @@ input{
 <h2>Carrello</h2>
 <div id="cartList"></div>
 
+<h3>🎁 Gift Card</h3>
 <input id="giftInput" placeholder="Inserisci Gift Card">
-<button onclick="applyGift()">Applica Gift Card</button>
+<button onclick="applyGift()">Applica</button>
 <p id="giftMsg"></p>
 
 <p><b>Totale:</b> €<span id="total">0</span></p>
@@ -104,54 +107,39 @@ input{
 
 <!-- PAGAMENTO -->
 <section id="payment">
-<h2>Pagamento – Bonifico</h2>
+<h2>Pagamento – Bonifico Bancario</h2>
 <p><b>ID Ordine:</b> <span id="oid"></span></p>
 <p><b>Importo:</b> €<span id="payTotal"></span></p>
+
+<hr>
+
+<p><b>Intestatario:</b> MediaMC Network</p>
 <p><b>IBAN:</b> <span style="color:#facc15">INSERIREMO DOMANI</span></p>
 <p><b>Causale:</b> <span id="oid2"></span></p>
-</section>
 
-<!-- STAFF -->
-<button class="yellow" onclick="staff.style.display='block'">Apri Sezione Staff</button>
-
-<section id="staff">
-<h2>Staff</h2>
-
-<div id="staffLogin">
-  <input type="password" id="staffPass" placeholder="Password Staff">
-  <button onclick="loginStaff()">Accedi</button>
-</div>
-
-<div id="staffSearch" style="display:none">
-  <input id="searchId" placeholder="ID Ordine">
-  <button onclick="searchOrder()">Cerca</button>
-  <div id="staffResult"></div>
-</div>
+<p style="color:#a5f3fc;margin-top:15px">
+Il pagamento verrà verificato manualmente.
+</p>
 </section>
 
 <script>
 let nick='';
 let cart=[];
 let giftValue=0;
-let giftUsedCode='';
+let giftCodeUsed='';
 let orders=JSON.parse(localStorage.getItem('orders'))||[];
-
-/* GIFT CARD (UNA SOLA VOLTA) */
-const giftCards={
-  "MEDIAMC30":30,
-  "MEDIAMC10":10
-};
+let giftCards=JSON.parse(localStorage.getItem('giftCards'))||{};
 
 function loginUser(){
-  nick=nick.value.trim();
-  if(!nick) return alert('Inserisci nick');
+  nick=nickInput.value.trim();
+  if(!nick) return alert('Inserisci il nick');
   login.style.display='none';
   store.style.display='block';
   cart.style.display='block';
 }
 
-function add(n,p){
-  cart.push({n,p});
+function add(name,price){
+  cart.push({name,price});
   render();
 }
 
@@ -159,8 +147,8 @@ function render(){
   cartList.innerHTML='';
   let tot=0;
   cart.forEach((i,idx)=>{
-    tot+=i.p;
-    cartList.innerHTML+=`${i.n} €${i.p}
+    tot+=i.price;
+    cartList.innerHTML+=`${i.name} €${i.price}
     <button onclick="cart.splice(${idx},1);render()">X</button><br>`;
   });
   tot=Math.max(0,tot-giftValue);
@@ -170,10 +158,10 @@ function render(){
 function applyGift(){
   const code=giftInput.value.trim().toUpperCase();
   if(!giftCards[code]) return giftMsg.textContent='Gift card non valida';
-  if(localStorage.getItem('used_'+code)) return giftMsg.textContent='Gift card già usata';
+  if(giftCards[code].used) return giftMsg.textContent='Gift card già usata';
 
-  giftValue=giftCards[code];
-  giftUsedCode=code;
+  giftValue=giftCards[code].value;
+  giftCodeUsed=code;
   giftMsg.textContent=`Gift card applicata: -€${giftValue}`;
   render();
 }
@@ -181,7 +169,7 @@ function applyGift(){
 function checkout(){
   if(cart.length===0) return alert('Carrello vuoto');
 
-  let tot=cart.reduce((s,i)=>s+i.p,0);
+  let tot=cart.reduce((s,i)=>s+i.price,0);
   tot=Math.max(0,tot-giftValue);
 
   const id='MM-'+Math.floor(Math.random()*100000);
@@ -189,26 +177,15 @@ function checkout(){
   orders.push({id,nick,items:cart,total:tot});
   localStorage.setItem('orders',JSON.stringify(orders));
 
-  if(giftUsedCode) localStorage.setItem('used_'+giftUsedCode,true);
+  if(giftCodeUsed){
+    giftCards[giftCodeUsed].used=true;
+    localStorage.setItem('giftCards',JSON.stringify(giftCards));
+  }
 
   oid.textContent=id;
   oid2.textContent=id;
   payTotal.textContent=tot;
   payment.style.display='block';
-}
-
-function loginStaff(){
-  if(staffPass.value!=='staff123') return alert('Password errata');
-  staffLogin.style.display='none';
-  staffSearch.style.display='block';
-}
-
-function searchOrder(){
-  const id=searchId.value.trim();
-  const o=orders.find(x=>x.id===id);
-  staffResult.innerHTML=o
-    ? `Nick: ${o.nick}<br>ID: ${o.id}<br>Totale: €${o.total}`
-    : 'Ordine non trovato';
 }
 </script>
 
