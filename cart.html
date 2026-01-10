@@ -12,6 +12,7 @@ button{background:#38bdf8;border:none;border-radius:6px;padding:6px 12px;color:#
 button.green{background:#22c55e}
 #staffPanel{display:none;margin-top:15px;background:#facc15;color:#000;padding:10px;border-radius:8px}
 input{padding:6px;border-radius:6px;border:none;width:90%;margin-bottom:10px}
+.productItem{display:flex;justify-content:space-between;background:rgba(2,6,23,.8);padding:8px;border-radius:6px;margin:5px 0}
 </style>
 </head>
 <body>
@@ -31,7 +32,12 @@ input{padding:6px;border-radius:6px;border:none;width:90%;margin-bottom:10px}
   <hr>
   <button style="background:#facc15;color:#000" onclick="toggleStaff()">⚙️ Apri Pannello Staff</button>
   <div id="staffPanel">
-    <p>Sezione riservata agli Staff</p>
+    <h3>Staff Login</h3>
+    <input id="staffPass" type="password" placeholder="Inserisci password">
+    <button onclick="checkStaff()">Accedi</button>
+    <div id="staffContent" style="display:none;margin-top:10px;background:#facc15;color:#000;padding:10px;border-radius:8px">
+      <p>Benvenuto Staff!</p>
+    </div>
   </div>
 </section>
 
@@ -47,7 +53,7 @@ function render(){
   cartList.innerHTML='';
   cart.forEach((p,idx)=>{
     tot+=p.price;
-    cartList.innerHTML+=`${p.name} €${p.price} <button onclick="cart.splice(${idx},1);render();">X</button><br>`;
+    cartList.innerHTML+=`<div class="productItem"><span>${p.name}</span><span>€${p.price}</span> <button onclick="cart.splice(${idx},1);render();">X</button></div>`;
   });
   tot=Math.max(0,tot-giftValue);
   document.getElementById('total').textContent=tot;
@@ -69,13 +75,24 @@ function checkout(){
   if(cart.length===0) return alert('Carrello vuoto');
   const tot=cart.reduce((s,p)=>s+p.price,0)-giftValue;
   const id='MM-'+Math.floor(Math.random()*100000);
-  localStorage.setItem('checkoutData',JSON.stringify({id,cart,total:tot}));
+  const nick = localStorage.getItem('nick') || 'Sconosciuto';
+  localStorage.setItem('checkoutData',JSON.stringify({id,cart,total:tot,nick}));
   window.location.href='checkout.html';
 }
 
 function toggleStaff(){
   const el=document.getElementById('staffPanel');
   el.style.display = (el.style.display==='block')?'none':'block';
+}
+
+function checkStaff(){
+  const pass = document.getElementById('staffPass').value;
+  if(pass==='staff123'){
+    document.getElementById('staffContent').style.display='block';
+    alert('Accesso consentito');
+  } else {
+    alert('Password errata');
+  }
 }
 </script>
 
