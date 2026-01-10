@@ -39,16 +39,12 @@ h2{color:#38bdf8;margin-top:0} p{margin:8px 0} strong{color:#facc15}
 </section>
 
 <script>
-// Legge i dati salvati dal carrello
 const data = JSON.parse(localStorage.getItem('checkoutData')) || {};
 document.getElementById('oid').textContent = data.id || '';
 document.getElementById('oid2').textContent = data.id || '';
 document.getElementById('nick').textContent = data.nick || '';
-
-// Totale calcolato
 document.getElementById('total').textContent = (data.total !== undefined) ? data.total : '0';
 
-// Mostra i prodotti
 const itemsDiv = document.getElementById('items');
 itemsDiv.innerHTML = '';
 if(data.cart && data.cart.length>0){
