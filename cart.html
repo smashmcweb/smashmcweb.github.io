@@ -24,6 +24,12 @@ input{padding:6px;border-radius:6px;border:none;width:90%;margin-bottom:10px}
   <h2>Prodotti</h2>
   <div id="cartList"></div>
   <h3>Totale: €<span id="total">0</span></h3>
+
+  <h3>Gift Card</h3>
+  <input id="giftInput" placeholder="Inserisci Gift Card">
+  <button onclick="applyGift()">Applica</button>
+  <p id="giftMsg"></p>
+
   <button class="green" onclick="checkout()">Procedi Ordine</button>
   <button onclick="clearCart()" style="background:#ef4444;color:#fff">🗑️ Svuota Carrello</button>
   <hr>
@@ -32,7 +38,12 @@ input{padding:6px;border-radius:6px;border:none;width:90%;margin-bottom:10px}
 
 <script>
 let cart=JSON.parse(localStorage.getItem('cart'))||[];
+let giftValue=0;
 
+// Gift Cards
+let giftCards=JSON.parse(localStorage.getItem('giftCards'))||[];
+
+// Render carrello
 function render(){
   const cartList=document.getElementById('cartList');
   let tot=0;
@@ -41,19 +52,36 @@ function render(){
     tot+=p.price;
     cartList.innerHTML+=`<div class="productItem"><span>${p.name}</span><span>€${p.price}</span> <button onclick="cart.splice(${idx},1);render();">X</button></div>`;
   });
+  tot=Math.max(0,tot-giftValue);
   document.getElementById('total').textContent=tot;
 }
 render();
 
+// Gift card
+function applyGift(){
+  const code=document.getElementById('giftInput').value.trim().toUpperCase();
+  const gc=giftCards.find(g=>g.code===code);
+  const msg=document.getElementById('giftMsg');
+  if(!gc){ msg.textContent='Gift card non valida'; return; }
+  if(gc.used){ msg.textContent='Gift card già usata'; return; }
+  giftValue=gc.value;
+  gc.used=true;
+  localStorage.setItem('giftCards',JSON.stringify(giftCards));
+  msg.textContent=`Gift card applicata: -€${giftValue}`;
+  render();
+}
+
+// Checkout
 function checkout(){
   if(cart.length===0) return alert('Carrello vuoto');
-  const tot=cart.reduce((s,p)=>s+p.price,0);
+  const tot=cart.reduce((s,p)=>s+p.price,0)-giftValue;
   const id='MM-'+Math.floor(Math.random()*100000);
   const nick=localStorage.getItem('nick')||'Sconosciuto';
   localStorage.setItem('checkoutData',JSON.stringify({id,cart,total:tot,nick}));
   window.location.href='checkout.html';
 }
 
+// Svuota
 function clearCart(){
   cart=[];
   localStorage.removeItem('cart');
