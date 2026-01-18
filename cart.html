@@ -1,218 +1,28 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Survival Realms | Store con Carrello</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary-blue: #0074D9;
-            --dark-blue: #001b35;
-            --accent-cyan: #00f2ff;
-            --glass-bg: rgba(255, 255, 255, 0.05);
-        }
+<div id="checkout-page" class="page">
+            <div class="checkout-container">
+                <h2 style="color: var(--primary-blue); text-align:center;">Conferma Ordine</h2>
+                <div style="margin-bottom: 20px; padding: 15px; background: #f9f9f9; border-radius: 10px;">
+                    <p>👤 Nickname: <b><span id="chk-nick"></span></b></p>
+                    <label>📧 Email per la ricevuta:</label>
+                    <input type="email" id="checkout-email" placeholder="esempio@mail.com" style="border: 2px solid var(--primary-blue);">
+                </div>
+                
+                <div class="bank-details">
+                    <p><b>Intestatario:</b> Mediamc Network</p>
+                    <p><b>Banca:</b> Unicredit S.p.A.</p>
+                    <p><b>IBAN:</b> IT 99 L 00000 00000 000000000000</p>
+                    <p><b>Importo Totale:</b> <span style="color:#2ecc71; font-weight:900;">€<span id="chk-total"></span></span></p>
+                    <p><b>Causale:</b> <span class="order-id">ORDINE #<span id="chk-id"></span></span></p>
+                </div>
+                
+                <p style="font-size: 0.8rem; color: #666; text-align: center;">
+                    <i>Cliccando su "Invia Ordine", riceverai le istruzioni via email.</i>
+                </p>
 
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background: radial-gradient(circle at center, #003366 0%, #001122 100%);
-            color: white;
-            margin: 0;
-            overflow-x: hidden;
-        }
-
-        /* Navbar con Bottone Carrello */
-        nav {
-            background: rgba(0, 0, 0, 0.9);
-            padding: 15px 50px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 2px solid var(--primary-blue);
-        }
-
-        .cart-trigger {
-            background: var(--primary-blue);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: bold;
-            border: none;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* Sidebar Carrello */
-        #cart-sidebar {
-            position: fixed;
-            right: -400px;
-            top: 0;
-            width: 350px;
-            height: 100%;
-            background: #fff;
-            color: #333;
-            box-shadow: -5px 0 15px rgba(0,0,0,0.5);
-            transition: 0.4s;
-            z-index: 2000;
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        #cart-sidebar.active { right: 0; }
-
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #eee;
-            padding: 10px 0;
-        }
-
-        .close-cart {
-            cursor: pointer;
-            color: var(--primary-blue);
-            font-weight: bold;
-            text-align: right;
-        }
-
-        /* Stile Card e Layout (come prima) */
-        .container { max-width: 1100px; margin: auto; padding: 40px 20px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; }
-        .card { background: white; color: #222; border-radius: 15px; padding: 20px; text-align: center; }
-        .price { font-size: 1.5rem; font-weight: 900; color: #2ecc71; margin: 10px 0; display: block; }
-        
-        .btn-add {
-            background: var(--primary-blue);
-            color: white; border: none; padding: 10px; width: 100%; border-radius: 8px; cursor: pointer; font-weight: bold;
-        }
-
-        .user-auth { text-align: center; padding: 40px; background: var(--glass-bg); margin-bottom: 20px; }
-        input { padding: 12px; border-radius: 5px; border: none; width: 250px; }
-
-        .total-box { margin-top: auto; padding-top: 20px; border-top: 2px solid #333; }
-        .btn-pay { background: #2ecc71; color: white; border: none; width: 100%; padding: 15px; font-size: 1.1rem; cursor: pointer; border-radius: 5px; }
-    </style>
-</head>
-<body>
-
-    <nav>
-        <div style="font-weight: 900;">SURVIVAL STORE</div>
-        <button class="cart-trigger" onclick="toggleCart()">
-            🛒 Carrello (<span id="cart-count">0</span>)
-        </button>
-    </nav>
-
-    <div id="cart-sidebar">
-        <div class="close-cart" onclick="toggleCart()">CHIUDI ✕</div>
-        <h2>Il tuo Carrello</h2>
-        <div id="cart-items-list">
-            <p style="color: #888;">Il carrello è vuoto.</p>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <button class="btn-buy" style="background:#95a5a6;" onclick="showPage('store-page')">Annulla</button>
+                    <button class="btn-buy" style="background:#2ecc71;" onclick="finalConfirm()">Invia Ordine</button>
+                </div>
+            </div>
         </div>
         
-        <div class="total-box">
-            <h3>Totale: €<span id="cart-total">0.00</span></h3>
-            <button class="btn-pay" onclick="finalCheckout()">PAGA ORA</button>
-        </div>
-    </div>
-
-    <div class="user-auth">
-        <h2>Benvenuto, Guerriero!</h2>
-        <p>Inserisci il tuo Nickname per iniziare lo shopping:</p>
-        <input type="text" id="playerName" placeholder="Nome in gioco...">
-    </div>
-
-    <div class="container">
-        <div class="grid">
-            <div class="card">
-                <h3>Kit VIP</h3>
-                <p>Accesso ai comandi base.</p>
-                <span class="price">5.00</span>
-                <button class="btn-add" onclick="addToCart('Kit VIP', 5.00)">Aggiungi al Carrello</button>
-            </div>
-
-            <div class="card">
-                <h3>Spada di Smeraldo</h3>
-                <p>Un'arma leggendaria.</p>
-                <span class="price">2.50</span>
-                <button class="btn-add" onclick="addToCart('Spada Smeraldo', 2.50)">Aggiungi al Carrello</button>
-            </div>
-
-            <div class="card">
-                <h3>Rank MVP</h3>
-                <p>Il grado più alto del server.</p>
-                <span class="price">15.00</span>
-                <button class="btn-add" onclick="addToCart('Rank MVP', 15.00)">Aggiungi al Carrello</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        let cart = [];
-        let total = 0;
-
-        function toggleCart() {
-            document.getElementById('cart-sidebar').classList.toggle('active');
-        }
-
-        function addToCart(name, price) {
-            const nick = document.getElementById('playerName').value;
-            if (!nick) {
-                alert("Inserisci prima il tuo nickname!");
-                return;
-            }
-            
-            cart.push({name, price});
-            updateCartUI();
-            
-            // Animazione feedback
-            alert(name + " aggiunto al carrello!");
-        }
-
-        function updateCartUI() {
-            const list = document.getElementById('cart-items-list');
-            const count = document.getElementById('cart-count');
-            const totalDisplay = document.getElementById('cart-total');
-            
-            list.innerHTML = "";
-            total = 0;
-
-            cart.forEach((item, index) => {
-                total += item.price;
-                list.innerHTML += `
-                    <div class="cart-item">
-                        <span>${item.name}</span>
-                        <span>€${item.price.toFixed(2)}</span>
-                    </div>
-                `;
-            });
-
-            if(cart.length === 0) {
-                list.innerHTML = '<p style="color: #888;">Il carrello è vuoto.</p>';
-            }
-
-            count.innerText = cart.length;
-            totalDisplay.innerText = total.toFixed(2);
-        }
-
-        function finalCheckout() {
-            const nick = document.getElementById('playerName').value;
-            if (cart.length === 0) {
-                alert("Il tuo carrello è vuoto!");
-                return;
-            }
-            
-            alert("Grazie " + nick + "!\nStai per pagare €" + total.toFixed(2) + " tramite il metodo scelto.");
-            // Qui reindirizzeresti a PayPal/Stripe con la lista degli oggetti
-        }
-    </script>
-
-</body>
-</html>
-
-
