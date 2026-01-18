@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MEDIA MC STORE | Official Store</title>
+    <title>Survival Realms | Official Store & Cart</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -19,12 +19,13 @@
             background: radial-gradient(circle at center, #003366 0%, #001122 100%);
             color: white;
             margin: 0;
+            overflow-x: hidden;
             scroll-behavior: smooth;
         }
 
         /* Navbar */
         nav {
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.9);
             padding: 15px 50px;
             display: flex;
             justify-content: space-between;
@@ -36,230 +37,291 @@
         }
 
         .logo { font-weight: 900; font-size: 1.5rem; letter-spacing: 2px; }
-        .nav-links a { color: white; text-decoration: none; margin-left: 20px; font-weight: 700; transition: 0.3s; }
-        .nav-links a:hover { color: var(--accent-cyan); }
+        
+        .cart-btn {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.3s;
+        }
 
-        /* Hero Section */
+        .cart-btn:hover { background: var(--accent-cyan); color: var(--dark-blue); }
+
+        /* Sidebar Carrello */
+        #cart-sidebar {
+            position: fixed;
+            right: -400px;
+            top: 0;
+            width: 350px;
+            height: 100%;
+            background: white;
+            color: #333;
+            box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+            transition: 0.4s ease-in-out;
+            z-index: 2000;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #cart-sidebar.active { right: 0; }
+
+        .close-cart { text-align: right; cursor: pointer; font-weight: bold; color: var(--primary-blue); margin-bottom: 20px; }
+        
+        #cart-items-list { flex-grow: 1; overflow-y: auto; }
+        
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 0.9rem;
+        }
+
+        .cart-total-section {
+            border-top: 2px solid #eee;
+            padding-top: 20px;
+        }
+
+        .btn-checkout {
+            background: #2ecc71;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 10px;
+        }
+
+        /* Hero & User Auth */
         header {
-            height: 400px;
+            height: 300px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            text-align: center;
-            background: url('https://images.unsplash.com/photo-1627398242454-45a1465c2479?auto=format&fit=crop&q=80&w=1920') rgba(0, 27, 53, 0.7);
-            background-blend-mode: overlay;
+            background: linear-gradient(rgba(0,27,53,0.8), rgba(0,27,53,0.8)), url('https://images.unsplash.com/photo-1627398242454-45a1465c2479?q=80&w=1920');
             background-size: cover;
+            text-align: center;
         }
 
-        header h1 { font-size: 3.5rem; margin-bottom: 10px; text-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-
-        /* Login Box Protagonista */
         .user-auth {
             background: var(--glass-bg);
             backdrop-filter: blur(10px);
-            padding: 30px;
-            border-radius: 20px;
+            padding: 25px;
+            border-radius: 15px;
             border: 1px solid rgba(255,255,255,0.1);
-            margin: -50px auto 50px;
-            max-width: 500px;
+            margin: -40px auto 40px;
+            max-width: 450px;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         input[type="text"] {
             width: 80%;
-            padding: 15px;
-            border-radius: 50px;
+            padding: 12px;
+            margin-top: 10px;
+            border-radius: 5px;
             border: 2px solid var(--primary-blue);
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.3);
             color: white;
-            font-size: 1.1rem;
             text-align: center;
-            margin-top: 15px;
         }
 
-        /* Sezione Store */
+        /* Store Grid */
         .container { max-width: 1200px; margin: auto; padding: 20px; }
+        .section-title { text-align: center; margin: 40px 0; font-size: 2rem; border-bottom: 2px solid var(--accent-cyan); display: inline-block; position: relative; left: 50%; transform: translateX(-50%); }
         
-        .section-title {
-            text-align: center;
-            margin: 60px 0 40px;
-            font-size: 2.5rem;
-            text-transform: uppercase;
-            border-bottom: 3px solid var(--accent-cyan);
-            display: inline-block;
-            left: 50%; transform: translateX(-50%); position: relative;
-        }
-
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
+            gap: 25px;
         }
 
-        /* Card Oggetti */
         .card {
             background: var(--card-bg);
             color: #222;
-            border-radius: 20px;
+            border-radius: 15px;
             overflow: hidden;
-            transition: 0.4s;
-            position: relative;
+            transition: 0.3s;
+            text-align: center;
+            padding-bottom: 20px;
         }
 
-        .card:hover { transform: scale(1.05); box-shadow: 0 0 20px var(--accent-cyan); }
+        .card:hover { transform: translateY(-10px); box-shadow: 0 10px 20px rgba(0,242,255,0.2); }
         
-        .card-img { height: 150px; background: #eee; display: flex; align-items: center; justify-content: center; font-size: 4rem; }
+        .card-img { height: 120px; background: #f8f8f8; display: flex; align-items: center; justify-content: center; font-size: 3rem; }
         
-        .card-body { padding: 25px; text-align: center; }
-        .card-body h3 { margin: 0; color: var(--dark-blue); font-size: 1.4rem; }
-        .card-body p { color: #666; font-size: 0.9rem; min-height: 40px; }
+        .price-tag { font-size: 1.8rem; font-weight: 900; color: #2ecc71; margin: 15px 0; display: block; }
         
-        .price-tag {
-            display: block;
-            font-size: 2rem;
-            font-weight: 900;
-            color: #2ecc71;
-            margin: 15px 0;
-        }
-
-        .btn-buy {
-            background: linear-gradient(to right, #0074D9, #00c6ff);
+        .btn-add {
+            background: var(--primary-blue);
             color: white;
             border: none;
-            width: 100%;
-            padding: 12px;
-            border-radius: 10px;
+            padding: 12px 25px;
+            border-radius: 8px;
             font-weight: bold;
             cursor: pointer;
-            text-transform: uppercase;
+            width: 80%;
         }
 
-        /* Pagamenti */
-        .payment-footer {
-            background: rgba(0,0,0,0.3);
-            padding: 50px;
-            margin-top: 100px;
-            text-align: center;
-            border-top: 1px solid var(--primary-blue);
-        }
-
-        .payment-icons img {
-            height: 40px;
-            margin: 0 15px;
-            filter: grayscale(1) invert(1);
-            opacity: 0.7;
-        }
+        footer { text-align: center; padding: 50px; margin-top: 50px; background: rgba(0,0,0,0.4); }
     </style>
 </head>
 <body>
 
     <nav>
         <div class="logo">SURVIVAL REALMS</div>
-        <div class="nav-links">
-            <a href="#rank">Rank</a>
-            <a href="#kit">Kit</a>
-            <a href="#risorse">Risorse</a>
-            <a href="#">Supporto</a>
-        </div>
+        <button class="cart-btn" onclick="toggleCart()">
+            🛒 CARRELLO (<span id="cart-count">0</span>)
+        </button>
     </nav>
 
+    <div id="cart-sidebar">
+        <div class="close-cart" onclick="toggleCart()">CHIUDI ✕</div>
+        <h2>Il Tuo Ordine</h2>
+        <div id="cart-items-list">
+            <p style="color: #999;">Il carrello è ancora vuoto.</p>
+        </div>
+        
+        <div class="cart-total-section">
+            <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 1.2rem;">
+                <span>TOTALE:</span>
+                <span>€<span id="cart-total">0.00</span></span>
+            </div>
+            <button class="btn-checkout" onclick="processPayment()">PROCEDI AL PAGAMENTO</button>
+        </div>
+    </div>
+
     <header>
-        <h1>STORE UFFICIALE</h1>
-        <p>Potenzia la tua avventura nel nostro mondo Survival</p>
+        <h1>BENVENUTO NELLO STORE</h1>
+        <p>Migliora la tua esperienza nel server!</p>
     </header>
 
     <div class="user-auth">
-        <strong>STEP 1: IDENTIFICAZIONE</strong>
-        <p>Inserisci il tuo nome in-game per sbloccare gli acquisti</p>
-        <input type="text" id="playerName" placeholder="Il Tuo Nickname...">
+        <strong>IDENTIFICAZIONE GIOCATORE</strong>
+        <input type="text" id="playerNick" placeholder="Inserisci il tuo Nickname...">
     </div>
 
     <div class="container">
         
-        <h2 class="section-title" id="rank">🏆 Rank Abbonamenti</h2>
+        <h2 class="section-title">🏆 Gradi Rank</h2>
         <div class="grid">
             <div class="card">
-                <div class="card-img" style="background: #ffd70033;">🥇</div>
-                <div class="card-body">
-                    <h3>LEGEND RANK</h3>
-                    <p>Fly, 10 Home extra, Prefisso [LEGEND] e Kit Mensile Op.</p>
-                    <span class="price-tag">€19.99</span>
-                    <button class="btn-buy" onclick="checkout('Legend Rank')">Aggiungi al Carrello</button>
-                </div>
+                <div class="card-img">👑</div>
+                <h3>RANK LEGEND</h3>
+                <p>Fly, /feed, e prefisso speciale.</p>
+                <span class="price-tag">19.99</span>
+                <button class="btn-add" onclick="addToCart('Rank Legend', 19.99)">Aggiungi</button>
             </div>
             <div class="card">
-                <div class="card-img" style="background: #c0c0c033;">🥈</div>
-                <div class="card-body">
-                    <h3>ELITE RANK</h3>
-                    <p>5 Home extra, Prefisso [ELITE] e accesso alla zona Mine.</p>
-                    <span class="price-tag">€9.99</span>
-                    <button class="btn-buy" onclick="checkout('Elite Rank')">Aggiungi al Carrello</button>
-                </div>
+                <div class="card-img">💎</div>
+                <h3>RANK ELITE</h3>
+                <p>Kit settimanale e 5 Home extra.</p>
+                <span class="price-tag">9.99</span>
+                <button class="btn-add" onclick="addToCart('Rank Elite', 9.99)">Aggiungi</button>
             </div>
         </div>
 
-        <h2 class="section-title" id="kit">⚔️ Equipaggiamento Survival</h2>
+        <h2 class="section-title">📦 Risorse Survival</h2>
         <div class="grid">
             <div class="card">
-                <div class="card-img">💎</div>
-                <div class="card-body">
-                    <h3>Pacchetto Diamante</h3>
-                    <p>32 Blocchi di Diamante per le tue costruzioni.</p>
-                    <span class="price-tag">€4.50</span>
-                    <button class="btn-buy" onclick="checkout('32 Blocchi Diamante')">Acquista</button>
-                </div>
+                <div class="card-img">⚔️</div>
+                <h3>KIT NETHERITE</h3>
+                <p>Armatura completa già incantata.</p>
+                <span class="price-tag">5.50</span>
+                <button class="btn-add" onclick="addToCart('Kit Netherite', 5.50)">Aggiungi</button>
             </div>
             <div class="card">
-                <div class="card-img">🔥</div>
-                <div class="card-body">
-                    <h3>Kit PvP God</h3>
-                    <p>Full Netherite Protection IV + Sharpness V Sword.</p>
-                    <span class="price-tag">€7.00</span>
-                    <button class="btn-buy" onclick="checkout('Kit PvP God')">Acquista</button>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-img">🛡️</div>
-                <div class="card-body">
-                    <h3>3 Chiavi Mitiche</h3>
-                    <p>Apri le casse alla spawn e tenta la fortuna!</p>
-                    <span class="price-tag">€2.50</span>
-                    <button class="btn-buy" onclick="checkout('3 Chiavi Mitiche')">Acquista</button>
-                </div>
+                <div class="card-img">🔑</div>
+                <h3>5x CHIAVI CRATE</h3>
+                <p>Tenta la fortuna alla spawn!</p>
+                <span class="price-tag">3.00</span>
+                <button class="btn-add" onclick="addToCart('5x Chiavi Crate', 3.00)">Aggiungi</button>
             </div>
         </div>
 
     </div>
 
-    <footer class="payment-footer">
-        <h3>Metodi di Pagamento Sicuri</h3>
-        <p>Tutte le transazioni sono protette da crittografia SSL</p>
-        <div class="payment-icons">
-            <span>PAYPAL</span> | <span>STRIPE</span> | <span>MASTERCARD</span> | <span>VISA</span>
-        </div>
-        <p style="margin-top: 30px; font-size: 0.8rem; color: #999;">
-            &copy; 2024 Survival Realms Server. Non siamo affiliati a Mojang AB.
-        </p>
+    <footer>
+        <p>Pagamenti supportati: PayPal, Stripe, Carte</p>
+        <p style="font-size: 0.7rem; color: #777;">&copy; 2024 Survival Realms. Non siamo affiliati a Mojang AB.</p>
     </footer>
 
     <script>
-        function checkout(item) {
-            const nick = document.getElementById('playerName').value;
+        let cart = [];
+        let total = 0;
+
+        // Apre/Chiude il carrello
+        function toggleCart() {
+            document.getElementById('cart-sidebar').classList.toggle('active');
+        }
+
+        // Aggiunge un oggetto
+        function addToCart(name, price) {
+            const nick = document.getElementById('playerNick').value;
             
-            if (nick.trim() === "") {
-                alert("⛔ ERRORE: Devi inserire il tuo Nickname Minecraft prima di scegliere un oggetto!");
-                window.scrollTo({top: 100, behavior: 'smooth'});
+            if (!nick || nick.trim() === "") {
+                alert("⛔ Errore: Inserisci il tuo Nickname prima di aggiungere oggetti!");
+                document.getElementById('playerNick').focus();
                 return;
             }
 
-            // Simulazione reindirizzamento
-            const confirmPurchase = confirm("Confermi di voler acquistare '" + item + "' per l'account '" + nick + "'?");
+            cart.push({ name, price });
+            updateUI();
             
-            if(confirmPurchase) {
-                alert("Ti stiamo reindirizzando al portale di pagamento sicuro...");
-                // Esempio: window.location.href = "https://tuostore.tebex.io/checkout/add?nickname=" + nick;
+            // Notifica visiva veloce
+            console.log(name + " aggiunto.");
+        }
+
+        // Aggiorna la grafica del carrello
+        function updateUI() {
+            const list = document.getElementById('cart-items-list');
+            const count = document.getElementById('cart-count');
+            const totalDisplay = document.getElementById('cart-total');
+            
+            list.innerHTML = "";
+            total = 0;
+
+            cart.forEach((item, index) => {
+                total += item.price;
+                list.innerHTML += `
+                    <div class="cart-item">
+                        <span>${item.name}</span>
+                        <span style="font-weight:bold;">€${item.price.toFixed(2)}</span>
+                    </div>
+                `;
+            });
+
+            if (cart.length === 0) {
+                list.innerHTML = '<p style="color: #999;">Il carrello è ancora vuoto.</p>';
+            }
+
+            count.innerText = cart.length;
+            totalDisplay.innerText = total.toFixed(2);
+        }
+
+        // Funzione pagamento
+        function processPayment() {
+            const nick = document.getElementById('playerNick').value;
+            if (cart.length === 0) {
+                alert("Il carrello è vuoto!");
+                return;
+            }
+
+            const conferma = confirm(`Stai per acquistare ${cart.length} oggetti per l'utente "${nick}". Procedere?`);
+            if (conferma) {
+                alert("Reindirizzamento al gateway di pagamento sicuro (PayPal/Stripe)...");
+                // Qui collegheresti l'URL del tuo store reale
             }
         }
     </script>
