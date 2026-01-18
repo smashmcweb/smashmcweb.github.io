@@ -3,132 +3,266 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MEDIAMC STORE - Prodotti</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>MEDIA MC STORE | Official Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        .product-card { transition: transform 0.3s; }
-        .product-card:hover { transform: scale(1.05); }
-    </style>
-</head>
-<body class="bg-light">
-
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-5">
-    <div class="container">
-        <a class="navbar-brand" href="index.html">SHOP</a> 
-        <div class="d-flex">
-            <a href="cart.html" class="btn btn-outline-light">🛒 Carrello (<span id="count">0</span>)</a>
-        </div>
-    </div>
-</nav>
-
-<div class="container">
-    <h1 class="text-center mb-5">SHOP</h1>
-    <div class="row g-4">
-        <div class="col-md-4">
-            <div class="card h-100 product-card shadow-sm">
-                <img src="https://via.placeholder.com/300" class="card-img-top" alt="Prodotto">
-                <div class="card-body text-center">
-                    <h5 class="card-title">BATTELPASS X</h5>
-                    <p class="card-text text-muted"> </p>
-                    <h4 class="text-primary">€5.00</h4>
-                    <button onclick="aggiungi('BATTELPASS', 5.00)" class="btn btn-primary">Aggiungi al Carrello</button>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card h-100 product-card shadow-sm">
-                <img src="https://via.placeholder.com/300" class="card-img-top" alt="Prodotto">
-                <div class="card-body text-center">
-                    <h5 class="card-title">KEY</h5>
-                    <p class="card-text text-muted"> </p>
-                    <h4 class="text-primary">€1.99</h4>
-                    <button onclick="aggiungi('KEY', 1.99)" class="btn btn-primary">Aggiungi al Carrello</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    function aggiungi(nome, prezzo) {
-        let carrello = JSON.parse(localStorage.getItem('carrello')) || [];
-        carrello.push({ nome: nome, prezzo: prezzo });
-        localStorage.setItem('carrello', JSON.stringify(carrello));
-        aggiornaContatore();
-        alert(nome + " aggiunto correttamente!");
-    }
-
-    function aggiornaContatore() {
-        let carrello = JSON.parse(localStorage.getItem('carrello')) || [];
-        document.getElementById('count').innerText = carrello.length;
-    }
-    aggiornaContatore();
-</script>
-</body>
-</html>
-
-<!DOCTYPE html>
-<html lang="it">
-<head>
-    <meta charset="UTF-8">
-    <title>Il Tuo Carrello</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
-<div class="container py-5">
-    <div class="row">
-        <div class="col-lg-8 shadow p-4 bg-white rounded">
-            <h2>Carrello</h2>
-            <hr>
-            <div id="lista-prodotti"></div>
-        </div>
-        <div class="col-lg-4">
-            <div class="card p-4 shadow-sm">
-                <h4>Riepilogo</h4>
-                <div class="d-flex justify-content-between">
-                    <span>Totale:</span>
-                    <strong id="totale">€0</strong>
-                </div>
-                <hr>
-                <a href="checkout.html" class="btn btn-success w-100">Procedi al Pagamento</a>
-                <a href="store.html" class="btn btn-link w-100 mt-2">Torna allo store</a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    function caricaCarrello() {
-        let carrello = JSON.parse(localStorage.getItem('carrello')) || [];
-        let contenitore = document.getElementById('lista-prodotti');
-        let totale = 0;
-
-        if(carrello.length === 0) {
-            contenitore.innerHTML = "<p>Il carrello è vuoto.</p>";
-            return;
+        :root {
+            --primary-blue: #0074D9;
+            --dark-blue: #001b35;
+            --accent-cyan: #00f2ff;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --card-bg: #ffffff;
         }
 
-        contenitore.innerHTML = "";
-        carrello.forEach((item, index) => {
-            totale += item.prezzo;
-            contenitore.innerHTML += `
-                <div class="d-flex justify-content-between align-items-center mb-3 p-2 border-bottom">
-                    <div><strong>${item.nome}</strong><br><small class="text-muted">Prezzo: €${item.prezzo}</small></div>
-                    <button class="btn btn-sm btn-danger" onclick="rimuovi(${index})">Rimuovi</button>
-                </div>`;
-        });
-        document.getElementById('totale').innerText = "€" + totale;
-    }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: radial-gradient(circle at center, #003366 0%, #001122 100%);
+            color: white;
+            margin: 0;
+            scroll-behavior: smooth;
+        }
 
-    function rimuovi(index) {
-        let carrello = JSON.parse(localStorage.getItem('carrello')) || [];
-        carrello.splice(index, 1);
-        localStorage.setItem('carrello', JSON.stringify(carrello));
-        caricaCarrello();
-    }
+        /* Navbar */
+        nav {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid var(--primary-blue);
+        }
 
-    caricaCarrello();
-</script>
+        .logo { font-weight: 900; font-size: 1.5rem; letter-spacing: 2px; }
+        .nav-links a { color: white; text-decoration: none; margin-left: 20px; font-weight: 700; transition: 0.3s; }
+        .nav-links a:hover { color: var(--accent-cyan); }
+
+        /* Hero Section */
+        header {
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: url('https://images.unsplash.com/photo-1627398242454-45a1465c2479?auto=format&fit=crop&q=80&w=1920') rgba(0, 27, 53, 0.7);
+            background-blend-mode: overlay;
+            background-size: cover;
+        }
+
+        header h1 { font-size: 3.5rem; margin-bottom: 10px; text-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+
+        /* Login Box Protagonista */
+        .user-auth {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            margin: -50px auto 50px;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 15px;
+            border-radius: 50px;
+            border: 2px solid var(--primary-blue);
+            background: rgba(0,0,0,0.5);
+            color: white;
+            font-size: 1.1rem;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        /* Sezione Store */
+        .container { max-width: 1200px; margin: auto; padding: 20px; }
+        
+        .section-title {
+            text-align: center;
+            margin: 60px 0 40px;
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            border-bottom: 3px solid var(--accent-cyan);
+            display: inline-block;
+            left: 50%; transform: translateX(-50%); position: relative;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        /* Card Oggetti */
+        .card {
+            background: var(--card-bg);
+            color: #222;
+            border-radius: 20px;
+            overflow: hidden;
+            transition: 0.4s;
+            position: relative;
+        }
+
+        .card:hover { transform: scale(1.05); box-shadow: 0 0 20px var(--accent-cyan); }
+        
+        .card-img { height: 150px; background: #eee; display: flex; align-items: center; justify-content: center; font-size: 4rem; }
+        
+        .card-body { padding: 25px; text-align: center; }
+        .card-body h3 { margin: 0; color: var(--dark-blue); font-size: 1.4rem; }
+        .card-body p { color: #666; font-size: 0.9rem; min-height: 40px; }
+        
+        .price-tag {
+            display: block;
+            font-size: 2rem;
+            font-weight: 900;
+            color: #2ecc71;
+            margin: 15px 0;
+        }
+
+        .btn-buy {
+            background: linear-gradient(to right, #0074D9, #00c6ff);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        /* Pagamenti */
+        .payment-footer {
+            background: rgba(0,0,0,0.3);
+            padding: 50px;
+            margin-top: 100px;
+            text-align: center;
+            border-top: 1px solid var(--primary-blue);
+        }
+
+        .payment-icons img {
+            height: 40px;
+            margin: 0 15px;
+            filter: grayscale(1) invert(1);
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">SURVIVAL REALMS</div>
+        <div class="nav-links">
+            <a href="#rank">Rank</a>
+            <a href="#kit">Kit</a>
+            <a href="#risorse">Risorse</a>
+            <a href="#">Supporto</a>
+        </div>
+    </nav>
+
+    <header>
+        <h1>STORE UFFICIALE</h1>
+        <p>Potenzia la tua avventura nel nostro mondo Survival</p>
+    </header>
+
+    <div class="user-auth">
+        <strong>STEP 1: IDENTIFICAZIONE</strong>
+        <p>Inserisci il tuo nome in-game per sbloccare gli acquisti</p>
+        <input type="text" id="playerName" placeholder="Il Tuo Nickname...">
+    </div>
+
+    <div class="container">
+        
+        <h2 class="section-title" id="rank">🏆 Rank Abbonamenti</h2>
+        <div class="grid">
+            <div class="card">
+                <div class="card-img" style="background: #ffd70033;">🥇</div>
+                <div class="card-body">
+                    <h3>LEGEND RANK</h3>
+                    <p>Fly, 10 Home extra, Prefisso [LEGEND] e Kit Mensile Op.</p>
+                    <span class="price-tag">€19.99</span>
+                    <button class="btn-buy" onclick="checkout('Legend Rank')">Aggiungi al Carrello</button>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-img" style="background: #c0c0c033;">🥈</div>
+                <div class="card-body">
+                    <h3>ELITE RANK</h3>
+                    <p>5 Home extra, Prefisso [ELITE] e accesso alla zona Mine.</p>
+                    <span class="price-tag">€9.99</span>
+                    <button class="btn-buy" onclick="checkout('Elite Rank')">Aggiungi al Carrello</button>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title" id="kit">⚔️ Equipaggiamento Survival</h2>
+        <div class="grid">
+            <div class="card">
+                <div class="card-img">💎</div>
+                <div class="card-body">
+                    <h3>Pacchetto Diamante</h3>
+                    <p>32 Blocchi di Diamante per le tue costruzioni.</p>
+                    <span class="price-tag">€4.50</span>
+                    <button class="btn-buy" onclick="checkout('32 Blocchi Diamante')">Acquista</button>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-img">🔥</div>
+                <div class="card-body">
+                    <h3>Kit PvP God</h3>
+                    <p>Full Netherite Protection IV + Sharpness V Sword.</p>
+                    <span class="price-tag">€7.00</span>
+                    <button class="btn-buy" onclick="checkout('Kit PvP God')">Acquista</button>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-img">🛡️</div>
+                <div class="card-body">
+                    <h3>3 Chiavi Mitiche</h3>
+                    <p>Apri le casse alla spawn e tenta la fortuna!</p>
+                    <span class="price-tag">€2.50</span>
+                    <button class="btn-buy" onclick="checkout('3 Chiavi Mitiche')">Acquista</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer class="payment-footer">
+        <h3>Metodi di Pagamento Sicuri</h3>
+        <p>Tutte le transazioni sono protette da crittografia SSL</p>
+        <div class="payment-icons">
+            <span>PAYPAL</span> | <span>STRIPE</span> | <span>MASTERCARD</span> | <span>VISA</span>
+        </div>
+        <p style="margin-top: 30px; font-size: 0.8rem; color: #999;">
+            &copy; 2024 Survival Realms Server. Non siamo affiliati a Mojang AB.
+        </p>
+    </footer>
+
+    <script>
+        function checkout(item) {
+            const nick = document.getElementById('playerName').value;
+            
+            if (nick.trim() === "") {
+                alert("⛔ ERRORE: Devi inserire il tuo Nickname Minecraft prima di scegliere un oggetto!");
+                window.scrollTo({top: 100, behavior: 'smooth'});
+                return;
+            }
+
+            // Simulazione reindirizzamento
+            const confirmPurchase = confirm("Confermi di voler acquistare '" + item + "' per l'account '" + nick + "'?");
+            
+            if(confirmPurchase) {
+                alert("Ti stiamo reindirizzando al portale di pagamento sicuro...");
+                // Esempio: window.location.href = "https://tuostore.tebex.io/checkout/add?nickname=" + nick;
+            }
+        }
+    </script>
+
 </body>
 </html>
-
