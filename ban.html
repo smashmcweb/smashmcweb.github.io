@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>MediaMC | Bans</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Poppins:wght@400;600;700&display=swap');
+        :root { --p: #ff7300; --b: #050c10; --border: #0f0704; }
+        body { 
+            background: url('assets/bg.png') no-repeat center center fixed; 
+            background-size: cover;
+            color: #d5d5d5; 
+            font-family: 'Poppins', sans-serif; 
+            margin: 0; 
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 12, 16, 0.85);
+            z-index: -1;
+        }
+        .container-bg { background: radial-gradient(circle at top left, #163a4d 0%, #0e222d 100%); border: 2px solid var(--border); box-shadow: 0 10px 0 var(--border); border-radius: 2rem; }
+        .nav-link { font-family: 'Montserrat'; font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; color: #64748b; text-decoration: none; }
+        .btn-home { background: var(--p); color: #000; font-family: 'Montserrat'; font-weight: 900; padding: 10px 20px; border-radius: 12px; text-transform: uppercase; font-size: 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 0 #0f0704; }
+    </style>
+</head>
+<body class="py-10">
+    <header class="container mx-auto px-4 mb-12">
+        <div class="container-bg p-6 flex items-center justify-between">
+            <div class="flex items-center gap-8 ml-6">
+                <a href="home.html" class="btn-home"><i class="fa-solid fa-house"></i> Home</a>
+                <a href="store.html" class="nav-link">Store</a>
+                <a href="regolamento.html" class="nav-link">Regolamento</a>
+                <a href="ban.html" class="nav-link" style="color: var(--p)">Bans</a>
+            </div>
+            <img src="assets/logo.png" class="h-10 mr-6">
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 max-w-6xl">
+        <div class="text-center mb-12">
+            <h1 class="text-6xl font-black italic text-white uppercase mb-4">MEDIA MC <span class="text-orange-500">BANS</span></h1>
+            <p id="status-text" class="text-gray-500 font-bold uppercase text-[10px] tracking-[0.4em]">Tutti i bans del server!</p>
+        </div>
+
+        <div class="container-bg p-8">
+            <table class="w-full border-separate" style="border-spacing: 0 10px;">
+                <thead>
+                    <tr class="text-orange-500 font-black uppercase text-[10px] tracking-widest">
+                        <th class="p-4 text-left">Player</th>
+                        <th class="p-4 text-left">Motivazione</th>
+                        <th class="p-4 text-left">Staffer</th>
+                        <th class="p-4 text-right">Tipo</th>
+                    </tr>
+                </thead>
+                <tbody id="ban-data"></tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        function loadBans() {
+            fetch('ban.php').then(res => res.text()).then(data => {
+                document.getElementById('ban-data').innerHTML = data;
+                document.getElementById('status-text').innerHTML = "Update: " + new Date().toLocaleTimeString();
+            });
+        }
+        loadBans();
+        setInterval(loadBans, 30000); 
+    </script>
+</body>
+</html>

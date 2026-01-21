@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediaMC | Regolamento Ufficiale</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Poppins:wght@400;600;700&display=swap');
+
+        :root {
+            --primary: #ff7300;
+            --bg: #050c10;
+            --panel: #0e222d;
+            --border: #0f0704;
+        }
+
+        body {
+            background: var(--bg) url('assets/bg.png') no-repeat center center fixed;
+            background-size: cover;
+            color: #d5d5d5;
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+        }
+
+        .reg-container {
+            background: radial-gradient(circle at top left, #163a4d 0%, #0e222d 100%);
+            border: 2px solid var(--border);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border-radius: 2rem;
+        }
+
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            font-style: italic;
+            font-weight: 900;
+            color: var(--primary);
+            letter-spacing: -1px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .rule-card {
+            background: rgba(0,0,0,0.2);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 0 1rem 1rem 0;
+            margin-bottom: 1rem;
+            transition: 0.3s;
+        }
+
+        .rule-card:hover {
+            background: rgba(255,115,0,0.05);
+            transform: translateX(5px);
+        }
+
+        .sanzione-badge {
+            background: #ef4444;
+            color: white;
+            padding: 2px 10px;
+            border-radius: 5px;
+            font-size: 0.7rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin-right: 8px;
+        }
+
+        .nav-link {
+            font-family: 'Montserrat';
+            font-size: 11px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #64748b;
+            transition: 0.3s;
+        }
+
+        .nav-link:hover { color: white; }
+
+        hr { border: 0; border-top: 1px solid rgba(255,255,255,0.05); margin: 3rem 0; }
+        
+        strong { color: white; }
+    </style>
+</head>
+<body class="py-10">
+
+    <style>
+    :root {
+        --primary: #ff7300;
+        --border: #0f0704;
+    }
+
+    .meta-nav-container {
+        background: radial-gradient(circle at top left, #163a4d 0%, #0e222d 100%);
+        border: 2px solid var(--border);
+        box-shadow: 0 10px 0 var(--border);
+        border-radius: 2rem;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        margin-left: 1.5rem;
+    }
+
+    .nav-link {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 11px;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: #64748b;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+
+    .nav-link:hover {
+        color: var(--primary);
+    }
+
+    .btn-nav-home {
+        background: var(--primary);
+        color: #000;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 900;
+        padding: 10px 20px;
+        border-radius: 12px;
+        text-transform: uppercase;
+        font-size: 12px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 0 var(--border);
+        transition: 0.3s;
+    }
+
+    .btn-nav-home:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 0 var(--border);
+    }
+
+    .nav-logo {
+        height: 40px;
+        margin-right: 1.5rem;
+    }
+
+    @media (max-width: 900px) {
+        .meta-nav-container {
+            flex-direction: column;
+            gap: 1.5rem;
+            border-radius: 1.5rem;
+            text-align: center;
+        }
+        .nav-links {
+            margin-left: 0;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .nav-logo {
+            margin-right: 0;
+        }
+    }
+</style>
+
+<div class="meta-nav-container">
+    <nav class="nav-links">
+        <a href="home.html" class="btn-nav-home">
+            <i class="fa-solid fa-house"></i> Home
+        </a>
+        <a href="store.html" class="nav-link">Store</a>
+        <a href="regolamento.html" class="nav-link">Regolamento</a>
+        <a href="ban.html" class="nav-link">Bans</a>
+        <a href="social.html" class="nav-link">Social</a>
+    </nav>
+    <img src="assets/logo.png" alt="Logo" class="nav-logo">
+</div>
+
+    <main class="container mx-auto px-4 max-w-5xl">
+        <div class="reg-container p-10 md:p-20">
+            
+            <div class="text-center mb-20">
+                <h1 class="text-6xl font-black italic text-white uppercase leading-none mb-6">Regolamento<br><span class="text-orange-500">MediaMC</span></h1>
+                <p class="text-gray-500 font-bold uppercase tracking-[0.3em] text-xs">Ultimo aggiornamento: 2026</p>
+                <div class="w-24 h-1.5 bg-orange-500 mx-auto mt-8 rounded-full"></div>
+            </div>
+
+            <section class="mb-16">
+                <h2 class="section-title text-3xl mb-10"><i class="fa-solid fa-book"></i> Fascicoli Generale</h2>
+                <div class="space-y-4">
+                    <div class="rule-card">Il regolamento può subire cambiamenti. È responsabilità dei player restare aggiornati. Gli unici ad avere il potere di cambiare il seguente regolamento sono gli <strong>Owner o i Founder</strong>.</div>
+                    <div class="rule-card">In caso di violazione, lo staff è tenuto a far rispettare il regolamento applicando sanzioni visibili nella categoria dedicata.</div>
+                    <div class="rule-card"><strong>Evasione Ban:</strong> Tutti i player che evadono un ban subiranno il <strong>Ban Perma</strong>. In caso di seconda evasione la sanzione diventerà <strong>IP-BAN</strong>.</div>
+                    <div class="rule-card">È obbligatorio portare rispetto allo staff e ai giocatori. Non sono ammessi insulti, bestemmie, molestie o linguaggi volgari.</div>
+                    <div class="rule-card"><strong>Premi Eventi:</strong> È necessario aprire un ticket per iscriversi e ritirare premi. Senza ticket si è esclusi dall'evento.</div>
+                    <div class="rule-card"><strong>Skin:</strong> Skin inappropiate (nudità, simboli volgari/pubblicitari) verranno rimosse. In caso di opposizione seguono sanzioni.</div>
+                    <div class="rule-card"><strong>Pubblicità:</strong> Vietata la pubblicità non autorizzata (Link, IP altri server, foto). Ammessi solo contenuti inerenti a MediaMC.</div>
+                    <div class="rule-card">Vietata qualsiasi forma di <strong>Cyberbullismo</strong>.</div>
+                    <div class="rule-card">È concesso avere account secondari (ALT) solo se <strong>non attivi contemporaneamente</strong>.</div>
+                    <div class="rule-card"><strong>Cheat:</strong> Vietati cheat, client-mod xray, bugabuse, glitch e duplicazione.</div>
+                    <div class="rule-card">È vietato aprire più di 3 ticket al giorno senza un valido motivo.</div>
+                </div>
+            </section>
+
+            <hr>
+
+            <section class="mb-16">
+                <h2 class="section-title text-3xl mb-10"><i class="fa-solid fa-khanda"></i> Survival</h2>
+                <div class="space-y-4">
+                    <div class="rule-card">Vietato lo spam di caratteri, messaggi, simboli, numeri ed emoji in chat pubblica.</div>
+                    <div class="rule-card"><strong>Truffa:</strong> Vietato truffare. In caso di truffa, aprire un ticket.</div>
+                    <div class="rule-card">Vietato taggare lo staff per ragioni futili.</div>
+                    <div class="rule-card"><strong>TP-Kill:</strong> Il tpkill è vietato. Necessaria registrazione video (REC) valida per segnalare tramite ticket.</div>
+                    <div class="rule-card"><strong>Grief:</strong> Il grief è vietato anche se si è membri del claim.</div>
+                    <div class="rule-card"><strong>Farm:</strong> Dimensioni massime 10x10x10 blocchi. Macchinari che causano lag verranno smantellati dallo staff.</div>
+                    <div class="rule-card">Vietati nomi per i team inappropriati.</div>
+                </div>
+            </section>
+
+            <hr>
+
+            <section class="mb-16">
+                <h2 class="section-title text-3xl mb-10"><i class="fa-solid fa-bed"></i> Bedwars</h2>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="rule-card">Vietati i Cheat</div>
+                    <div class="rule-card">Vietato Cross Teaming</div>
+                    <div class="rule-card">Vietato Camping</div>
+                    <div class="rule-card">Vietato Team Griefing</div>
+                    <div class="rule-card">Vietato Boosting</div>
+                    <div class="rule-card">Vietato Spam Kill</div>
+                </div>
+            </section>
+
+            <hr>
+
+            <section class="mb-16">
+                <h2 class="section-title text-3xl mb-10"><i class="fa-solid fa-bolt"></i> Duels</h2>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="rule-card">Vietati i Cheat</div>
+                    <div class="rule-card">Vietato Runnare (correre eccessivamente)</div>
+                    <div class="rule-card">Vietato Camping</div>
+                    <div class="rule-card">Vietato Freezare Minecraft</div>
+                    <div class="rule-card">Vietato Boosting</div>
+                </div>
+            </section>
+
+            <hr>
+
+            <section>
+                <div class="bg-red-500/10 border border-red-500/20 p-8 rounded-3xl mb-12">
+                    <h2 class="section-title text-4xl mb-4 text-red-500"><i class="fa-solid fa-gavel"></i> Tabella Sanzioni</h2>
+                    <p class="text-xs font-bold uppercase text-gray-500 tracking-widest">Formato: [1ª volta] / [2ª volta] / [3ª volta]</p>
+                </div>
+
+                <div class="space-y-12">
+                    <div>
+                        <h3 class="text-white font-black uppercase italic mb-6 border-b border-white/10 pb-2">Generale</h3>
+                        <div class="space-y-3 text-sm">
+                            <p><span class="sanzione-badge">Rispetto Utenti</span> Warn / Mute 2h</p>
+                            <p><span class="sanzione-badge">Rispetto Staff</span> Warn / Mute 7h / Ban 17h</p>
+                            <p><span class="sanzione-badge">Opposizione Staff</span> Kick / Ban 7h</p>
+                            <p><span class="sanzione-badge">Pubblicità</span> Ban Permanente</p>
+                            <p><span class="sanzione-badge">Volgarità/Cyberbullismo</span> Warn / Mute 3h / Ban 12h</p>
+                            <p><span class="sanzione-badge">Razzismo</span> Ban 3 Giorni</p>
+                            <p><span class="sanzione-badge">Cheat Generali</span> Ban 6 Giorni (Dimezzato se ammesso)</p>
+                            <p><span class="sanzione-badge">X-Ray</span> Ban 3 Giorni</p>
+                            <p><span class="sanzione-badge">Abuso Ticket</span> Warn / Timeout 12h / Kick</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-white font-black uppercase italic mb-6 border-b border-white/10 pb-2">Survival</h3>
+                        <div class="space-y-3 text-sm">
+                            <p><span class="sanzione-badge">Spam Chat</span> Warn / Mute 1h</p>
+                            <p><span class="sanzione-badge">Truffa</span> Ban 17h + Restituzione Beni</p>
+                            <p><span class="sanzione-badge">Tag Staff</span> Mute 1h / Mute 3h</p>
+                            <p><span class="sanzione-badge">Grief/TPKill</span> Ban 17h + Restituzione Beni</p>
+                            <p><span class="sanzione-badge">Macchinari Lag</span> Ban 3 Giorni</p>
+                            <p><span class="sanzione-badge">Ricostruzione Farm</span> Ban 17h</p>
+                            <p><span class="sanzione-badge">Nome Team</span> Cambio Nome + Ban 7h (Owner Team)</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-white font-black uppercase italic mb-6 border-b border-white/10 pb-2">Bedwars</h3>
+                        <div class="space-y-3 text-sm">
+                            <p><span class="sanzione-badge">Cheat</span> Ban 6 Giorni (Dimezzato se ammesso)</p>
+                            <p><span class="sanzione-badge">CrossTeaming</span> Ban 7h (anche party)</p>
+                            <p><span class="sanzione-badge">Camping</span> Ban 7h</p>
+                            <p><span class="sanzione-badge">Team Griefing</span> Ban 7h</p>
+                            <p><span class="sanzione-badge">Boosting</span> Ban a discrezione + Reset Stats</p>
+                            <p><span class="sanzione-badge">Spam Kill</span> Ban 11h / Ban 6g / Reset Stats</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-white font-black uppercase italic mb-6 border-b border-white/10 pb-2">Duels</h3>
+                        <div class="space-y-3 text-sm">
+                            <p><span class="sanzione-badge">Cheat</span> Ban 6 Giorni (Dimezzato se ammesso)</p>
+                            <p><span class="sanzione-badge">Runnare</span> Kick</p>
+                            <p><span class="sanzione-badge">Camping/Freeze</span> Kick / Ban 7h</p>
+                            <p><span class="sanzione-badge">Boosting</span> Ban a discrezione + Reset Stats</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <footer class="container mx-auto px-4 py-20 text-center opacity-30">
+        <p class="text-[10px] font-black uppercase tracking-[1em]">MediaMC Network &copy; 2026</p>
+    </footer>
+
+</body>
+</html>
