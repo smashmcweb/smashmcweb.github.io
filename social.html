@@ -1,1 +1,112 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediaMC | Work In Progress</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #ff7300;
+            --bg: #050c10;
+            --panel: #0e222d;
+            --border: #0f0704;
+        }
 
+        body {
+            background: var(--bg) url('assets/bg.png') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        /* Overlay scuro per far risaltare il testo sul bg.png */
+        body::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(5, 12, 16, 0.85);
+            z-index: -1;
+        }
+
+        .wip-card {
+            background: radial-gradient(circle at top left, #163a4d 0%, #0e222d 100%);
+            border: 3px solid var(--border);
+            box-shadow: 0 15px 0 var(--border);
+            border-radius: 2.5rem;
+            padding: 3rem;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            transform: translateY(-10px);
+        }
+
+        .btn-home {
+            background: var(--primary);
+            color: #000;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            padding: 15px 35px;
+            border-radius: 15px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.2s;
+            box-shadow: 0 5px 0 var(--border);
+            margin-top: 2rem;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+
+        .btn-home:hover {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 var(--border);
+            filter: brightness(1.1);
+        }
+
+        .icon-wip {
+            font-size: 4rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wip-card">
+        <div class="icon-wip">
+            <i class="fa-solid fa-hammer"></i>
+        </div>
+        
+        <h1 style="font-family: 'Montserrat'; font-weight: 900;" class="text-4xl uppercase italic mb-4">
+            Work In <span style="color: var(--primary);">Progress</span>
+        </h1>
+        
+        <p class="text-gray-400 uppercase text-xs tracking-[3px] font-bold leading-relaxed">
+            Stiamo lavorando alla sezione Bans, Torna a trovarci presto!
+        </p>
+
+        <a href="index.html" class="btn-home">
+            <i class="fa-solid fa-house"></i> Torna alla Home
+        </a>
+    </div>
+
+</body>
+</html>
