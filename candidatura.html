@@ -1,1 +1,197 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediaMC | Modulo Candidatura</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050c10;
+            --panel: #0e222d;
+            --primary: #ff7300;
+            --border: #0f0704;
+        }
 
+        body {
+            background: linear-gradient(rgba(5, 12, 16, 0.9), rgba(5, 12, 16, 0.9)), url('assets/bg.png') center/cover fixed;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-input {
+            background: rgba(14, 34, 45, 0.8);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 15px;
+            width: 100%;
+            color: white;
+            transition: 0.3s;
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+            background: var(--panel);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #9ca3af;
+        }
+
+        .submit-btn {
+            background: var(--primary);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            transition: 0.3s;
+            box-shadow: 0 6px 0 #b35100;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 0 #b35100;
+        }
+
+        .submit-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #b35100;
+        }
+    </style>
+</head>
+<body class="min-height-screen flex flex-col">
+
+    <nav class="p-6">
+        <a href="apply.html" class="text-gray-400 hover:text-white transition font-bold uppercase text-xs tracking-widest">
+            <i class="fa-solid fa-arrow-left mr-2"></i> Torna ai requisiti
+        </a>
+    </nav>
+
+    <div class="container mx-auto max-w-2xl px-6 py-10">
+        <div class="bg-[#0e222d]/80 backdrop-blur-md p-8 md:p-12 rounded-[2.5rem] border-4 border-[#0f0704] shadow-2xl">
+            
+            <div class="text-center mb-10">
+                <h1 class="text-4xl font-black italic uppercase tracking-tighter" style="font-family: 'Montserrat';">
+                    Modulo <span class="text-orange-500">Staff</span>
+                </h1>
+                <p class="text-gray-400 text-sm mt-2">Compila tutti i campi con onestà.</p>
+            </div>
+
+            <form id="applyForm" class="space-y-6">
+                <div>
+                    <label>Come ti chiami?</label>
+                    <input type="text" id="nome" class="form-input" placeholder="Inserisci il tuo nome" required>
+                </div>
+
+                <div>
+                    <label>Quanti anni hai?</label>
+                    <select id="eta" class="form-input" required>
+                        <option value="" disabled selected>Seleziona la tua età</option>
+                        <script>
+                            for(let i=13; i<=50; i++) {
+                                document.write(`<option value="${i}">${i} anni</option>`);
+                            }
+                        </script>
+                    </select>
+                </div>
+
+                <div>
+                    <label>Da dove vieni?</label>
+                    <input type="text" id="provenienza" class="form-input" placeholder="Es: Milano, Italia" required>
+                </div>
+
+                <div>
+                    <label>Quanto sei disponibile?</label>
+                    <textarea id="disponibilita" rows="3" class="form-input" placeholder="Es: 3 ore al giorno, pomeriggio e sera" required></textarea>
+                </div>
+
+                <div>
+                    <label>Hai esperienze passate?</label>
+                    <textarea id="esperienze" rows="3" class="form-input" placeholder="Raccontaci se sei stato staffer altrove" required></textarea>
+                </div>
+
+                <div>
+                    <label>Perché dovremmo scegliere te?</label>
+                    <textarea id="perche" rows="4" class="form-input" placeholder="Spiegaci i tuoi punti di forza" required></textarea>
+                </div>
+
+                <div class="pt-6">
+                    <button type="submit" id="submitBtn" class="submit-btn w-full py-4 rounded-xl text-white uppercase tracking-widest text-lg">
+                        Invia Candidatura <i class="fa-solid fa-paper-plane ml-2"></i>
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <script>
+        const WEBHOOK_URL = "INSERISCI_QUI_IL_TUO_WEBHOOK_URL"; // <--- METTI IL TUO LINK QUI
+
+        document.getElementById('applyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.innerText = "Invio in corso...";
+
+            // Raccolta dati
+            const formData = {
+                nome: document.getElementById('nome').value,
+                eta: document.getElementById('eta').value,
+                provenienza: document.getElementById('provenienza').value,
+                disponibilita: document.getElementById('disponibilita').value,
+                esperienze: document.getElementById('esperienze').value,
+                perche: document.getElementById('perche').value
+            };
+
+            // Formattazione per Discord
+            const discordPayload = {
+                username: "MediaMC Application System",
+                avatar_url: "https://i.imgur.com/your-logo.png", // Metti link logo se vuoi
+                embeds: [{
+                    title: "🚀 Nuova Candidatura Staff!",
+                    color: 16743168, // Colore Arancione
+                    fields: [
+                        { name: "👤 Nome", value: formData.nome, inline: true },
+                        { name: "🎂 Età", value: formData.eta + " anni", inline: true },
+                        { name: "📍 Provenienza", value: formData.provenienza, inline: true },
+                        { name: "⏰ Disponibilità", value: formData.disponibilita },
+                        { name: "📜 Esperienze", value: formData.esperienze },
+                        { name: "💡 Motivazione", value: formData.perche }
+                    ],
+                    footer: { text: "Candidatura inviata dal sito web MediaMC" },
+                    timestamp: new Date()
+                }]
+            };
+
+            fetch(WEBHOOK_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(discordPayload)
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("Candidatura inviata con successo! Verrai ricontattato presto.");
+                    window.location.href = "apply.html";
+                } else {
+                    throw new Error();
+                }
+            })
+            .catch(error => {
+                alert("Errore durante l'invio. Verifica il Webhook o riprova più tardi.");
+                btn.disabled = false;
+                btn.innerText = "Invia Candidatura";
+            });
+        });
+    </script>
+
+</body>
+</html>
