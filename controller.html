@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controll3r24 | Status</title>
+    <title>Controll3r24 | Official</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
@@ -16,25 +16,28 @@
         }
 
         body {
-            background: var(--bg);
+            /* Sfondo con immagine personalizzata */
+            background: var(--bg) url('assets/bg.png') no-repeat center center fixed;
+            background-size: cover;
             color: white;
             font-family: 'Poppins', sans-serif;
             margin: 0;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
 
-        /* Overlay di sfondo simile all'originale */
+        /* Overlay per rendere leggibile il testo sopra l'immagine */
         body::before {
             content: "";
             position: fixed;
             inset: 0;
-            background: radial-gradient(circle at center, rgba(255, 115, 0, 0.05) 0%, rgba(5, 12, 16, 1) 100%);
+            background: rgba(5, 12, 16, 0.85);
             z-index: -1;
         }
 
-        /* NAVBAR (Mantenuta come l'originale) */
+        /* NAVBAR */
         .navbar {
             background: rgba(14, 34, 45, 0.95);
             border-bottom: 3px solid var(--border);
@@ -42,7 +45,9 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            width: 100%;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .nav-item {
@@ -56,34 +61,37 @@
             transition: 0.3s;
         }
 
-        /* CONTENUTO CENTRALE */
-        .main-content {
+        /* CARD CENTRALE */
+        .main-container {
             flex: 1;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            text-align: center;
-            padding: 2rem;
+            padding: 20px;
         }
 
-        .profile-container {
+        .staff-card-focus {
             background: radial-gradient(circle at top left, #163a4d 0%, #0e222d 100%);
-            border: 3px solid var(--border);
+            border: 4px solid var(--border);
             box-shadow: 0 15px 0 var(--border);
             border-radius: 3rem;
-            padding: 3rem;
-            max-width: 500px;
+            padding: 4rem 2rem;
+            text-align: center;
+            max-width: 450px;
             width: 100%;
-            transition: 0.3s ease;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .avatar-mc {
-            width: 150px;
-            height: 150px;
+        .staff-card-focus:hover {
+            transform: translateY(-10px);
+            filter: brightness(1.1);
+        }
+
+        .player-head {
+            height: 180px;
             margin: 0 auto 1.5rem;
-            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
-            image-rendering: pixelated;
+            filter: drop-shadow(0 20px 30px rgba(0,0,0,0.7));
+            image-rendering: pixelated; /* Mantiene i pixel definiti */
         }
 
         .role-badge {
@@ -91,34 +99,34 @@
             font-family: 'Montserrat', sans-serif;
             font-weight: 900;
             text-transform: uppercase;
-            font-size: 12px;
+            font-size: 11px;
             letter-spacing: 2px;
             padding: 6px 20px;
             border-radius: 50px;
             display: inline-block;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
             box-shadow: 0 4px 0 rgba(0,0,0,0.3);
         }
 
-        .username {
+        .player-name {
             font-family: 'Montserrat', sans-serif;
             font-weight: 900;
-            font-size: 3rem;
+            font-size: 2.5rem;
             text-transform: uppercase;
-            letter-spacing: -2px;
-            margin-bottom: 0.5rem;
-            color: white;
+            letter-spacing: -1px;
+            margin-bottom: 1rem;
         }
 
-        .status-text {
-            color: #9ca3af;
-            font-size: 1.2rem;
-            font-style: italic;
-            line-height: 1.4;
+        .status-msg {
+            color: #d1d5db;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            font-weight: 400;
         }
 
         .highlight {
             color: var(--primary);
+            font-weight: 700;
         }
     </style>
 </head>
@@ -135,19 +143,19 @@
         </div>
     </nav>
 
-    <main class="main-content">
-        <div class="profile-container">
-            <img src="https://mc-heads.net/avatar/Controll3r24/150" alt="Controll3r24 Avatar" class="avatar-mc">
+    <div class="main-container">
+        <div class="staff-card-focus">
+            <img src="https://mc-heads.net/head/Controll3r24/180" alt="Controll3r24 Head" class="player-head">
             
             <div class="role-badge">Web Developer</div>
             
-            <h1 class="username">Controll3r24</h1>
+            <h1 class="player-name">Controll3r24</h1>
             
-            <p class="status-text">
+            <p class="status-msg">
                 Povero <span class="highlight">Controller</span> che lavora tutto il giorno
             </p>
         </div>
-    </main>
+    </div>
 
 </body>
 </html>
