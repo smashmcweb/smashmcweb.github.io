@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EclipseMc | Candidatura</title>
+    <title>SmashMC | Candidatura</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
@@ -78,7 +78,7 @@
         const REDIRECT = window.location.href.split('#')[0];
 
         let typedCode = "";
-        let questions = JSON.parse(localStorage.getItem('EclipseMc_q')) || [
+        let questions = JSON.parse(localStorage.getItem('SmashMC_q')) || [
             {t: "Perché vuoi entrare nello staff?", type: "text"}
         ];
 
@@ -132,7 +132,7 @@
             if(t) { questions.push({t, type: "text"}); render(); }
         }
 
-        function saveConfig() { localStorage.setItem('EclipseMc_q', JSON.stringify(questions)); notify("SALVATO!", "#22c55e"); }
+        function saveConfig() { localStorage.setItem('SmashMC_q', JSON.stringify(questions)); notify("SALVATO!", "#22c55e"); }
 
         function render() {
             const container = document.getElementById('dynamicFields');
