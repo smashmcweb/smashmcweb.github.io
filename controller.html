@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controll3r24 | Status</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050c10;
+            --border: #0f0704;
+            --primary: #ff7300;
+            --developer: #771ced;
+        }
+
+        body {
+            background: var(--bg);
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Overlay di sfondo simile all'originale */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(255, 115, 0, 0.05) 0%, rgba(5, 12, 16, 1) 100%);
+            z-index: -1;
+        }
+
+        /* NAVBAR (Mantenuta come l'originale) */
+        .navbar {
+            background: rgba(14, 34, 45, 0.95);
+            border-bottom: 3px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .nav-item {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            text-transform: uppercase;
+            font-size: 13px;
+            color: #9ca3af;
+            text-decoration: none;
+            padding: 8px 15px;
+            transition: 0.3s;
+        }
+
+        /* CONTENUTO CENTRALE */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .profile-container {
+            background: radial-gradient(circle at top left, #163a4d 0%, #0e222d 100%);
+            border: 3px solid var(--border);
+            box-shadow: 0 15px 0 var(--border);
+            border-radius: 3rem;
+            padding: 3rem;
+            max-width: 500px;
+            width: 100%;
+            transition: 0.3s ease;
+        }
+
+        .avatar-mc {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 1.5rem;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+            image-rendering: pixelated;
+        }
+
+        .role-badge {
+            background: var(--developer);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 2px;
+            padding: 6px 20px;
+            border-radius: 50px;
+            display: inline-block;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.3);
+        }
+
+        .username {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 3rem;
+            text-transform: uppercase;
+            letter-spacing: -2px;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+
+        .status-text {
+            color: #9ca3af;
+            font-size: 1.2rem;
+            font-style: italic;
+            line-height: 1.4;
+        }
+
+        .highlight {
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="flex items-center gap-4">
+            <span class="font-black italic uppercase text-xl">Media<span class="text-orange-500">MC</span></span>
+        </div>
+        <div class="nav-links">
+            <a href="#" class="nav-item">Home</a>
+            <a href="#" class="nav-item">Staff</a>
+            <a href="#" class="nav-item">Store</a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="profile-container">
+            <img src="https://mc-heads.net/avatar/Controll3r24/150" alt="Controll3r24 Avatar" class="avatar-mc">
+            
+            <div class="role-badge">Web Developer</div>
+            
+            <h1 class="username">Controll3r24</h1>
+            
+            <p class="status-text">
+                Povero <span class="highlight">Controller</span> che lavora tutto il giorno
+            </p>
+        </div>
+    </main>
+
+</body>
+</html>
