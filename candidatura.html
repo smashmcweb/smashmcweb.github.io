@@ -3,90 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmashMC | Candidatura</title>
+    <title>SmashMC | Candidatura Staff</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <style>
-        :root { --discord: #5865F2; --dark: #0b1116; --accent: #ff7300; }
+        :root { --discord: #5865F2; --accent: #ff7300; --bg-glass: rgba(17, 29, 37, 0.85); }
+        
         body { 
-            background: linear-gradient(rgba(5,16,22,0.85), rgba(5,16,22,0.85)), url('assets/bg.png') center/cover fixed;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('assets/bg.png') center/cover fixed;
             color: white; font-family: 'Poppins', sans-serif; min-height: 100vh; user-select: none;
+            display: flex; align-items: center; justify-content: center;
         }
-        .auth-card { background: #111d25; border: 3px solid #000; border-radius: 2.5rem; padding: 2.5rem; border-bottom-width: 8px; }
-        .discord-btn { background: var(--discord); box-shadow: 0 6px 0 #3e48ae; border-radius: 1rem; font-family: 'Montserrat'; font-weight: 900; transition: 0.2s; }
-        .discord-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #3e48ae; }
-        .form-input { background: rgba(0,0,0,0.4); border: 2px solid #1e293b; border-radius: 12px; padding: 12px; width: 100%; color: white; outline: none; transition: 0.3s; }
-        .form-input:focus { border-color: var(--accent); background: rgba(0,0,0,0.6); }
+
+        .glass-card { 
+            background: var(--bg-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 2px solid rgba(255,255,255,0.05);
+            border-bottom: 4px solid var(--accent);
+            border-radius: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .form-input { 
+            background: rgba(0,0,0,0.3); 
+            border: 1px solid rgba(255,255,255,0.1); 
+            border-radius: 14px; padding: 14px; width: 100%; color: white; outline: none; transition: 0.3s;
+        }
+        .form-input:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(255, 115, 0, 0.2); }
+
+        .discord-btn { 
+            background: var(--discord); box-shadow: 0 4px 0 #3e48ae; border-radius: 1.2rem; 
+            font-family: 'Montserrat'; transition: 0.2s; 
+        }
+        .discord-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #3e48ae; }
+
         .hidden { display: none; }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+        
+        /* Animazione per il titolo */
+        .glitch { font-family: 'Montserrat'; text-transform: uppercase; font-style: italic; letter-spacing: 2px; }
     </style>
 </head>
-<body oncontextmenu="return false;" class="flex items-center justify-center p-6">
+<body oncontextmenu="return false;">
 
-    <div id="loginSection" class="auth-card max-w-md w-full text-center shadow-2xl">
-        <i class="fa-brands fa-discord text-7xl mb-6 text-[#5865F2]"></i>
-        <h1 class="text-3xl font-black mb-2 uppercase font-[Montserrat] italic">SmashMC</h1>
-        <p class="text-gray-400 mb-8 text-sm">Esegui l'accesso per compilare il modulo staff.</p>
-        <button onclick="loginWithDiscord()" class="discord-btn w-full py-4 uppercase tracking-widest text-white">Sblocca Candidatura</button>
+    <div id="loginSection" class="glass-card max-w-md w-full p-10 text-center mx-4">
+        <div class="relative inline-block mb-6">
+            <i class="fa-brands fa-discord text-7xl text-[#5865F2]"></i>
+            <div class="absolute -top-2 -right-2 w-6 h-6 bg-green-500 border-4 border-[#111d25] rounded-full"></div>
+        </div>
+        <h1 class="text-4xl font-black mb-2 glitch">Smash<span class="text-orange-500">MC</span></h1>
+        <p class="text-gray-400 mb-8 text-sm font-medium">Autenticazione richiesta per accedere al portale reclutamento.</p>
+        <button onclick="loginWithDiscord()" class="discord-btn w-full py-4 uppercase font-black tracking-widest text-white text-sm">Sblocca con Discord</button>
     </div>
 
-    <div id="mainContent" class="hidden w-full max-w-2xl">
-        <div class="auth-card !bg-[#111d25]/95 shadow-2xl overflow-hidden">
-            <div class="flex justify-between items-center mb-8 bg-black/20 -m-10 p-6 mb-10 border-b border-white/5">
-                <div class="flex items-center gap-4">
-                    <img id="userAvatar" class="w-12 h-12 rounded-full border-2 border-orange-500 shadow-lg shadow-orange-500/20">
+    <div id="mainContent" class="hidden w-full max-w-3xl px-4 py-10">
+        <div class="glass-card p-8 md:p-12 relative overflow-hidden">
+            
+            <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-4 border-b border-white/5 pb-8">
+                <div class="flex items-center gap-5">
+                    <img id="userAvatar" class="w-16 h-16 rounded-2xl border-2 border-orange-500 shadow-2xl shadow-orange-500/20">
                     <div>
-                        <p id="userName" class="font-black text-lg italic uppercase leading-none"></p>
-                        <span class="text-[10px] text-orange-500 font-bold tracking-tighter">SESSIONE ATTIVA</span>
+                        <p id="userName" class="font-black text-2xl uppercase italic tracking-tight"></p>
+                        <span class="bg-orange-500/10 text-orange-500 text-[10px] px-2 py-1 rounded font-extrabold uppercase tracking-widest">Candidato Verificato</span>
                     </div>
                 </div>
-                <button onclick="logout()" class="text-[10px] text-gray-500 hover:text-red-400 uppercase font-bold transition">Logout</button>
+                <button onclick="logout()" class="text-[10px] text-gray-500 hover:text-white uppercase font-black underline decoration-orange-500 decoration-2 underline-offset-4">Cambia Account</button>
             </div>
 
-            <form id="applyForm" class="space-y-5 text-left">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <form id="applyForm" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="text-[11px] font-black text-gray-400 uppercase ml-1 mb-2 block">Nome Reale</label>
-                        <input type="text" id="nome_reale" class="form-input" placeholder="Tuo nome" required>
+                        <label class="text-[11px] font-black text-orange-500 uppercase tracking-widest ml-1 mb-2 block">Nome Reale</label>
+                        <input type="text" id="nome_reale" class="form-input" placeholder="Es. Marco Rossi" required>
                     </div>
                     <div>
-                        <label class="text-[11px] font-black text-gray-400 uppercase ml-1 mb-2 block">Età</label>
+                        <label class="text-[11px] font-black text-orange-500 uppercase tracking-widest ml-1 mb-2 block">Età</label>
                         <select id="eta" class="form-input cursor-pointer">
-                            <script>for(let i=13; i<=40; i++) document.write(`<option value="${i}">${i} Anni</option>`);</script>
+                            <script>for(let i=13; i<=45; i++) document.write(`<option value="${i}">${i} Anni</option>`);</script>
                         </select>
                     </div>
                 </div>
 
                 <div>
-                    <label class="text-[11px] font-black text-gray-400 uppercase ml-1 mb-2 block">Modalità d'interesse</label>
+                    <label class="text-[11px] font-black text-orange-500 uppercase tracking-widest ml-1 mb-2 block">Modalità di gioco</label>
                     <select id="modalita" class="form-input cursor-pointer">
                         <option value="Survival">Survival</option>
                         <option value="Bedwars">Bedwars</option>
                         <option value="Roleplay">Roleplay</option>
-                        <option value="Generale">Staff Generale</option>
+                        <option value="Tutto il Server">Globale / Tutto il Server</option>
                     </select>
                 </div>
 
                 <div>
-                    <label class="text-[11px] font-black text-gray-400 uppercase ml-1 mb-2 block">Perché vuoi diventare staffer?</label>
-                    <textarea id="perche" rows="3" class="form-input" placeholder="Spiega le tue motivazioni..." required></textarea>
+                    <label class="text-[11px] font-black text-orange-500 uppercase tracking-widest ml-1 mb-2 block">Perché vuoi diventare staffer?</label>
+                    <textarea id="perche" rows="4" class="form-input" placeholder="Qual è la tua motivazione principale?" required></textarea>
                 </div>
 
                 <div>
-                    <label class="text-[11px] font-black text-gray-400 uppercase ml-1 mb-2 block">Parlaci di te</label>
-                    <textarea id="bio" rows="3" class="form-input" placeholder="Hobby, esperienze passate..." required></textarea>
+                    <label class="text-[11px] font-black text-orange-500 uppercase tracking-widest ml-1 mb-2 block">Parlaci di te</label>
+                    <textarea id="bio" rows="4" class="form-input" placeholder="Esperienze passate, pregi, difetti o altro..." required></textarea>
                 </div>
 
-                <button type="submit" id="submitBtn" class="discord-btn w-full py-4 !bg-orange-600 !shadow-[#8a3e00] uppercase font-black italic">Invia Protocollo</button>
+                <button type="submit" id="submitBtn" class="w-full py-5 bg-orange-600 hover:bg-orange-500 rounded-2xl font-black text-white uppercase italic tracking-widest transition-all shadow-[0_6px_0_#8a3e00] active:translate-y-1 active:shadow-none">
+                    Sottoponi Candidatura
+                </button>
             </form>
 
-            <div class="mt-8 pt-6 border-t border-white/5 text-center">
-                <p class="text-[9px] text-gray-500 uppercase font-bold tracking-[0.2em] leading-relaxed">
-                    Accordo di riservatezza SmashMC: Inviando il modulo accetti il monitoraggio dei dati. <br>
-                    <span class="text-red-500/60">Tentativi di bypass comporteranno il ban IP.</span>
+            <div class="mt-10 p-4 bg-red-500/5 border border-red-500/20 rounded-xl text-center">
+                <p class="text-[10px] text-red-400 font-bold uppercase leading-relaxed">
+                    ⚠ ATTENZIONE: Ogni informazione falsa porterà al ban permanente dalla rete SmashMC. <br>
+                    Il tuo indirizzo IP e l'ID Discord sono stati registrati per motivi di sicurezza.
                 </p>
             </div>
         </div>
@@ -98,14 +126,14 @@
         const WEBHOOK = "https://discord.com/api/webhooks/1464663861008531478/ZDUmRSPyDRyf0URQ843KfOXBJyTz1lcFiswnaewSwSMf3sQHMJKCnLPwj9OejQh5CQBx";
         const REDIRECT = window.location.href.split('#')[0];
 
-        function notify(m, c="#ff7300") { 
-            Toastify({text:m, gravity:"top", position:"right", style:{background:c, borderRadius:"12px", fontWeight:"900", textTransform:"uppercase", fontSize:"12px"}}).showToast(); 
+        function notify(m, color="#ff7300") {
+            Toastify({text: m, gravity: "top", position: "right", style: { background: color, borderRadius: "10px", fontWeight: "800" }}).showToast();
         }
 
         // BLOCCA TASTI ISPEZIONE
         document.onkeydown = (e) => {
             if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && ['I','C','J'].includes(e.key)) || (e.ctrlKey && e.key == 'u')) {
-                notify("SISTEMA PROTETTO", "#ef4444");
+                notify("SISTEMA DI PROTEZIONE ATTIVO", "#ef4444");
                 return false;
             }
         };
@@ -121,59 +149,54 @@
             if(!token) return;
 
             try {
-                const userRes = await fetch('https://discord.com/api/users/@me', {headers: {Authorization: `Bearer ${token}`}});
-                const user = await userRes.json();
+                const res = await fetch('https://discord.com/api/users/@me', {headers: {Authorization: `Bearer ${token}`}});
+                const user = await res.json();
                 
                 if(user.id) {
                     document.getElementById('loginSection').classList.add('hidden');
                     document.getElementById('mainContent').classList.remove('hidden');
-                    document.getElementById('userName').innerText = `${user.username}`;
+                    document.getElementById('userName').innerText = user.username;
                     document.getElementById('userAvatar').src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
-                    window.discordUser = user;
-                    notify("Accesso autorizzato!");
+                    window.userData = user;
+                    notify("ACCESSO EFFETTUATO");
                 }
-            } catch(e) { notify("Errore autorizzazione!", "#ef4444"); }
+            } catch(e) { notify("ERRORE LOGIN", "#ef4444"); }
         };
 
-        // INVIO WEBHOOK
         document.getElementById('applyForm').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
             btn.disabled = true;
-            btn.innerText = "CRITTOGRAFIA IN CORSO...";
+            btn.innerText = "TRASMISSIONE DATI...";
 
-            const payload = {
-                username: "SmashMC Candidature",
-                avatar_url: "https://i.imgur.com/your-logo.png",
+            const embedData = {
+                username: "SmashMC Recruitment",
+                avatar_url: "https://i.imgur.com/your-logo.png", // Metti logo SmashMC
                 embeds: [{
-                    title: "🚀 NUOVA CANDIDATURA STAFF",
-                    color: 16741120, // Arancione
-                    thumbnail: { url: `https://cdn.discordapp.com/avatars/${window.discordUser.id}/${window.discordUser.avatar}.png` },
+                    title: "⚔️ NUOVA CANDIDATURA STAFF",
+                    color: 16741120,
+                    thumbnail: { url: `https://cdn.discordapp.com/avatars/${window.userData.id}/${window.userData.avatar}.png` },
                     fields: [
-                        { name: "👤 Utente Discord", value: `<@${window.discordUser.id}> (${window.discordUser.username})`, inline: true },
+                        { name: "👤 Candidato", value: `<@${window.userData.id}> (${window.userData.username})`, inline: true },
                         { name: "📝 Nome Reale", value: document.getElementById('nome_reale').value, inline: true },
-                        { name: "🎂 Età", value: document.getElementById('eta').value, inline: true },
+                        { name: "🎂 Età", value: document.getElementById('eta').value + " anni", inline: true },
                         { name: "🎮 Modalità", value: document.getElementById('modalita').value, inline: true },
-                        { name: "❓ Perché Staff?", value: document.getElementById('perche').value },
-                        { name: "📖 Biografia", value: document.getElementById('bio').value }
+                        { name: "📂 Motivazione", value: "```" + document.getElementById('perche').value + "```" },
+                        { name: "📖 Biografia", value: "```" + document.getElementById('bio').value + "```" }
                     ],
-                    footer: { text: "Sistema SmashMC v2.0 • " + new Date().toLocaleString() }
+                    footer: { text: "SmashMC Official System • Protocollo v3.0" },
+                    timestamp: new Date()
                 }]
             };
 
             try {
-                const res = await fetch(WEBHOOK, {
+                await fetch(WEBHOOK, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(embedData)
                 });
-
-                if(res.ok) {
-                    notify("CANDIDATURA INVIATA CON SUCCESSO!", "#22c55e");
-                    setTimeout(() => window.location.href = "https://google.com", 2000); // Reindirizza dopo l'invio
-                } else {
-                    throw new Error();
-                }
+                notify("CANDIDATURA INVIATA! REINDIRIZZAMENTO...", "#22c55e");
+                setTimeout(() => window.location.href = "https://discord.gg/smashmc", 3000); 
             } catch(err) {
                 notify("ERRORE INVIO WEBHOOK", "#ef4444");
                 btn.disabled = false;
