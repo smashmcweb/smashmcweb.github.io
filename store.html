@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmashMC | Store Ufficiale con Dev Console</title>
+    <title>SmashMC | Store Ufficiale con ID System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
@@ -397,6 +397,19 @@
             white-space: nowrap;
             z-index: 1000;
         }
+
+        /* ID Card Style */
+        .id-card {
+            background: linear-gradient(145deg, #1a2f3a, #0e222d);
+            border: 2px solid var(--primary);
+            border-radius: 1.5rem;
+            padding: 0.8rem 1.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            font-family: monospace;
+            font-size: 1.1rem;
+        }
     </style>
 </head>
 <body class="py-10">
@@ -438,24 +451,48 @@
         </div>
     </div>
 
-    <!-- Login Screen (Originale) -->
+    <!-- Login Screen (Originale con ID) -->
     <div id="login-screen">
         <div class="bg-[#0e222d] p-12 rounded-[2rem] border-2 border-[#0f0704] shadow-[0_10px_0_#0f0704] w-full max-w-md text-center">
             <img src="https://i.imgur.com/zDcC1qP.png" class="h-20 mx-auto mb-8">
             <h2 class="text-2xl font-black text-white italic uppercase mb-6">Store Login</h2>
-            <input type="text" id="nick-field" placeholder="NICKNAME MINECRAFT" class="w-full p-4 bg-black/50 border-2 border-transparent focus:border-orange-500 rounded-xl text-white text-center font-black uppercase outline-none mb-4">
-            <input type="text" id="discord-field" placeholder="DISCORD TAG (es. Nome#1234)" class="w-full p-4 bg-black/50 border-2 border-transparent focus:border-orange-500 rounded-xl text-white text-center font-black outline-none mb-6">
+            
+            <!-- ID Minecraft Field (obbligatorio) -->
+            <div class="mb-4 text-left">
+                <label class="text-xs text-gray-400 uppercase font-bold mb-2 block">ID MINECRAFT (UUID)</label>
+                <input type="text" id="minecraft-id" placeholder="es. 12345678-1234-1234-1234-123456789012" class="w-full p-4 bg-black/50 border-2 border-transparent focus:border-orange-500 rounded-xl text-white text-center font-mono text-sm outline-none">
+            </div>
+            
+            <div class="mb-4 text-left">
+                <label class="text-xs text-gray-400 uppercase font-bold mb-2 block">DISCORD TAG</label>
+                <input type="text" id="discord-field" placeholder="es. Nome#1234" class="w-full p-4 bg-black/50 border-2 border-transparent focus:border-orange-500 rounded-xl text-white text-center font-black outline-none">
+            </div>
+            
+            <div class="mb-6 text-left">
+                <label class="text-xs text-gray-400 uppercase font-bold mb-2 block">NICKNAME (opzionale)</label>
+                <input type="text" id="nick-field" placeholder="es. SmashPlayer" class="w-full p-4 bg-black/50 border-2 border-transparent focus:border-orange-500 rounded-xl text-white text-center font-black outline-none">
+                <p class="text-xs text-gray-500 mt-1">Lasciare vuoto se non si conosce</p>
+            </div>
+            
             <button onclick="login()" class="w-full bg-orange-500 text-black py-4 rounded-xl font-black uppercase shadow-[0_4px_0_#0f0704] hover:translate-y-[-2px] transition-all">
                 <i class="fa-solid fa-right-to-bracket mr-2"></i>ENTRA NELLO STORE
             </button>
-            <p class="text-gray-500 text-xs mt-6">Accedi per visualizzare lo store</p>
+            
+            <div class="mt-6 p-3 bg-blue-900/30 rounded-xl border border-blue-500">
+                <p class="text-xs text-blue-300 flex items-center gap-2">
+                    <i class="fa-solid fa-info-circle"></i> 
+                    L'ID Minecraft è necessario per la consegna degli item
+                </p>
+            </div>
+            
+            <p class="text-gray-500 text-xs mt-4">ID richiesto per il ticket store</p>
         </div>
     </div>
 
     <!-- Main Store Content (Nascosto fino al login) -->
     <div id="store-content" style="display: none;" class="container mx-auto px-4">
         
-        <!-- Navbar Originale -->
+        <!-- Navbar Originale con ID Display -->
         <header class="mb-10">
             <div class="meta-nav-container">
                 <nav class="flex items-center gap-6">
@@ -465,7 +502,10 @@
                     <a href="#" class="nav-link">Staff</a>
                     <div class="flex items-center gap-3 bg-black/40 px-4 py-2 rounded-xl border border-white/5 ml-4">
                         <img id="nav-avatar" src="https://mc-heads.net/avatar/steve/32" class="w-6 h-6 rounded-full">
-                        <span id="nav-user" class="text-[10px] font-black text-white italic uppercase">Player</span>
+                        <div class="flex flex-col items-start">
+                            <span id="nav-user" class="text-[10px] font-black text-white italic uppercase">Player</span>
+                            <span id="nav-id" class="text-[8px] text-gray-400 font-mono"></span>
+                        </div>
                     </div>
                 </nav>
                 <div class="flex items-center gap-6">
@@ -499,8 +539,17 @@
                         <i class="fa-solid fa-skull text-orange-500"></i> Survival (Prossimamente)
                     </div>
                     
+                    <!-- ID Card Display -->
+                    <div class="mt-4 p-3 bg-black/30 rounded-xl">
+                        <div class="text-xs text-gray-400 mb-1">Il tuo ID Minecraft:</div>
+                        <div class="id-card w-full justify-center" id="sidebar-id-display">
+                            <i class="fa-solid fa-id-card text-orange-500"></i>
+                            <span class="font-mono text-sm" id="sidebar-id">-</span>
+                        </div>
+                    </div>
+                    
                     <!-- Riepilogo Carrello -->
-                    <div class="mt-8 pt-4 border-t border-white/10">
+                    <div class="mt-4 pt-4 border-t border-white/10">
                         <h4 class="text-xs font-black text-white mb-3">🛒 RIEPILOGO CARRELLO</h4>
                         <div id="cart-summary" class="text-xs text-gray-400 min-h-[60px]">
                             Nessun oggetto nel carrello
@@ -527,6 +576,15 @@
                 <section id="s-home" class="block">
                     <div class="bg-gradient-to-br from-[#163a4d] to-[#0e222d] p-12 rounded-[2.5rem] border-2 border-[#0f0704] shadow-[0_10px_0_#0f0704]">
                         <h1 class="text-5xl font-black italic text-white uppercase">Benvenuto,<br><span class="text-orange-500" id="welcomeName">Player</span></h1>
+                        
+                        <!-- ID Welcome Message -->
+                        <div class="mt-4 bg-black/30 p-4 rounded-xl inline-block">
+                            <p class="text-sm text-gray-300">
+                                <i class="fa-solid fa-id-card text-orange-500 mr-2"></i>
+                                ID associato: <span id="welcome-id" class="font-mono text-orange-400"></span>
+                            </p>
+                        </div>
+                        
                         <p class="mt-4 text-gray-400 font-bold uppercase text-xs tracking-[0.2em]">Seleziona una categoria per iniziare gli acquisti</p>
                         
                         <!-- Statistiche -->
@@ -621,7 +679,7 @@
                     <div class="console-output" id="console-output">
                         <div class="console-line">[SYSTEM] Inizializzazione Store SmashMC...</div>
                         <div class="console-line">[SYSTEM] Caricamento prodotti...</div>
-                        <div class="console-line">[SYSTEM] Connessione al database...</div>
+                        <div class="console-line">[SYSTEM] Sistema ID attivo</div>
                         <div class="console-line">[PLUGIN] Bridge Minecraft attivo</div>
                         <div class="console-line">[DISCORD] Categoria ticket: 1478104338118348890</div>
                         <div class="console-line">[READY] Store pronto all'uso - "help" per comandi</div>
@@ -638,7 +696,7 @@
                         <span><span class="text-orange-500">help</span> - mostra comandi</span>
                         <span><span class="text-orange-500">clear</span> - pulisci console</span>
                         <span><span class="text-orange-500">products</span> - lista prodotti</span>
-                        <span><span class="text-orange-500">stats</span> - statistiche</span>
+                        <span><span class="text-orange-500">id</span> - mostra ID corrente</span>
                         <span><span class="text-orange-500">plugin</span> - stato plugin</span>
                     </div>
                 </div>
@@ -646,18 +704,17 @@
         </main>
     </div>
 
-    <!-- Script Principale - Oltre 1000 righe di logica -->
+    <!-- Script Principale -->
     <script>
         // ============================================================
-        // SMASHMC STORE - SISTEMA COMPLETO CON DEV CONSOLE
-        // OLTRE 1000 RIGHE DI CODICE FUNZIONANTE
-        // VERSIONE 2.0 - TUTTE LE IMMAGINI ORIGINALI
+        // SMASHMC STORE - SISTEMA CON ID MINECRAFT
+        // VERSIONE 2.1 - RICHIESTA ID OBBLIGATORIA
         // ============================================================
 
         // ==================== CONFIGURAZIONE ====================
         const CONFIG = {
             storeName: 'SmashMC Store',
-            version: '2.0.0',
+            version: '2.1.0',
             apiEndpoint: 'https://api.smashmc.it/store',
             discordCategory: '1478104338118348890',
             adminRole: '1451211266298351729',
@@ -671,8 +728,9 @@
         // ==================== STATO GLOBALE ====================
         let GlobalState = {
             user: {
-                nick: null,
+                minecraftId: null,
                 discord: null,
+                nick: null,
                 uuid: null,
                 isLoggedIn: false,
                 isAdmin: false,
@@ -715,17 +773,13 @@
             updateProductList();
             startConsoleTime();
             logToConsole('[SYSTEM] Store inizializzato correttamente', 'info');
+            logToConsole('[SYSTEM] Modalità ID Minecraft attiva', 'info');
             logToConsole(`[PLUGIN] Bridge Minecraft: ${pluginCheck() ? 'ATTIVO' : 'INATTIVO'}`, 'plugin');
             logToConsole(`[DISCORD] Categoria ticket: ${CONFIG.discordCategory}`, 'discord');
-            
-            // Event listeners
-            window.addEventListener('load', function() {
-                logToConsole('[SYSTEM] DOM completamente caricato', 'info');
-            });
         }
 
         function pluginCheck() {
-            return Math.random() > 0.1; // Simulazione
+            return Math.random() > 0.1;
         }
 
         function startConsoleTime() {
@@ -735,14 +789,16 @@
             }, 1000);
         }
 
-        // ==================== LOGIN SYSTEM ====================
+        // ==================== LOGIN SYSTEM CON ID ====================
         function login() {
-            const nick = document.getElementById('nick-field').value.trim();
+            const minecraftId = document.getElementById('minecraft-id').value.trim();
             const discord = document.getElementById('discord-field').value.trim();
+            const nick = document.getElementById('nick-field').value.trim();
             
-            if (!nick || nick.length < 3) {
-                showToast('❌ Inserisci un nickname valido (min 3 caratteri)', 'error');
-                logToConsole(`[LOGIN] Tentativo fallito: nickname non valido (${nick})`, 'error');
+            // Validazione ID Minecraft (formato UUID o almeno stringa)
+            if (!minecraftId || minecraftId.length < 10) {
+                showToast('❌ Inserisci un ID Minecraft valido', 'error');
+                logToConsole('[LOGIN] Tentativo fallito: ID mancante o non valido', 'error');
                 return;
             }
             
@@ -751,12 +807,20 @@
                 return;
             }
             
-            // Simula UUID generation
-            const uuid = generateUUID(nick);
+            // Formatta ID se necessario
+            let formattedId = minecraftId;
+            if (!minecraftId.includes('-') && minecraftId.length === 32) {
+                // Se è un UUID senza trattini, aggiungili
+                formattedId = minecraftId.replace(/(.{8})(.{4})(.{4})(.{4})(.{12})/, '$1-$2-$3-$4-$5');
+            }
+            
+            // Simula UUID generation per il giocatore
+            const uuid = generateUUID(nick || 'player');
             
             GlobalState.user = {
-                nick: nick,
+                minecraftId: formattedId,
                 discord: discord,
+                nick: nick || formattedId.substring(0, 8),
                 uuid: uuid,
                 isLoggedIn: true,
                 isAdmin: checkAdmin(discord),
@@ -764,14 +828,22 @@
             };
             
             // Aggiorna UI
-            document.getElementById('nav-user').innerText = nick.toUpperCase();
-            document.getElementById('nav-avatar').src = `https://mc-heads.net/avatar/${nick}/32`;
-            document.getElementById('welcomeName').innerText = nick.toUpperCase();
+            document.getElementById('nav-user').innerText = (nick || formattedId.substring(0, 8)).toUpperCase();
+            document.getElementById('nav-avatar').src = `https://mc-heads.net/avatar/${formattedId}/32`;
+            document.getElementById('welcomeName').innerText = (nick || formattedId.substring(0, 8)).toUpperCase();
+            document.getElementById('welcome-id').innerText = formattedId;
+            document.getElementById('nav-id').innerText = formattedId.substring(0, 8) + '...';
+            document.getElementById('sidebar-id').innerText = formattedId;
+            document.getElementById('sidebar-id-display').innerHTML = `
+                <i class="fa-solid fa-id-card text-orange-500"></i>
+                <span class="font-mono text-sm">${formattedId.substring(0, 14)}...</span>
+            `;
+            
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('store-content').style.display = 'block';
             
-            showToast(`✅ Benvenuto ${nick}!`, 'success');
-            logToConsole(`[LOGIN] Utente ${nick} (${discord}) connesso`, 'auth');
+            showToast(`✅ Benvenuto! ID: ${formattedId.substring(0, 8)}...`, 'success');
+            logToConsole(`[LOGIN] Utente con ID ${formattedId} connesso`, 'auth');
             logToConsole(`[UUID] Generato: ${uuid}`, 'debug');
             
             if (GlobalState.user.isAdmin) {
@@ -791,7 +863,6 @@
         }
 
         function checkAdmin(discord) {
-            // Simula verifica admin
             const adminDiscords = ['SmashAdmin#1234', 'Owner#0001', 'Staff#8888'];
             return adminDiscords.includes(discord) || discord.toLowerCase().includes('admin');
         }
@@ -1016,7 +1087,7 @@
             }
             
             const total = GlobalState.cart.reduce((acc, item) => acc + (item.price * (item.quantity || 1)), 0);
-            const causale = `SMASH-${Math.floor(Math.random() * 10000)}-${Date.now().toString().slice(-4)}`;
+            const causale = `SMASH-${GlobalState.user.minecraftId.substring(0, 8)}-${Date.now().toString().slice(-4)}`;
             
             document.getElementById('payment-amount').innerText = total.toFixed(2) + '€';
             document.getElementById('payment-causale').innerText = causale;
@@ -1030,10 +1101,16 @@
         }
 
         function confirmPayment() {
+            if (!GlobalState.user.minecraftId) {
+                showToast('❌ ID Minecraft mancante', 'error');
+                return;
+            }
+            
             const payment = {
                 id: `PAY-${Date.now()}`,
-                user: GlobalState.user.nick,
+                minecraftId: GlobalState.user.minecraftId,
                 discord: GlobalState.user.discord,
+                nick: GlobalState.user.nick,
                 items: GlobalState.cart,
                 total: GlobalState.cart.reduce((acc, item) => acc + (item.price * (item.quantity || 1)), 0),
                 causale: document.getElementById('payment-causale').innerText,
@@ -1044,10 +1121,10 @@
             GlobalState.payments.push(payment);
             GlobalState.stats.totalSales += payment.total;
             
-            showToast('💰 Pagamento registrato! Gli staffer ti contatteranno su Discord', 'success');
-            logToConsole(`[PAYMENT] Nuovo pagamento: ${payment.id} - €${payment.total}`, 'payment');
+            showToast('💰 Pagamento registrato! Gli staffer useranno il tuo ID per consegnare gli item', 'success');
+            logToConsole(`[PAYMENT] Nuovo pagamento: ${payment.id} - €${payment.total} per ID ${payment.minecraftId}`, 'payment');
             
-            // Crea ticket Discord (simulato)
+            // Crea ticket Discord con ID
             createDiscordTicket(payment);
             
             // Svuota carrello
@@ -1060,8 +1137,9 @@
             const ticket = {
                 id: `TICKET-${Date.now()}`,
                 category: CONFIG.discordCategory,
-                user: payment.user,
+                minecraftId: payment.minecraftId,
                 discord: payment.discord,
+                nick: payment.nick,
                 items: payment.items,
                 total: payment.total,
                 createdAt: new Date().toISOString(),
@@ -1069,9 +1147,8 @@
             };
             
             GlobalState.tickets.push(ticket);
-            logToConsole(`[DISCORD] Ticket creato: ${ticket.id} nella categoria ${CONFIG.discordCategory}`, 'discord');
-            
-            // In un'implementazione reale, qui ci sarebbe una chiamata API al bot Discord
+            logToConsole(`[DISCORD] Ticket creato: ${ticket.id} per ID ${payment.minecraftId}`, 'discord');
+            logToConsole(`[DISCORD] Categoria: ${CONFIG.discordCategory}`, 'discord');
         }
 
         // ==================== TOAST SYSTEM ====================
@@ -1153,9 +1230,8 @@
                     logToConsole('- stats : statistiche store', 'system');
                     logToConsole('- cart : mostra carrello', 'system');
                     logToConsole('- plugin : stato plugin', 'system');
+                    logToConsole('- id : mostra ID corrente', 'system');
                     logToConsole('- users : utenti online', 'system');
-                    logToConsole('- test : test sistema', 'system');
-                    logToConsole('- admin : info admin', 'system');
                     break;
                     
                 case 'clear':
@@ -1192,23 +1268,18 @@
                     logToConsole(`Categoria Discord: ${CONFIG.discordCategory}`, 'plugin');
                     break;
                     
+                case 'id':
+                    if (GlobalState.user.minecraftId) {
+                        logToConsole(`ID Minecraft: ${GlobalState.user.minecraftId}`, 'system');
+                        logToConsole(`Discord: ${GlobalState.user.discord || 'N/D'}`, 'system');
+                    } else {
+                        logToConsole('Nessun ID presente - effettua il login', 'system');
+                    }
+                    break;
+                    
                 case 'users':
                     logToConsole(`Utenti online: ${GlobalState.stats.onlineUsers}`, 'system');
                     logToConsole(`Utente corrente: ${GlobalState.user.nick || 'non loggato'}`, 'system');
-                    break;
-                    
-                case 'test':
-                    logToConsole('Esecuzione test di sistema...', 'debug');
-                    logToConsole(`✓ Store version: ${CONFIG.version}`, 'success');
-                    logToConsole(`✓ API endpoint: ${CONFIG.apiEndpoint}`, 'success');
-                    logToConsole(`✓ IBAN configurato: ${CONFIG.iban.slice(0, 10)}...`, 'success');
-                    logToConsole(`✓ Memoria utilizzata: ${Math.round(performance.memory?.usedJSHeapSize / 1048576)}MB`, 'debug');
-                    break;
-                    
-                case 'admin':
-                    logToConsole(`Permessi admin: ${GlobalState.user.isAdmin ? 'CONCESSI' : 'NEGATI'}`, 'admin');
-                    logToConsole(`Ruolo richiesto: ${CONFIG.adminRole}`, 'admin');
-                    logToConsole(`User autorizzato: ${CONFIG.adminUser}`, 'admin');
                     break;
                     
                 default:
@@ -1219,44 +1290,17 @@
 
         // ==================== STATISTICHE ====================
         function updateStats() {
-            // Aggiorna statistiche UI
             document.getElementById('stats-products').innerText = getTotalProducts();
             document.getElementById('stats-users').innerText = GlobalState.stats.onlineUsers.toLocaleString();
             document.getElementById('stats-sales').innerText = GlobalState.stats.totalSales;
             
-            // Incrementa page views
             GlobalState.stats.pageViews++;
-        }
-
-        // ==================== UTILITY ====================
-        function formatDate(date) {
-            return new Date(date).toLocaleDateString('it-IT', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
         }
 
         // ==================== INIZIALIZZAZIONE ====================
         document.addEventListener('DOMContentLoaded', function() {
             initStore();
             
-            // Controllo sessione esistente
-            const savedSession = localStorage.getItem('smashmc_session');
-            if (savedSession) {
-                try {
-                    const session = JSON.parse(savedSession);
-                    if (session.user && session.user.isLoggedIn) {
-                        // Auto-login non implementato per sicurezza
-                    }
-                } catch (e) {
-                    console.error('Errore caricamento sessione');
-                }
-            }
-            
-            // Aggiorna stats periodicamente
             setInterval(() => {
                 GlobalState.stats.onlineUsers = 1200 + Math.floor(Math.random() * 100);
                 document.getElementById('stats-users').innerText = GlobalState.stats.onlineUsers.toLocaleString();
@@ -1278,14 +1322,6 @@
         window.executeConsoleCommand = executeConsoleCommand;
         window.handleConsoleKey = handleConsoleKey;
         window.showToast = showToast;
-
-        // Log iniziale
-        console.log('%cSmashMC Store v2.0 - Dev Console Attiva', 'color: #ff7300; font-size: 16px; font-weight: bold;');
-        console.log('Per comandi console, usa il pannello dedicato');
-        
-        // ============================================================
-        // FINE CODICE - TOTALE RIGHE: 1247
-        // ============================================================
     </script>
     
     <!-- Fixed Checkout Button -->
