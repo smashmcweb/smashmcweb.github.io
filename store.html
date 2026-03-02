@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmashMC | Store Ufficiale</title>
+    <title>SmashMC | Store con Ticket System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
@@ -22,7 +22,6 @@
             background-size: cover;
             color: #d5d5d5;
             font-family: 'Poppins', sans-serif;
-            margin: 0;
         }
 
         body::before {
@@ -39,9 +38,6 @@
             box-shadow: 0 10px 0 var(--border);
             border-radius: 2rem;
             padding: 1rem 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
         }
 
         .nav-link {
@@ -52,7 +48,6 @@
             letter-spacing: 2px;
             color: #64748b;
             text-decoration: none;
-            transition: 0.3s;
         }
         .nav-link:hover { color: var(--primary); }
 
@@ -82,7 +77,6 @@
             cursor: pointer;
             border: 2px solid transparent;
             margin-bottom: 12px;
-            transition: 0.2s;
             display: flex;
             align-items: center;
             gap: 12px;
@@ -103,7 +97,6 @@
             cursor: pointer;
             transition: 0.2s;
             padding: 15px;
-            text-align: center;
         }
         .product-cube:hover { transform: translateY(-5px); border-color: var(--primary); background: #163a4d; }
 
@@ -119,10 +112,8 @@
             color: white;
             padding: 15px 25px;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             font-family: 'Montserrat';
             font-weight: 900;
-            text-transform: uppercase;
             font-size: 12px;
             margin-top: 10px;
             display: flex;
@@ -135,12 +126,12 @@
         #modal-overlay {
             position: fixed; inset: 0; background: rgba(0, 0, 0, 0.9);
             backdrop-filter: blur(10px); display: none; z-index: 9999;
-            align-items: center; justify-content: center; padding: 20px;
+            align-items: center; justify-content: center;
         }
         .modal-card {
             background: var(--panel); border: 3px solid var(--primary);
             border-radius: 2.5rem; width: 100%; max-width: 500px;
-            padding: 40px; position: relative;
+            padding: 40px;
         }
 
         #login-screen {
@@ -148,53 +139,38 @@
             display: flex; align-items: center; justify-content: center;
         }
         
-        .admin-panel {
+        .ticket-panel {
             background: var(--panel);
             border: 2px solid var(--primary);
             border-radius: 2rem;
             padding: 2rem;
             margin-top: 2rem;
-            display: none;
         }
         
-        .admin-input {
+        .ticket-item {
             background: rgba(0,0,0,0.3);
-            border: 2px solid #2a4359;
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
             border-radius: 1rem;
-            padding: 12px 20px;
+            margin-bottom: 1rem;
+        }
+        
+        .badge-staff {
+            background: #2ecc71;
+            color: black;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 900;
+        }
+        
+        .badge-user {
+            background: #3498db;
             color: white;
-            width: 100%;
-            margin-bottom: 15px;
-        }
-        
-        .admin-input:focus {
-            border-color: var(--primary);
-            outline: none;
-        }
-        
-        .token-input {
-            background: #0a1a24;
-            border: 3px solid var(--primary);
-            color: white;
-            font-family: monospace;
-            letter-spacing: 2px;
-        }
-        
-        .plugin-status {
-            background: #1a3a2a;
-            border: 2px solid #2ecc71;
-            border-radius: 2rem;
-            padding: 0.5rem 1.5rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-        
-        .plugin-status.offline {
-            background: #3a1a1a;
-            border-color: #e74c3c;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 900;
         }
     </style>
 </head>
@@ -202,6 +178,7 @@
 
     <div id="toast-container"></div>
 
+    <!-- Modal Dettaglio Prodotto -->
     <div id="modal-overlay" onclick="closeProduct()">
         <div class="modal-card text-center" onclick="event.stopPropagation()">
             <img id="m-img" src="https://i.imgur.com/1wZ9XxN.png" class="h-24 mx-auto mb-6">
@@ -209,299 +186,194 @@
             <p id="m-desc" class="text-gray-400 text-[10px] font-bold uppercase tracking-widest bg-black/30 p-5 rounded-2xl mb-8">Descrizione</p>
             <div class="flex items-center justify-between">
                 <span id="m-price" class="text-3xl font-black text-orange-500 italic">€0.00</span>
-                <button id="m-buy" class="bg-orange-500 text-black font-black uppercase px-8 py-4 rounded-xl shadow-[0_4px_0_#0f0704]">Aggiungi</button>
+                <button id="m-buy" class="bg-orange-500 text-black font-black uppercase px-8 py-4 rounded-xl shadow-[0_4px_0_#0f0704]">Aggiungi al ticket</button>
             </div>
         </div>
     </div>
 
+    <!-- Login Screen -->
     <div id="login-screen">
         <div class="bg-[#0e222d] p-12 rounded-[2rem] border-2 border-[#0f0704] shadow-[0_10px_0_#0f0704] w-full max-w-md text-center">
             <img src="https://i.imgur.com/zDcC1qP.png" class="h-20 mx-auto mb-8">
-            
-            <!-- Plugin Status Indicator -->
-            <div id="pluginStatus" class="plugin-status offline mx-auto mb-6 w-fit">
-                <i class="fa-solid fa-plug"></i> Plugin: In attesa di connessione
-            </div>
-            
             <h2 class="text-2xl font-black text-white italic uppercase mb-6">Store Login</h2>
-            <p class="text-gray-400 mb-4 text-sm">Inserisci il token del server</p>
-            
-            <input type="text" id="serverToken" placeholder="TOKEN - es. SMPL-4A8F-2C11" class="w-full p-4 bg-black/50 border-2 border-orange-500 rounded-xl text-white text-center font-mono font-black uppercase tracking-wider outline-none mb-4">
-            
-            <input type="text" id="nick-field" placeholder="NICKNAME MINECRAFT" class="w-full p-4 bg-black/50 border-2 border-transparent focus:border-orange-500 rounded-xl text-white text-center font-black uppercase outline-none mb-6">
-            
-            <button onclick="loginWithToken()" class="w-full bg-orange-500 text-black py-4 rounded-xl font-black uppercase shadow-[0_4px_0_#0f0704] hover:translate-y-[-2px] transition-all">
-                <i class="fa-solid fa-key mr-2"></i> COLLEGA AL PLUGIN
-            </button>
-            
-            <p class="text-gray-500 text-xs mt-6">ID Ruolo: 1451211266298351729 | ID User: 1205071838489739316</p>
+            <input type="text" id="nick-field" placeholder="NICKNAME MINECRAFT" class="w-full p-4 bg-black/50 border-2 border-transparent focus:border-orange-500 rounded-xl text-white text-center font-black uppercase outline-none mb-4">
+            <input type="text" id="discord-field" placeholder="DISCORD TAG (es. Nome#1234)" class="w-full p-4 bg-black/50 border-2 border-transparent focus:border-orange-500 rounded-xl text-white text-center font-black outline-none mb-6">
+            <button onclick="login()" class="w-full bg-orange-500 text-black py-4 rounded-xl font-black uppercase shadow-[0_4px_0_#0f0704]">ENTRA NELLO STORE</button>
+            <p class="text-gray-500 text-xs mt-6">Il ticket verrà aperto su Discord nella categoria Ticket Store</p>
         </div>
     </div>
 
-    <header class="container mx-auto px-4 mb-10">
-        <div class="meta-nav-container">
-            <nav class="flex items-center gap-6">
-                <a href="#" class="btn-nav-home"><i class="fa-solid fa-house"></i> Home</a>
-                <a href="#" class="nav-link">Regolamento</a>
-                <a href="#" class="nav-link">Bans</a>
-                <a href="#" class="nav-link">Staff</a>
-                <div class="flex items-center gap-3 bg-black/40 px-4 py-2 rounded-xl border border-white/5 ml-4">
-                    <img id="nav-avatar" src="https://mc-heads.net/avatar/steve/32" class="w-6 h-6">
-                    <span id="nav-user" class="text-[10px] font-black text-white italic uppercase">Player</span>
-                </div>
-            </nav>
-            <div class="flex items-center gap-6">
-                <div class="text-orange-500 font-black text-lg italic"><i class="fa-solid fa-cart-shopping mr-2"></i><span id="nav-cart">0.00</span>€</div>
-                <img src="https://i.imgur.com/zDcC1qP.png" class="h-10">
-            </div>
-        </div>
-    </header>
-
-    <main class="container mx-auto px-4 grid grid-cols-12 gap-10">
-        <aside class="col-span-12 lg:col-span-3">
-            <div class="bg-[#0e222d] border-2 border-[#0f0704] p-6 rounded-[2rem] shadow-[0_5px_0_#0f0704]">
-                <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-[9px] font-black text-orange-500 uppercase tracking-widest">Categorie</h3>
-                    <span id="tokenBadge" class="text-[8px] bg-black/50 px-2 py-1 rounded-full text-green-400 hidden">✅ Token connesso</span>
-                </div>
-                
-                <div id="b-home" onclick="tab('home')" class="sidebar-btn active"><i class="fa-solid fa-house text-orange-500"></i> Dashboard</div>
-                <div id="b-bedwars" onclick="tab('bedwars')" class="sidebar-btn"><i class="fa-solid fa-bed text-orange-500"></i> Bedwars</div>
-                <div id="b-lobby" onclick="tab('lobby')" class="sidebar-btn"><i class="fa-solid fa-compass text-orange-500"></i> Lobby</div>
-                <div class="sidebar-btn disabled"><i class="fa-solid fa-skull text-orange-500"></i> Survival</div>
-                
-                <!-- Pulsante console admin (visibile solo con ruolo corretto) -->
-                <div class="mt-8 pt-4 border-t border-white/10" id="adminSection" style="display: none;">
-                    <button onclick="toggleAdminPanel()" id="adminToggleBtn" class="sidebar-btn w-full" style="background:#2c3e50;">
-                        <i class="fa-solid fa-terminal text-orange-500"></i> Console Store (Plugin)
-                    </button>
+    <!-- Main Store -->
+    <div id="store-content" style="display: none;">
+        <header class="container mx-auto px-4 mb-10">
+            <div class="meta-nav-container flex justify-between items-center">
+                <nav class="flex items-center gap-6">
+                    <a href="#" class="btn-nav-home"><i class="fa-solid fa-house"></i> Home</a>
+                    <a href="#" class="nav-link">Regolamento</a>
+                    <a href="#" class="nav-link">Bans</a>
+                    <a href="#" class="nav-link">Staff</a>
+                    <div class="flex items-center gap-3 bg-black/40 px-4 py-2 rounded-xl border border-white/5 ml-4">
+                        <img id="nav-avatar" src="https://mc-heads.net/avatar/steve/32" class="w-6 h-6">
+                        <span id="nav-user" class="text-[10px] font-black text-white italic uppercase">Player</span>
+                    </div>
+                </nav>
+                <div class="flex items-center gap-6">
+                    <div class="text-orange-500 font-black text-lg italic">
+                        <i class="fa-solid fa-ticket mr-2"></i><span id="nav-cart">0</span> oggetti
+                    </div>
+                    <img src="https://i.imgur.com/zDcC1qP.png" class="h-10">
                 </div>
             </div>
-        </aside>
+        </header>
 
-        <div class="col-span-12 lg:col-span-9">
-            <!-- Sezioni prodotti -->
-            <section id="s-home" class="block">
-                <div class="bg-gradient-to-br from-[#163a4d] to-[#0e222d] p-12 rounded-[2.5rem] border-2 border-[#0f0704] shadow-[0_10px_0_#0f0704]">
-                    <h1 class="text-5xl font-black italic text-white uppercase">Benvenuto,<br><span class="text-orange-500" id="welcomeName">Player</span></h1>
-                    <p class="mt-4 text-gray-400 font-bold uppercase text-xs tracking-[0.2em]">Seleziona una categoria per iniziare gli acquisti.</p>
+        <main class="container mx-auto px-4 grid grid-cols-12 gap-10">
+            <!-- Sidebar -->
+            <aside class="col-span-12 lg:col-span-3">
+                <div class="bg-[#0e222d] border-2 border-[#0f0704] p-6 rounded-[2rem] shadow-[0_5px_0_#0f0704]">
+                    <h3 class="text-[9px] font-black text-orange-500 uppercase tracking-widest mb-6">Categorie</h3>
+                    <div id="b-home" onclick="tab('home')" class="sidebar-btn active"><i class="fa-solid fa-house text-orange-500"></i> Dashboard</div>
+                    <div id="b-bedwars" onclick="tab('bedwars')" class="sidebar-btn"><i class="fa-solid fa-bed text-orange-500"></i> Bedwars</div>
+                    <div id="b-lobby" onclick="tab('lobby')" class="sidebar-btn"><i class="fa-solid fa-compass text-orange-500"></i> Lobby</div>
                     
-                    <!-- Token info -->
-                    <div id="tokenInfo" class="mt-6 bg-black/30 p-4 rounded-2xl hidden">
-                        <p class="text-green-400 text-xs flex items-center gap-2">
-                            <i class="fa-solid fa-check-circle"></i> Token verificato: <span id="tokenDisplay" class="font-mono"></span>
-                        </p>
-                    </div>
-                </div>
-            </section>
-
-            <section id="s-bedwars" class="hidden">
-                <h2 class="text-3xl font-black italic text-white uppercase mb-8 border-b border-white/5 pb-4">Bedwars <span class="text-orange-500">Packages</span></h2>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-6" id="bedwars-grid">
-                    <!-- Verrà popolato da JS -->
-                </div>
-            </section>
-
-            <section id="s-lobby" class="hidden">
-                <h2 class="text-3xl font-black italic text-white uppercase mb-8 border-b border-white/5 pb-4">Lobby <span class="text-orange-500">Perks</span></h2>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-6" id="lobby-grid">
-                    <!-- Verrà popolato da JS -->
-                </div>
-            </section>
-            
-            <!-- Admin Panel (Console) - collegata al plugin via token -->
-            <div id="admin-panel" class="admin-panel">
-                <h3 class="text-2xl font-black text-white mb-6 flex items-center gap-3">
-                    <i class="fa-solid fa-terminal text-orange-500"></i> Console Store <span class="text-xs bg-green-600 px-3 py-1 rounded-full">Plugin: ONLINE</span>
-                </h3>
-                
-                <div class="bg-green-900/30 border border-green-500 p-4 rounded-2xl mb-6">
-                    <p class="text-green-400 text-sm flex items-center gap-2">
-                        <i class="fa-solid fa-plug"></i> Connesso al plugin tramite token: <span id="activeToken" class="font-mono bg-black/50 px-2 py-1 rounded">SMPL-XXXX-XXXX</span>
-                    </p>
-                </div>
-                
-                <div class="grid md:grid-cols-2 gap-8">
-                    <div>
-                        <label class="text-xs text-gray-400 uppercase font-bold">Nome oggetto</label>
-                        <input type="text" id="productName" class="admin-input" placeholder="es. Kit Leggendario">
-                        
-                        <label class="text-xs text-gray-400 uppercase font-bold">Prezzo (€)</label>
-                        <input type="number" id="productPrice" class="admin-input" placeholder="19.99" step="0.01">
-                        
-                        <label class="text-xs text-gray-400 uppercase font-bold">Categoria</label>
-                        <select id="productCategory" class="admin-input">
-                            <option value="bedwars">Bedwars</option>
-                            <option value="lobby">Lobby</option>
-                        </select>
-                        
-                        <label class="text-xs text-gray-400 uppercase font-bold">URL Immagine</label>
-                        <input type="text" id="productImage" class="admin-input" value="https://i.imgur.com/1wZ9XxN.png">
-                        
-                        <label class="text-xs text-gray-400 uppercase font-bold">Descrizione</label>
-                        <textarea id="productDesc" class="admin-input" rows="2">Oggetto esclusivo</textarea>
-                        
-                        <label class="text-xs text-gray-400 uppercase font-bold">Comando plugin (opzionale)</label>
-                        <input type="text" id="pluginCommand" class="admin-input" placeholder="/give {player} diamond 1">
-                        
-                        <button onclick="addProduct()" class="bg-orange-500 text-black font-black uppercase px-8 py-4 rounded-xl shadow-[0_4px_0_#0f0704] w-full mt-4">
-                            <i class="fa-solid fa-cloud-upload-alt mr-2"></i> Invia al Plugin
-                        </button>
-                    </div>
-                    <div class="bg-black/30 p-6 rounded-2xl">
-                        <p class="text-orange-500 font-black text-sm mb-3 flex items-center gap-2">
-                            <i class="fa-solid fa-exchange-alt"></i> COMUNICAZIONE PLUGIN
-                        </p>
-                        <div class="mt-4 text-green-400 text-sm font-mono" id="consoleLog">
-                            &gt; In attesa di comandi...
-                        </div>
-                        <div class="mt-6 text-xs text-gray-400">
-                            <p class="mb-1">📡 Token valido: <span id="validTokenInfo">-</span></p>
-                            <p class="mb-1">🔌 Ultimo ping plugin: <span id="lastPing">Mai</span></p>
+                    <!-- Riepilogo Ticket -->
+                    <div class="mt-8 pt-4 border-t border-white/10">
+                        <div class="bg-[#1a3340] p-4 rounded-xl">
+                            <h4 class="text-xs font-black text-white mb-3">🎫 IL TUO TICKET</h4>
+                            <div id="ticket-summary" class="text-xs text-gray-400">
+                                Nessun oggetto selezionato
+                            </div>
+                            <button onclick="openTicket()" class="w-full bg-green-600 text-black font-black py-3 rounded-xl mt-4 text-sm shadow-[0_4px_0_#0f4f0f]">
+                                APRI TICKET SU DISCORD
+                            </button>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </main>
+            </aside>
 
-    <!-- Modal Pagamento IBAN -->
-    <div id="iban-modal" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-[10002]" style="backdrop-filter: blur(10px);">
-        <div class="bg-[#0e222d] border-4 border-orange-500 rounded-[2.5rem] p-10 max-w-md w-full">
-            <i class="fa-solid fa-building-columns text-5xl text-orange-500 mb-6 block text-center"></i>
-            <h3 class="text-3xl font-black text-white text-center mb-6">PAGAMENTO IBAN</h3>
-            <div class="bg-black/30 p-6 rounded-2xl mb-6">
-                <p class="text-sm mb-2"><span class="text-gray-400">IBAN:</span> <span class="text-white font-mono select-all">IT60X0542811101000000123456</span></p>
-                <p class="text-sm mb-2"><span class="text-gray-400">Intestatario:</span> <span class="text-white">SmashMC Store</span></p>
-                <p class="text-sm mb-2"><span class="text-gray-400">Importo:</span> <span class="text-orange-500 font-black text-2xl" id="ibanAmount">0.00€</span></p>
-                <p class="text-sm"><span class="text-gray-400">Causale:</span> <span class="text-white" id="ibanCausale">#SMASH-001</span></p>
+            <!-- Content Area -->
+            <div class="col-span-12 lg:col-span-9">
+                <!-- Home -->
+                <section id="s-home" class="block">
+                    <div class="bg-gradient-to-br from-[#163a4d] to-[#0e222d] p-12 rounded-[2.5rem] border-2 border-[#0f0704] shadow-[0_10px_0_#0f0704]">
+                        <h1 class="text-5xl font-black italic text-white uppercase">Benvenuto,<br><span class="text-orange-500" id="welcomeName">Player</span></h1>
+                        <p class="mt-4 text-gray-400 font-bold uppercase text-xs tracking-[0.2em]">Seleziona i prodotti e apri un ticket per completare l'acquisto</p>
+                        <div class="mt-6 bg-blue-900/30 p-4 rounded-xl border border-blue-500">
+                            <p class="text-sm flex items-center gap-2">
+                                <i class="fa-solid fa-info-circle text-blue-400"></i> 
+                                Gli staffer ti consegneranno gli item direttamente in game dopo il pagamento IBAN
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Bedwars -->
+                <section id="s-bedwars" class="hidden">
+                    <h2 class="text-3xl font-black italic text-white uppercase mb-8 border-b border-white/5 pb-4">Bedwars <span class="text-orange-500">Packages</span></h2>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6" id="bedwars-grid"></div>
+                </section>
+
+                <!-- Lobby -->
+                <section id="s-lobby" class="hidden">
+                    <h2 class="text-3xl font-black italic text-white uppercase mb-8 border-b border-white/5 pb-4">Lobby <span class="text-orange-500">Perks</span></h2>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6" id="lobby-grid"></div>
+                </section>
+
+                <!-- Ticket Preview Panel -->
+                <div id="ticket-preview" class="ticket-panel mt-6" style="display: none;">
+                    <h3 class="text-xl font-black text-white mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-ticket text-orange-500"></i> 
+                        Anteprima Ticket
+                    </h3>
+                    <div id="ticket-items" class="mb-4"></div>
+                    <div class="bg-black/30 p-4 rounded-xl">
+                        <p class="text-sm"><span class="text-gray-400">Totale:</span> <span id="ticket-total" class="text-orange-500 font-black text-2xl">0.00€</span></p>
+                        <p class="text-xs text-gray-400 mt-2">ID Categoria: 1478104338118348890</p>
+                    </div>
+                </div>
             </div>
-            <p class="text-gray-400 text-xs mb-6">Dopo il bonifico il plugin consegnerà automaticamente i prodotti.</p>
+        </main>
+    </div>
+
+    <!-- Modal Conferma Ticket -->
+    <div id="ticket-modal" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-[10002]" style="backdrop-filter: blur(10px);">
+        <div class="bg-[#0e222d] border-4 border-orange-500 rounded-[2.5rem] p-10 max-w-lg w-full">
+            <i class="fa-solid fa-ticket text-5xl text-orange-500 mb-6 block text-center"></i>
+            <h3 class="text-3xl font-black text-white text-center mb-6">RIEPILOGO TICKET</h3>
             
-            <!-- Sezione token per conferma plugin -->
-            <div class="mb-4">
-                <input type="text" id="confirmToken" placeholder="Conferma token plugin" class="w-full p-3 bg-black/50 border border-gray-600 rounded-xl text-white text-center text-xs">
+            <div class="bg-black/30 p-4 rounded-2xl mb-4 max-h-60 overflow-y-auto" id="ticket-modal-items">
+                <!-- Items will be listed here -->
             </div>
             
-            <button onclick="closeIbanModal()" class="bg-gray-700 text-white font-black py-4 px-6 rounded-xl w-full mb-3">CHIUDI</button>
-            <button onclick="sendToPlugin()" class="bg-green-600 text-white font-black py-4 px-6 rounded-xl w-full text-sm">
-                <i class="fa-solid fa-paper-plane mr-2"></i> CONFERMA E INVIA AL PLUGIN
-            </button>
+            <div class="bg-[#1a3340] p-4 rounded-xl mb-6">
+                <p class="flex justify-between"><span class="text-gray-400">Nickname:</span> <span class="text-white font-bold" id="ticket-nick">Player</span></p>
+                <p class="flex justify-between"><span class="text-gray-400">Discord:</span> <span class="text-white font-bold" id="ticket-discord">#</span></p>
+                <p class="flex justify-between"><span class="text-gray-400">Totale:</span> <span class="text-orange-500 font-black" id="ticket-total-modal">0.00€</span></p>
+                <p class="flex justify-between"><span class="text-gray-400">Categoria:</span> <span class="text-white font-mono text-xs">1478104338118348890</span></p>
+            </div>
+            
+            <p class="text-gray-400 text-xs mb-6 text-center">Verrà aperto un ticket su Discord. Gli staffer ti guideranno per il pagamento IBAN e la consegna.</p>
+            
+            <div class="flex gap-3">
+                <button onclick="closeTicketModal()" class="bg-gray-700 text-white font-black py-4 px-6 rounded-xl flex-1">ANNULLA</button>
+                <button onclick="confirmTicket()" class="bg-orange-500 text-black font-black py-4 px-6 rounded-xl flex-1">CONFERMA TICKET</button>
+            </div>
         </div>
     </div>
 
     <script>
         // Variabili globali
-        let cartTotal = 0;
-        let cartCount = 0;
-        let isAdmin = false;
-        let currentUser = "Player";
-        let serverToken = "";
-        let pluginConnected = false;
-        
-        // ID specifici
-        const ALLOWED_ROLE = "1451211266298351729";
-        const ALLOWED_USER = "1205071838489739316";
-        
-        // Database prodotti
+        let currentUser = {
+            nick: '',
+            discord: ''
+        };
+        let cart = [];
         let products = {
             bedwars: [
-                { id: 1, name: 'VIP Rank', price: 14.99, desc: 'Kit esclusivi e priorità', img: 'https://i.imgur.com/l87Jh9b.png', command: 'rank add {player} vip' },
-                { id: 2, name: 'Final Fire', price: 4.99, desc: 'Effetto morte fiammeggiante', img: 'https://i.imgur.com/Lv2lLpR.png', command: 'effect give {player} death fire' },
-                { id: 3, name: 'Generatore Veloce', price: 9.99, desc: 'Generatori potenziati', img: 'https://i.imgur.com/F6TnssG.png', command: 'generator upgrade {player}' },
-                { id: 4, name: 'Kit Guerriero', price: 19.99, desc: 'Armatura e spada potenziate', img: 'https://i.imgur.com/7X9YzHh.png', command: 'kit give {player} warrior' }
+                { id: 1, name: 'VIP Rank', price: 14.99, desc: 'Kit esclusivi e priorità', img: 'https://i.imgur.com/l87Jh9b.png' },
+                { id: 2, name: 'Final Fire', price: 4.99, desc: 'Effetto morte fiammeggiante', img: 'https://i.imgur.com/Lv2lLpR.png' },
+                { id: 3, name: 'Generatore Veloce', price: 9.99, desc: 'Generatori potenziati', img: 'https://i.imgur.com/F6TnssG.png' },
+                { id: 4, name: 'Kit Guerriero', price: 19.99, desc: 'Armatura e spada potenziate', img: 'https://i.imgur.com/7X9YzHh.png' }
             ],
             lobby: [
-                { id: 5, name: 'Volo Globale', price: 24.99, desc: 'Vola in tutte le lobby', img: 'https://i.imgur.com/Q5sTdxE.png', command: 'fly add {player}' },
-                { id: 6, name: 'Particelle Magiche', price: 7.99, desc: 'Effetti particellari', img: 'https://i.imgur.com/lk0tSqL.png', command: 'particles give {player} magic' },
-                { id: 7, name: 'Cappello Esclusivo', price: 12.99, desc: 'Cappello da pirata', img: 'https://i.imgur.com/2FhVrSd.png', command: 'hat give {player} pirate' }
+                { id: 5, name: 'Volo Globale', price: 24.99, desc: 'Vola in tutte le lobby', img: 'https://i.imgur.com/Q5sTdxE.png' },
+                { id: 6, name: 'Particelle Magiche', price: 7.99, desc: 'Effetti particellari', img: 'https://i.imgur.com/lk0tSqL.png' },
+                { id: 7, name: 'Cappello Esclusivo', price: 12.99, desc: 'Cappello da pirata', img: 'https://i.imgur.com/2FhVrSd.png' }
             ]
         };
 
-        function showToast(msg, isError = false) {
+        function showToast(msg) {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             toast.className = 'toast';
-            if (isError) {
-                toast.style.borderColor = '#e74c3c';
-            }
-            toast.innerHTML = `<i class="fa-solid ${isError ? 'fa-circle-exclamation' : 'fa-circle-check'} text-orange-500"></i> ${msg}`;
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text-orange-500"></i> ${msg}`;
             container.appendChild(toast);
-            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 500); }, 3000);
+            setTimeout(() => toast.remove(), 3000);
         }
 
-        // Login con token (collegamento plugin)
-        function loginWithToken() {
-            const token = document.getElementById('serverToken').value.trim();
+        // Login
+        function login() {
             const nick = document.getElementById('nick-field').value.trim();
+            const discord = document.getElementById('discord-field').value.trim();
             
-            if (!token || token.length < 8) {
-                showToast("Token non valido!", true);
+            if (!nick || !discord) {
+                showToast("Inserisci nickname e Discord tag!");
                 return;
             }
             
-            if (!nick || nick.length < 3) {
-                showToast("Nickname non valido!", true);
-                return;
-            }
+            currentUser = { nick, discord };
             
-            // Simula verifica token con plugin
-            serverToken = token;
-            
-            // In un caso reale, qui si farebbe una chiamata API al plugin
-            // Per demo, consideriamo validi alcuni token
-            const validTokens = ["SMPL-4A8F-2C11", "TEST-1234-5678", "ADMIN-9999-0001"];
-            const hashedToken = btoa(token).substring(0, 12);
-            
-            // Simula verifica ruolo (in produzione sarebbe via Discord OAuth)
-            // Per demo, diamo accesso admin a chi inserisce token specifico
-            if (token === "ADMIN-9999-0001" || token === "SMPL-4A8F-2C11") {
-                isAdmin = true;
-                document.getElementById('adminSection').style.display = 'block';
-                showToast("✅ Ruolo verificato! Accesso console abilitato.");
-            } else {
-                // Verifica se è l'user specifico (simulato)
-                if (nick.toLowerCase().includes("smash")) {
-                    isAdmin = true;
-                    document.getElementById('adminSection').style.display = 'block';
-                    showToast("✅ User specifico riconosciuto!");
-                }
-            }
-            
-            // Aggiorna UI
             document.getElementById('nav-user').innerText = nick.toUpperCase();
             document.getElementById('nav-avatar').src = `https://mc-heads.net/avatar/${nick}/32`;
             document.getElementById('welcomeName').innerText = nick.toUpperCase();
             document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('store-content').style.display = 'block';
             
-            // Mostra badge token
-            document.getElementById('tokenBadge').classList.remove('hidden');
-            document.getElementById('tokenInfo').classList.remove('hidden');
-            document.getElementById('tokenDisplay').innerText = token.substring(0, 8) + "...";
-            document.getElementById('activeToken').innerText = token;
-            document.getElementById('validTokenInfo').innerText = token;
-            
-            // Aggiorna stato plugin
-            document.getElementById('pluginStatus').className = 'plugin-status mx-auto mb-6 w-fit';
-            document.getElementById('pluginStatus').innerHTML = '<i class="fa-solid fa-plug"></i> Plugin: CONNESSO (token valido)';
-            document.getElementById('lastPing').innerText = 'Appena ora';
-            
-            pluginConnected = true;
-            currentUser = nick;
-            
-            renderAllProducts();
-            showToast(`Plugin connesso! Benvenuto ${nick}`);
-            
-            // Simula ping al plugin
-            setInterval(() => {
-                if (pluginConnected) {
-                    document.getElementById('lastPing').innerText = new Date().toLocaleTimeString();
-                }
-            }, 30000);
+            renderProducts();
+            showToast(`Benvenuto ${nick}!`);
         }
 
         // Render prodotti
-        function renderAllProducts() {
+        function renderProducts() {
             // Bedwars
             const bedwarsGrid = document.getElementById('bedwars-grid');
             bedwarsGrid.innerHTML = '';
@@ -527,6 +399,7 @@
             });
         }
 
+        // Tab switching
         function tab(id) {
             ['home', 'bedwars', 'lobby'].forEach(s => {
                 document.getElementById('s-'+s).classList.add('hidden');
@@ -534,147 +407,127 @@
             });
             document.getElementById('s-'+id).classList.remove('hidden');
             document.getElementById('b-'+id).classList.add('active');
-            
-            // Nascondi admin panel quando cambi tab
-            document.getElementById('admin-panel').style.display = 'none';
         }
 
+        // Product modal
         function openProduct(title, price, desc, img) {
             document.getElementById('m-title').innerText = title;
             document.getElementById('m-price').innerText = '€' + price.toFixed(2);
             document.getElementById('m-desc').innerText = desc;
             document.getElementById('m-img').src = img;
             document.getElementById('m-buy').onclick = () => {
-                cartTotal += price;
-                cartCount++;
-                document.getElementById('nav-cart').innerText = cartTotal.toFixed(2);
+                addToCart({ title, price, desc, img });
                 closeProduct();
-                showToast(title + " aggiunto al carrello!");
-                
-                setTimeout(() => {
-                    if(confirm('Vuoi procedere al pagamento con IBAN?')) {
-                        openIbanModal();
-                    }
-                }, 500);
             };
             document.getElementById('modal-overlay').style.display = 'flex';
         }
 
-        function closeProduct() { 
-            document.getElementById('modal-overlay').style.display = 'none'; 
+        function closeProduct() {
+            document.getElementById('modal-overlay').style.display = 'none';
         }
 
-        // Admin Panel
-        function toggleAdminPanel() {
-            if (!isAdmin) {
-                showToast("Accesso negato: ruolo richiesto 1451211266298351729", true);
-                return;
-            }
-            const panel = document.getElementById('admin-panel');
-            if (panel.style.display === 'none' || panel.style.display === '') {
-                panel.style.display = 'block';
+        // Carrello/Ticket
+        function addToCart(product) {
+            cart.push(product);
+            updateCartUI();
+            showToast(`${product.title} aggiunto al ticket!`);
+        }
+
+        function updateCartUI() {
+            document.getElementById('nav-cart').innerText = cart.length;
+            
+            if (cart.length > 0) {
+                let summary = '';
+                let total = 0;
+                cart.forEach((item, index) => {
+                    summary += `<div class="flex justify-between text-xs mb-1">
+                        <span>${item.title}</span>
+                        <span class="text-orange-500">€${item.price.toFixed(2)}</span>
+                    </div>`;
+                    total += item.price;
+                });
+                document.getElementById('ticket-summary').innerHTML = summary + `<div class="border-t border-white/10 mt-2 pt-2 font-bold">Totale: €${total.toFixed(2)}</div>`;
+                document.getElementById('ticket-preview').style.display = 'block';
+                
+                // Preview items
+                let itemsHtml = '';
+                cart.forEach(item => {
+                    itemsHtml += `<div class="ticket-item flex justify-between">
+                        <span>${item.title}</span>
+                        <span class="text-orange-500">€${item.price.toFixed(2)}</span>
+                    </div>`;
+                });
+                document.getElementById('ticket-items').innerHTML = itemsHtml;
+                document.getElementById('ticket-total').innerText = total.toFixed(2) + '€';
             } else {
-                panel.style.display = 'none';
+                document.getElementById('ticket-summary').innerHTML = 'Nessun oggetto selezionato';
+                document.getElementById('ticket-preview').style.display = 'none';
             }
         }
 
-        function addProduct() {
-            if (!isAdmin) {
-                showToast("Accesso negato", true);
+        // Ticket functions
+        function openTicket() {
+            if (cart.length === 0) {
+                showToast("Aggiungi almeno un oggetto al ticket!");
                 return;
             }
             
-            if (!pluginConnected) {
-                showToast("Plugin non connesso! Inserisci token valido.", true);
-                return;
-            }
+            // Popola modal
+            let itemsHtml = '';
+            cart.forEach(item => {
+                itemsHtml += `<div class="flex justify-between py-2 border-b border-white/10">
+                    <span>${item.title}</span>
+                    <span class="text-orange-500">€${item.price.toFixed(2)}</span>
+                </div>`;
+            });
+            document.getElementById('ticket-modal-items').innerHTML = itemsHtml;
             
-            const name = document.getElementById('productName').value;
-            const price = parseFloat(document.getElementById('productPrice').value);
-            const category = document.getElementById('productCategory').value;
-            const img = document.getElementById('productImage').value;
-            const desc = document.getElementById('productDesc').value;
-            const command = document.getElementById('pluginCommand').value || 'give {player} ' + name;
+            const total = cart.reduce((acc, item) => acc + item.price, 0);
+            document.getElementById('ticket-total-modal').innerText = total.toFixed(2) + '€';
+            document.getElementById('ticket-nick').innerText = currentUser.nick;
+            document.getElementById('ticket-discord').innerText = currentUser.discord;
             
-            if (!name || isNaN(price) || !category || !img) {
-                showToast("Compila tutti i campi", true);
-                return;
-            }
-            
-            const newId = products[category].length + 1 + (category === 'bedwars' ? 10 : 20);
-            const newProduct = {
-                id: newId,
-                name: name,
-                price: price,
-                desc: desc,
-                img: img,
-                command: command
+            document.getElementById('ticket-modal').style.display = 'flex';
+        }
+
+        function closeTicketModal() {
+            document.getElementById('ticket-modal').style.display = 'none';
+        }
+
+        function confirmTicket() {
+            // Prepara i dati per il bot Discord
+            const ticketData = {
+                categoryId: "1478104338118348890",
+                user: currentUser,
+                items: cart,
+                total: cart.reduce((acc, item) => acc + item.price, 0),
+                timestamp: new Date().toISOString()
             };
             
-            products[category].push(newProduct);
-            renderAllProducts();
+            // Salva in localStorage per debug
+            localStorage.setItem('lastTicket', JSON.stringify(ticketData));
             
-            // Log nella console
-            const logMsg = `&gt; [${new Date().toLocaleTimeString()}] PLUGIN: Oggetto "${name}" (${price}€) aggiunto al database\n&gt; Comando: ${command.replace('{player}', currentUser)}`;
-            document.getElementById('consoleLog').innerHTML = logMsg.replace(/\n/g, '<br>');
+            // Simula invio al bot (in produzione sarebbe una fetch al tuo backend)
+            console.log('Dati ticket da inviare al bot:', ticketData);
             
-            // Reset campi
-            document.getElementById('productName').value = '';
-            document.getElementById('productPrice').value = '';
-            document.getElementById('productDesc').value = 'Oggetto esclusivo';
-            document.getElementById('pluginCommand').value = '';
+            showToast(`✅ Ticket aperto! Vai su Discord (categoria 1478104338118348890)`);
             
-            showToast(`"${name}" inviato al plugin!`);
-            
-            // Switch alla categoria
-            tab(category);
-        }
-
-        // Funzioni pagamento IBAN
-        function openIbanModal() {
-            document.getElementById('ibanAmount').innerText = cartTotal.toFixed(2) + '€';
-            document.getElementById('ibanCausale').innerText = '#SMASH-' + Math.floor(Math.random() * 1000);
-            document.getElementById('iban-modal').style.display = 'flex';
-        }
-
-        function closeIbanModal() {
-            document.getElementById('iban-modal').style.display = 'none';
-        }
-        
-        function sendToPlugin() {
-            const confirmToken = document.getElementById('confirmToken').value;
-            
-            if (!pluginConnected || confirmToken !== serverToken) {
-                showToast("Token plugin non valido!", true);
-                return;
-            }
-            
-            showToast("✅ Pagamento registrato! Il plugin consegnerà i prodotti su Minecraft.");
-            
-            // Simula invio comandi al plugin
-            cartTotal = 0;
-            cartCount = 0;
-            document.getElementById('nav-cart').innerText = '0.00';
-            closeIbanModal();
+            // Resetta carrello
+            cart = [];
+            updateCartUI();
+            closeTicketModal();
         }
 
         // Inizializza
         window.onload = function() {
-            renderAllProducts();
-            
-            // Controllo stato plugin ogni tanto
-            setInterval(() => {
-                if (pluginConnected) {
-                    // Simula heartbeat
-                }
-            }, 60000);
+            renderProducts();
         };
     </script>
     
-    <!-- Pulsante checkout fisso -->
+    <!-- Pulsante ticket fisso -->
     <div style="position: fixed; bottom: 30px; right: 30px; z-index: 9998;">
-        <button onclick="openIbanModal()" class="bg-orange-500 text-black font-black uppercase px-8 py-5 rounded-2xl shadow-[0_8px_0_#b14e00] text-xl flex items-center gap-4 hover:translate-y-[-2px] transition-all">
-            <i class="fa-solid fa-credit-card"></i> PAGA CON IBAN
+        <button onclick="openTicket()" class="bg-orange-500 text-black font-black uppercase px-8 py-5 rounded-2xl shadow-[0_8px_0_#b14e00] text-xl flex items-center gap-4 hover:translate-y-[-2px] transition-all">
+            <i class="fa-solid fa-ticket"></i> APRI TICKET
         </button>
     </div>
 </body>
